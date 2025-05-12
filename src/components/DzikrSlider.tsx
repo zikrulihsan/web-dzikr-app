@@ -129,10 +129,22 @@ const swiperStyles = {
     };
   }, [currentIndex, setCurrentIndex]);
   
+  // Create a ref for the content container
+  const contentContainerRef = React.useRef<HTMLDivElement>(null);
+
+  // Function to scroll the content container to top
+  const scrollContentToTop = () => {
+    if (contentContainerRef.current) {
+      contentContainerRef.current.scrollTop = 0;
+    }
+  };
+
   // Effect to update Swiper when currentIndex changes
   useEffect(() => {
     if (swiperInstance && swiperInstance.activeIndex !== currentIndex) {
       swiperInstance.slideTo(currentIndex);
+      // Scroll to top when changing slides
+      scrollContentToTop();
     }
   }, [currentIndex, swiperInstance]);
 
@@ -153,16 +165,31 @@ const swiperStyles = {
         if (currentIndex < dzikrData.length - 1) {
           setTimeout(() => {
             setCurrentIndex(currentIndex + 1);
+            // Scroll to top when moving to next page
+            scrollContentToTop();
           }, 300); // Small delay for better user experience
         }
       } else {
         // For 'counter' method, increment by one
         incrementCount(currentDzikr.id);
+        
+        // Check if this increment completed the dzikr
+        const newProgress = getProgress(currentDzikr.id);
+        if (newProgress >= currentDzikr.count && currentIndex < dzikrData.length - 1) {
+          // If this was the last count needed to complete, move to next page after a short delay
+          setTimeout(() => {
+            setCurrentIndex(currentIndex + 1);
+            // Scroll to top when moving to next page
+            scrollContentToTop();
+          }, 500); // Slightly longer delay to show completion
+        }
       }
     } else {
       // Move to next dzikr if there is one
       if (currentIndex < dzikrData.length - 1) {
         setCurrentIndex(currentIndex + 1);
+        // Scroll to top when moving to next page
+        scrollContentToTop();
       }
     }
   };
@@ -194,7 +221,7 @@ const swiperStyles = {
       </div>
 
       {/* Swiper container */}
-      <div style={swiperStyles.contentContainer}>
+      <div style={swiperStyles.contentContainer} ref={contentContainerRef}>
         <div style={swiperStyles.swiperContainer}>
           {isClient ? (
             <Swiper
