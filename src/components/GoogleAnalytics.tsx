@@ -4,8 +4,8 @@ import Script from 'next/script';
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-// Google Analytics measurement ID from environment variable
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+// Google Analytics measurement ID
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-5VYYZ05KPZ';
 
 declare global {
   interface Window {
@@ -18,16 +18,11 @@ declare global {
 }
 
 export default function GoogleAnalytics() {
-  // Don't render anything if the Measurement ID is not available
-  if (!GA_MEASUREMENT_ID) {
-    return null;
-  }
-  
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (!window.gtag) return;
+    if (!GA_MEASUREMENT_ID || !window.gtag) return;
 
     const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '');
     
