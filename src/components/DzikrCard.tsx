@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
 import { DzikrItem, dzikrData } from '@/data/dzikrData';
-import Icon from '@/components/Icon';
 
 interface DzikrCardProps {
   dzikr: DzikrItem;
@@ -65,6 +64,7 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onIncrement, onDecrement, 
       borderRadius: '1rem',
       padding: '1.5rem',
       margin: '0 auto',
+      paddingBottom: '2rem',
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
@@ -134,7 +134,10 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onIncrement, onDecrement, 
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'font-size 0.3s ease, margin-bottom 0.3s ease'
+              transition: 'font-size 0.3s ease, margin-bottom 0.3s ease',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
             }}>
               {dzikr.arabic}
             </div>
@@ -143,6 +146,7 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onIncrement, onDecrement, 
               <div style={{ 
                 marginBottom: settings.showTranslation ? '1rem' : '2rem', 
                 textAlign: 'center', 
+                fontStyle: 'italic',
                 fontSize: !settings.showTranslation ? '1.25rem' : '1rem', 
                 color: settings.theme === 'dark' ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)',
                 flex: !settings.showTranslation ? 1 : 'initial',

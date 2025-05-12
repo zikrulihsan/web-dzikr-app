@@ -27,7 +27,7 @@ export const dzikrData: DzikrItem[] = [
   },
   {
     id: 2,
-    arabic: "<p>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p><p>قُلْ هُوَ اللَّهُ أَحَدٌ . اللَّهُ الصَّمَدُ . لَمْ يَلِدْ وَلَمْ يُولَدْ . وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ</p>",
+    arabic: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n\nقُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ",
     latin: "",
     translation:
       "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang. Katakanlah: Dialah Allah, Yang Maha Esa. Allah adalah ilah yang bergantung kepada-Nya segala urusan. Dia tidak beranak dan tiada pula diperanakkan, dan tidak ada seorang pun yang setara dengan Dia.",
@@ -40,7 +40,7 @@ export const dzikrData: DzikrItem[] = [
   {
     id: 3,
     arabic:
-      "<p>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p><p>قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ . مِن شَرِّ مَا خَلَقَ . وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ . وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ . وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ</p>",
+      "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n\nقُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ۝ مِن شَرِّ مَا خَلَقَ ۝ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ۝ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
     latin: "",
     translation:
       "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang. Katakanlah: Aku berlindung kepada Rabb yang menguasai Shubuh, dari kejahatan makhluk-Nya, dan dari kejahatan malam apabila telah gelap gulita, dan dari kejahatan-kejahatan wanita tukang sihir yang menghembus pada buhul-buhul, dan dari kejahatan orang yang dengki apabila ia dengki.",
@@ -53,7 +53,7 @@ export const dzikrData: DzikrItem[] = [
   {
     id: 4,
     arabic:
-      "<p>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p><p>قُلْ أَعُوذُ بِرَبِّ النَّاسِ . مَلِكِ النَّاسِ . إِلَٰهِ النَّاسِ . مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ . الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ . مِنَ الْجِنَّةِ وَالنَّاسِ</p>",
+      "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n\nقُلْ أَعُوذُ بِرَبِّ النَّاسِ ۝ مَلِكِ النَّاسِ ۝ إِلَٰهِ النَّاسِ ۝ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ۝ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ۝ مِنَ الْجِنَّةِ وَالنَّاسِ",
     latin: "",
     translation:
       "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang. Katakanlah: Aku berlindung kepada Rabb manusia. Raja manusia. Sembahan manusia, dari kejahatan (bisikan) syaitan yang biasa bersembunyi, yang membisikkan (kejahatan) ke dalam dada manusia, dari jin dan manusia.",
@@ -73,7 +73,7 @@ export const dzikrData: DzikrItem[] = [
       "Kami telah memasuki waktu pagi dan kerajaan hanya milik Allah, segala puji bagi Allah. Tidak ada ilah (yang berhak disembah) kecuali Allah semata, tiada sekutu bagi-Nya. Milik Allah kerajaan dan bagi-Nya pujian. Dia-lah Yang Mahakuasa atas segala sesuatu. Wahai Rabbku, aku mohon kepada-Mu kebaikan di hari ini dan kebaikan sesudahnya. Aku berlindung kepada-Mu dari kejahatan hari ini dan kejahatan sesudahnya. Wahai Rabbku, aku berlindung kepada-Mu dari kemalasan dan kejelekan di hari tua. Wahai Rabbku, aku berlindung kepada-Mu dari siksaan di neraka dan siksaan di alam kubur.",
     source: "HR. Muslim no. 2723",
     count: 1,
-    category: "Dzikir Pagi #1",
+    category: "Dzikir #1",
     description:
       "Faedah: Meminta pada Allah kebaikan di hari ini dan kebaikan sesudahnya, juga agar terhindar dari kejelekan di hari ini dan kejelekan sesudahnya. Di dalamnya berisi pula permintaan agar terhindar dari rasa malas padahal mampu untuk beramal, juga agar terhindar dari kejelekan di masa tua. Di dalamnya juga berisi permintaan agar terselamatkan dari siksa kubur dan siksa neraka yang merupakan siksa terberat di hari kiamat kelak.\nHikmah: Dzikir ini mengajarkan kita untuk memulai hari dengan mengakui kekuasaan Allah dan memohon perlindungan-Nya. Ini mengingatkan kita bahwa segala sesuatu adalah milik Allah dan kita bergantung pada-Nya untuk keselamatan dan kebaikan dalam hidup kita.",
     note: "Untuk dzikir petang, dibaca: أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ... (Amsayna wa amsal mulku lillah...)",
@@ -86,7 +86,7 @@ export const dzikrData: DzikrItem[] = [
       "Ya Allah, dengan rahmat dan pertolongan-Mu kami memasuki waktu pagi, dan dengan rahmat dan pertolongan-Mu kami memasuki waktu petang. Dengan rahmat dan pertolongan-Mu kami hidup dan dengan kehendak-Mu kami mati. Dan kepada-Mu kebangkitan (bagi semua makhluk).",
     source: "HR. Tirmidzi no. 3391 dan Abu Daud no. 5068",
     count: 1,
-    category: "Dzikir Pagi #2",
+    category: "Dzikir #2",
     description:
       "Faedah: Dengan dzikir ini, kita telah menyerahkan segala urusan kepada Allah di pagi hari, di petang hari, ketika hidup dan ketika mati.\nHikmah: Dzikir ini mengingatkan kita bahwa Allah adalah sumber kehidupan dan kematian. Kita bergantung pada-Nya dalam setiap aspek kehidupan kita, dari bangun tidur hingga kembali tidur, dan bahkan dalam kematian dan kebangkitan kita.",
     note: "Untuk dzikir petang, dibaca: اَللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوْتُ وَإِلَيْكَ الْمَصِيْرُ (Allahumma bika amsaynaa wa bika ash-bahnaa wa bika nahyaa wa bika namuutu wa ilaikal mashiir).",
@@ -115,7 +115,7 @@ export const dzikrData: DzikrItem[] = [
       "Ya Allah, sesungguhnya aku memohon kebajikan dan keselamatan di dunia dan akhirat. Ya Allah, sesungguhnya aku memohon kebajikan dan keselamatan dalam agama, dunia, keluarga dan hartaku. Ya Allah, tutupilah auratku (aib dan sesuatu yang tidak layak dilihat orang) dan tenteramkanlah aku dari rasa takut. Ya Allah, peliharalah aku dari muka, belakang, kanan, kiri dan atasku. Aku berlindung dengan kebesaran-Mu, agar aku tidak disambar dari bawahku (oleh ular atau tenggelam dalam bumi dan lain-lain yang membuat aku jatuh).",
     source: "HR. Abu Daud no. 5074 dan Ibnu Majah no. 3871",
     count: 1,
-    category: "Dzikir Pagi #3",
+    category: "Dzikir #3",
     description:
       "Faedah: Rasulullah shallallahu 'alaihi wa sallam tidaklah pernah meninggalkan do'a ini di pagi dan petang hari. Di dalamnya berisi perlindungan dan keselamatan pada agama, dunia, keluarga dan harta dari berbagai macam gangguan yang datang dari berbagai arah.\nHikmah: Dzikir ini mengajarkan kita untuk memohon perlindungan Allah dari segala arah dan aspek kehidupan. Ini mengingatkan kita bahwa kita membutuhkan perlindungan Allah dalam setiap saat dan dari segala arah.",
   },
@@ -129,7 +129,7 @@ export const dzikrData: DzikrItem[] = [
       "Ya Allah, Yang Maha Mengetahui yang ghaib dan yang nyata, wahai Rabb pencipta langit dan bumi, Rabb segala sesuatu dan yang merajainya. Aku bersaksi bahwa tidak ada ilah yang berhak disembah kecuali Engkau. Aku berlindung kepadaMu dari kejahatan diriku, setan dan balatentaranya (godaan untuk berbuat syirik pada Allah), dan aku (berlindung kepada-Mu) dari berbuat kejelekan terhadap diriku atau menyeretnya kepada seorang muslim.",
     source: "HR. Tirmidzi no. 3392 dan Abu Daud no. 5067",
     count: 1,
-    category: "Dzikir Pagi #4",
+    category: "Dzikir #4",
     description:
       "Faedah: Do'a ini diajarkan oleh Rasulullah shallallahu 'alaihi wa sallam pada Abu Bakar Ash Shiddiq radhiyallahu 'anhu untuk dibaca pada pagi, petang dan saat beranjak tidur.\nHikmah: Dzikir ini mengajarkan kita untuk mengakui keesaan Allah dan memohon perlindungan-Nya dari kejahatan diri sendiri dan setan. Ini mengingatkan kita bahwa musuh terbesar kita bisa jadi adalah diri kita sendiri dan godaan setan.",
   },
@@ -142,7 +142,7 @@ export const dzikrData: DzikrItem[] = [
       "Dengan nama Allah yang bila disebut, segala sesuatu di bumi dan langit tidak akan berbahaya, Dia-lah Yang Maha Mendengar lagi Maha Mengetahui.",
     source: "HR. Abu Daud no. 5088, 5089, Tirmidzi no. 3388, dan Ibnu Majah no. 3869",
     count: 3,
-    category: "Dzikir Pagi #5",
+    category: "Dzikir #5",
     description:
       "Faedah: Barangsiapa yang mengucapkan dzikir tersebut sebanyak tiga kali di pagi hari dan tiga kali di petang hari, maka tidak akan ada bahaya yang tiba-tiba memudaratkannya.\nHikmah: Dzikir ini mengajarkan kita untuk selalu menyebut nama Allah sebagai perlindungan dari segala bahaya. Ini mengingatkan kita bahwa dengan menyebut nama Allah, kita akan terlindungi dari bahaya di bumi dan di langit.",
   },
@@ -154,7 +154,7 @@ export const dzikrData: DzikrItem[] = [
       "Aku ridha Allah sebagai Rabb, Islam sebagai agama dan Muhammad shallallahu 'alaihi wa sallam sebagai nabi.",
     source: "HR. Abu Daud no. 5072, Tirmidzi no. 3389",
     count: 3,
-    category: "Dzikir Pagi #6",
+    category: "Dzikir #6",
     description:
       "Faedah: Barangsiapa yang mengucapkan dzikir ini sebanyak tiga kali di pagi hari dan tiga kali di petang hari, maka pantas baginya mendapatkan ridha Allah.\nHikmah: Dzikir ini mengajarkan kita untuk meneguhkan keimanan kita kepada Allah, Islam, dan Nabi Muhammad SAW. Ini adalah bentuk pengakuan dan kerelaan hati terhadap tiga hal fundamental dalam keimanan seorang Muslim.",
   },
@@ -168,7 +168,7 @@ export const dzikrData: DzikrItem[] = [
     source:
       "HR. Ibnu As-Sunni dalam 'Amalul Yaum wal Lailah no. 46, An-Nasa'i dalam Al-Kubra (381/ 570), Al-Bazzar dalam musnadnya (4/ 25/ 3107)",
     count: 1,
-    category: "Dzikir Pagi #7",
+    category: "Dzikir #7",
     description:
       "Faedah: Dzikir ini diajarkan oleh Nabi shallallahu 'alaihi wa sallam pada Fathimah supaya diamalkan pagi dan petang.\nHikmah: Dzikir ini mengajarkan kita untuk selalu bergantung pada Allah dan memohon pertolongan-Nya dalam segala urusan. Ini mengingatkan kita bahwa kita tidak bisa mandiri bahkan sekejap mata pun tanpa pertolongan Allah.",
   },
@@ -182,7 +182,7 @@ export const dzikrData: DzikrItem[] = [
       "Di waktu pagi kami memegang agama Islam, kalimat ikhlas (kalimat syahadat), agama Nabi kami Muhammad shallallahu 'alaihi wa sallam, dan agama bapak kami Ibrahim, yang berdiri di atas jalan yang lurus, muslim dan tidak tergolong orang-orang musyrik.",
     source: "HR. Ahmad (3/406-407), Ad-Darimi (2/292) dan lain-lain",
     count: 1,
-    category: "Dzikir Pagi #8",
+    category: "Dzikir #8",
     description:
       "Faedah: Dzikir ini menunjukkan bahwa kita berada di atas fitrah Islam, kalimat ikhlas (kalimat syahadat), agama Nabi Muhammad shallallahu 'alaihi wa sallam, dan millah (agama) Ibrahim yang lurus.\nHikmah: Dzikir ini mengajarkan kita untuk meneguhkan identitas kita sebagai Muslim yang mengikuti ajaran Nabi Muhammad SAW dan agama Ibrahim yang lurus. Ini mengingatkan kita untuk selalu berpegang teguh pada fitrah Islam dan menjauhi kesyirikan.",
     note: "Untuk dzikir petang, dibaca: أَمْسَيْنَا عَلَى فِطْرَةِ اْلإِسْلاَمِ... (Amsaynaa 'ala fithrotil islam...)",
@@ -194,7 +194,7 @@ export const dzikrData: DzikrItem[] = [
     translation: "Maha Suci Allah, aku memuji-Nya.",
     source: "HR. Muslim no. 2692",
     count: 100,
-    category: "Dzikir Pagi #9",
+    category: "Dzikir #9",
     description:
       "Faedah: Barangsiapa yang mengucapkan kalimat 'Subhanallahi wa bihamdihi' di pagi dan petang hari sebanyak 100x, maka tidak ada yang datang pada hari kiamat yang lebih baik dari yang ia lakukan kecuali orang yang mengucapkan semisal atau lebih dari itu.\nHikmah: Dzikir ini mengajarkan kita untuk selalu mensucikan dan memuji Allah. Ini adalah bentuk pengakuan akan kesempurnaan Allah dan rasa syukur atas segala nikmat-Nya.",
   },
@@ -208,7 +208,7 @@ export const dzikrData: DzikrItem[] = [
       "Tidak ada ilah yang berhak disembah selain Allah semata, tidak ada sekutu bagi-Nya. Milik Allah kerajaan dan segala pujian. Dia-lah yang berkuasa atas segala sesuatu.",
     source: "HR. An-Nasa'i dalam 'Amalul Yaum wal Lailah no. 24",
     count: 10,
-    category: "Dzikir Pagi #10",
+    category: "Dzikir #10",
     description:
       "Faedah: Barangsiapa yang mengucapkan dzikir tersebut di pagi hari sebanyak 10x, Allah akan mencatatkan baginya 10 kebaikan, menghapuskan baginya 10 kesalahan, ia juga mendapatkan kebaikan semisal memerdekakan 10 budak, Allah akan melindunginya dari gangguan setan hingga petang hari. Siapa yang mengucapkannya di petang hari, ia akan mendapatkan keutamaan semisal itu pula.\nHikmah: Dzikir ini mengajarkan kita tentang tauhid (keesaan Allah) dan kekuasaan-Nya atas segala sesuatu. Ini mengingatkan kita bahwa hanya Allah yang berhak disembah dan Dia memiliki kekuasaan mutlak atas segala sesuatu.",
   },
