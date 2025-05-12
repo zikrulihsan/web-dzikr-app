@@ -1,0 +1,67 @@
+:root {
+  --primary-color: 124, 77, 255; /* Purple color */
+}
+
+/* Dark theme variables */
+[data-theme="dark"] {
+  --background-color: #121212;
+  --card-background: rgba(255, 255, 255, 0.05);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --pagination-bullet: rgba(255, 255, 255, 0.5);
+}
+
+/* Light theme variables */
+[data-theme="light"] {
+  --background-color: #f5f5f5;
+  --card-background: rgba(0, 0, 0, 0.05);
+  --text-primary: #333333;
+  --text-secondary: rgba(0, 0, 0, 0.7);
+  --text-tertiary: rgba(0, 0, 0, 0.5);
+  --border-color: rgba(0, 0, 0, 0.1);
+  --pagination-bullet: rgba(0, 0, 0, 0.5);
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+  padding: 20px 0;
+}
+
+.swiper-slide {
+  width: 90%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-pagination-bullet {
+  background-color: var(--pagination-bullet);
+}
+
+.swiper-pagination-bullet-active {
+  background-color: rgb(var(--primary-color));
+}
+
+.swiper-slide-active {
+  transform: scale(1);
+  transition: transform 0.3s;
+}
+
+.swiper-slide-prev,
+.swiper-slide-next {
+  transform: scale(0.85);
+  opacity: 0.5;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+/* Make sure the container takes full height */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
