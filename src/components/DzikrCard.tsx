@@ -135,9 +135,6 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onIncrement, onDecrement, 
               alignItems: 'center',
               justifyContent: 'center',
               transition: 'font-size 0.3s ease, margin-bottom 0.3s ease',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
             }}>
               {dzikr.arabic}
             </div>
