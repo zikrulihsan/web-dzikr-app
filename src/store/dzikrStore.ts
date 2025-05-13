@@ -16,6 +16,7 @@ interface AppSettings {
   showLatin: boolean;
   showDescription: boolean;
   countingMethod: CountingMethod;
+  hasSeenTooltip: boolean;
 }
 
 interface DzikrState {
@@ -43,7 +44,8 @@ export const useDzikrStore = create<DzikrState>()(
         showTranslation: true,
         showLatin: true,
         showDescription: true,
-        countingMethod: 'penanda'
+        countingMethod: 'penanda',
+        hasSeenTooltip: false
       },
       
       setCurrentIndex: (index: number) => set({ currentIndex: index }),
