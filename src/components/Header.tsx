@@ -74,7 +74,6 @@ const Header: React.FC = () => {
           aria-label="Reset all progress"
         >
           <Icon icon="fa-solid fa-refresh" size={18} />
-          <span style={{ marginLeft: '0.25rem' }}>Reset</span>
         </button>
         
         {/* App Title */}
