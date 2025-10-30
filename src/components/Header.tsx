@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
 import Settings from './Settings';
+import LoginButton from './LoginButton';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import Icon from './Icon';
@@ -54,12 +55,14 @@ const Header: React.FC = () => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
+        gap: '1rem',
         backgroundColor: settings.theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
         borderBottom: settings.theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
-        color: settings.theme === 'dark' ? 'white' : '#333'
+        color: settings.theme === 'dark' ? 'white' : '#333',
+        flexWrap: 'wrap'
       }}>
-        {/* Reset All Button */}
-        <button 
+        {/* Left: Reset All Button */}
+        <button
           onClick={handleResetAll}
           style={{
             background: 'none',
@@ -75,34 +78,40 @@ const Header: React.FC = () => {
         >
           <Icon icon="fa-solid fa-refresh" size={18} />
         </button>
-        
-        {/* App Title */}
-        <h1 style={{ 
-          margin: 0, 
-          fontSize: '1.5rem', 
+
+        {/* Center: App Title */}
+        <h1 style={{
+          margin: 0,
+          fontSize: '1.5rem',
           fontWeight: 600,
-          color: settings.theme === 'dark' ? 'white' : '#333'
+          color: settings.theme === 'dark' ? 'white' : '#333',
+          flex: '1',
+          textAlign: 'center'
         }}>Daily Dzikr</h1>
-        
-        {/* Settings Button */}
-        <button 
-          id="settings-button"
-          onClick={handleSettingsClick}
-          data-tooltip-id="settings-tooltip"
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: settings.theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '0.875rem',
-            padding: '0.5rem'
-          }}
-          aria-label="Open settings"
-        >
-         <Icon icon="fa-solid fa-gear" size={18} /> 
-        </button>
+
+        {/* Right: Login Button and Settings */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <LoginButton />
+
+          <button
+            id="settings-button"
+            onClick={handleSettingsClick}
+            data-tooltip-id="settings-tooltip"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: settings.theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '0.875rem',
+              padding: '0.5rem'
+            }}
+            aria-label="Open settings"
+          >
+           <Icon icon="fa-solid fa-gear" size={18} />
+          </button>
+        </div>
       </header>
       
       {/* Settings Modal */}
