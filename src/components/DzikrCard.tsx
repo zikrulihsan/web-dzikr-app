@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
-import { DzikrItem, dzikrData } from '@/data/dzikrData';
+import { DzikrItem } from '@/data/dzikrData';
 
 interface DzikrCardProps {
   dzikr: DzikrItem;
@@ -13,15 +13,16 @@ interface DzikrCardProps {
 
 const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onIncrement, onDecrement, onReset }) => {
   const [expanded, setExpanded] = useState(false);
-  const { 
-    incrementCount, 
-    decrementCount, 
-    getProgress, 
-    getCompletionPercentage, 
-    resetCount, 
+  const {
+    dzikrData,
+    incrementCount,
+    decrementCount,
+    getProgress,
+    getCompletionPercentage,
+    resetCount,
     settings,
     currentIndex,
-    setCurrentIndex 
+    setCurrentIndex
   } = useDzikrStore();
   
   const progress = getProgress(dzikr.id);

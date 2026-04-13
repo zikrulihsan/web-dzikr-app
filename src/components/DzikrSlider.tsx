@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { dzikrData } from '@/data/dzikrData';
 import { useDzikrStore } from '@/store/dzikrStore';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
@@ -19,10 +18,13 @@ import '@/styles/swiper-custom.css';
 
 
 const DzikrSlider: React.FC = () => {
-  const { 
-    currentIndex, 
-    setCurrentIndex, 
-    getCompletionPercentage, 
+  const {
+    dzikrData,
+    isLoading,
+    fetchDzikr,
+    currentIndex,
+    setCurrentIndex,
+    getCompletionPercentage,
     getProgress,
     incrementCount,
     decrementCount,
@@ -108,6 +110,11 @@ const swiperStyles = {
   },
 };
 
+
+  // Fetch dzikr data on mount
+  useEffect(() => {
+    fetchDzikr();
+  }, [fetchDzikr]);
 
   // Client-side only code
   useEffect(() => {
@@ -203,6 +210,20 @@ const swiperStyles = {
     const currentDzikr = dzikrData[currentIndex];
     resetCount(currentDzikr.id);
   };
+
+  if (isLoading || dzikrData.length === 0) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        color: settings.theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
+      }}>
+        Memuat dzikir...
+      </div>
+    );
+  }
 
   return (
     <div style={swiperStyles.container}>
