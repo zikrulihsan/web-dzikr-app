@@ -106,6 +106,21 @@ export const dzikrData: DzikrItem[] = [
       "Faedah: Barangsiapa mengucapkan dzikir ini di pagi hari dengan penuh keyakinan, lalu ia meninggal pada hari tersebut sebelum petang hari, maka ia termasuk penghuni surga. Barangsiapa yang mengucapkannya di petang hari dengan penuh keyakinan, lalu ia meninggal sebelum pagi, maka ia termasuk penghuni surga.\nHikmah: Sayyidul Istighfar (penghulu istighfar) adalah doa pengampunan terbaik yang mengandung pengakuan akan ketuhanan Allah, pengakuan diri sebagai hamba-Nya, pengakuan akan dosa-dosa, dan permohonan ampunan. Doa ini mengajarkan kita untuk selalu introspeksi dan memohon ampunan kepada Allah.",
   },
   {
+    id: 16,
+    arabic:
+      "اَللَّهُمَّ إِنِّيْ أَصْبَحْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلاَئِكَتَكَ وَجَمِيْعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللهُ لاَ إِلَـهَ إِلاَّ أَنْتَ وَحْدَكَ لاَ شَرِيْكَ لَكَ، وَأَنَّ مُحَمَّدًا عَبْدُكَ وَرَسُوْلُكَ",
+    latin:
+      "Allahumma innii ash-bahtu usyhiduka wa usyhidu hamalata 'arsyika wa malaa-ikatak wa jami'a kholqik, annaka antallahu laa ilaha illa anta wahdaka laa syariika lak, wa anna Muhammadan 'abduka wa rosuuluk.",
+    translation:
+      "Ya Allah, sesungguhnya aku di waktu pagi ini mempersaksikan Engkau, para malaikat yang memikul Arsy-Mu, malaikat-malaikat-Mu, dan seluruh makhluk-Mu, bahwa sesungguhnya Engkau adalah Allah, tiada ilah yang berhak disembah kecuali Engkau semata, tiada sekutu bagi-Mu, dan sesungguhnya Muhammad adalah hamba dan utusan-Mu.",
+    source: "HR. Abu Daud no. 5069",
+    count: 4,
+    category: "Syahadat Pagi",
+    description:
+      "Faedah: Barangsiapa yang mengucapkannya sebanyak empat kali di pagi atau petang hari, maka Allah akan membebaskannya dari api neraka.\nHikmah: Dzikir ini mengajarkan kita untuk memperbaharui syahadat di setiap pagi dan petang, dengan menjadikan Allah, para malaikat pemikul Arsy, dan seluruh makhluk sebagai saksi atas keimanan kita kepada Allah dan kerasulan Nabi Muhammad shallallahu 'alaihi wa sallam.",
+    note: "Untuk dzikir petang, kata 'أَصْبَحْتُ' (ash-bahtu) diganti menjadi 'أَمْسَيْتُ' (amsaytu).",
+  },
+  {
     id: 8,
     arabic:
       "اَللَّهُمَّ إِنِّيْ أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَاْلآخِرَةِ، اَللَّهُمَّ إِنِّيْ أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِيْنِيْ وَدُنْيَايَ وَأَهْلِيْ وَمَالِيْ اللَّهُمَّ اسْتُرْ عَوْرَاتِى وَآمِنْ رَوْعَاتِى. اَللَّهُمَّ احْفَظْنِيْ مِنْ بَيْنِ يَدَيَّ، وَمِنْ خَلْفِيْ، وَعَنْ يَمِيْنِيْ وَعَنْ شِمَالِيْ، وَمِنْ فَوْقِيْ، وَأَعُوْذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِيْ",
@@ -211,5 +226,60 @@ export const dzikrData: DzikrItem[] = [
     category: "Dzikir #10",
     description:
       "Faedah: Barangsiapa yang mengucapkan dzikir tersebut di pagi hari sebanyak 10x, Allah akan mencatatkan baginya 10 kebaikan, menghapuskan baginya 10 kesalahan, ia juga mendapatkan kebaikan semisal memerdekakan 10 budak, Allah akan melindunginya dari gangguan setan hingga petang hari. Siapa yang mengucapkannya di petang hari, ia akan mendapatkan keutamaan semisal itu pula.\nHikmah: Dzikir ini mengajarkan kita tentang tauhid (keesaan Allah) dan kekuasaan-Nya atas segala sesuatu. Ini mengingatkan kita bahwa hanya Allah yang berhak disembah dan Dia memiliki kekuasaan mutlak atas segala sesuatu.",
+  },
+  {
+    id: 20,
+    arabic:
+      "لاَ إِلَـهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيْكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيْرُ",
+    latin:
+      "Laa ilaha illallah wahdahu laa syarika lah, lahul mulku walahul hamdu wa huwa 'ala kulli syai-in qodiir.",
+    translation:
+      "Tidak ada ilah yang berhak disembah selain Allah semata, tidak ada sekutu bagi-Nya. Milik Allah kerajaan dan segala pujian. Dia-lah yang berkuasa atas segala sesuatu.",
+    source: "HR. Bukhari no. 3293 dan Muslim no. 2691",
+    count: 100,
+    category: "Tahlil (100x)",
+    description:
+      "Faedah: Barangsiapa yang mengucapkan 'Laa ilaaha illallah wahdahu laa syariika lah, lahul mulku walahul hamdu wa huwa 'ala kulli syai-in qodiir' sebanyak 100x dalam sehari, maka itu seperti membebaskan 10 budak, dicatat baginya 100 kebaikan, dihapuskan darinya 100 kejelekan, dirinya akan terjaga dari gangguan setan pada hari itu hingga petang, dan tidak ada seorang pun yang lebih baik amalannya dari apa yang ia lakukan, kecuali orang yang mengamalkan lebih banyak dari itu.\nHikmah: Dzikir ini dibaca 100 kali dalam sehari (tidak terikat waktu pagi/petang secara khusus) dan merupakan salah satu dzikir paling utama yang menggabungkan tauhid dan pujian.",
+  },
+  {
+    id: 17,
+    arabic:
+      "سُبْحَانَ اللهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ",
+    latin:
+      "Subhanallahi wa bihamdihi, 'adada kholqihi, wa ridhoo nafsihi, wa zinata 'arsyihi, wa midaada kalimaatihi.",
+    translation:
+      "Maha Suci Allah, aku memuji-Nya sebanyak makhluk yang diciptakan-Nya, sejauh keridhaan-Nya, seberat timbangan 'Arsy-Nya, dan sebanyak tinta (yang menulis) kalimat-Nya.",
+    source: "HR. Muslim no. 2726",
+    count: 3,
+    category: "Tasbih 'Adada Khalqih",
+    description:
+      "Faedah: Dzikir ini diajarkan oleh Nabi shallallahu 'alaihi wa sallam kepada Juwairiyah binti Al-Harits radhiyallahu 'anha. Tiga kali bacaan ini lebih utama dibanding berdzikir dalam waktu yang panjang karena mengandung pujian yang sangat banyak kepada Allah.\nHikmah: Dzikir ini menunjukkan betapa luasnya pujian kepada Allah, melampaui bilangan makhluk-Nya, sejauh keridhaan-Nya, seberat 'Arsy-Nya, bahkan sebanyak tinta untuk menulis kalimat-Nya yang tidak akan pernah habis.",
+    note: "Dibaca tiga kali di pagi hari saja.",
+  },
+  {
+    id: 18,
+    arabic: "اَللَّهُمَّ إِنِّيْ أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلاً مُتَقَبَّلاً",
+    latin: "Allahumma innii as-aluka 'ilman naafi'an, wa rizqon thoyyiban, wa 'amalan mutaqobbalan.",
+    translation:
+      "Ya Allah, sesungguhnya aku memohon kepada-Mu ilmu yang bermanfaat, rizki yang halal (baik) dan amal yang diterima.",
+    source:
+      "HR. Ibnu Majah no. 925. Syaikh Al-Albani dalam Shahih wa Dha'if Sunan Ibnu Majah menyatakan bahwa hadits ini shahih",
+    count: 1,
+    category: "Doa Setelah Shubuh",
+    description:
+      "Faedah: Doa ini dibaca setelah salam dari shalat Shubuh. Ini adalah doa yang diajarkan Nabi shallallahu 'alaihi wa sallam sebagai permohonan tiga hal utama: ilmu yang bermanfaat, rizki yang halal, dan amal yang diterima.\nHikmah: Dzikir ini mengajarkan kita untuk memohon tiga kebutuhan pokok seorang muslim dalam menjalani kehidupan dunia dan akhirat: ilmu sebagai penerang jalan, rizki sebagai penopang hidup, dan amal sebagai bekal akhirat.",
+    note: "Dibaca satu kali setelah salam dari shalat Shubuh (dzikir pagi saja).",
+  },
+  {
+    id: 19,
+    arabic: "أَسْتَغْفِرُ اللهَ وَأَتُوْبُ إِلَيْهِ",
+    latin: "Astaghfirullaaha wa atuubu ilaihi.",
+    translation: "Aku memohon ampunan kepada Allah dan bertaubat kepada-Nya.",
+    source: "HR. Bukhari no. 6307",
+    count: 100,
+    category: "Istighfar",
+    description:
+      "Faedah: Rasulullah shallallahu 'alaihi wa sallam bersabda bahwa beliau beristighfar dan bertaubat kepada Allah lebih dari 70 kali dalam sehari (dalam riwayat lain 100 kali).\nHikmah: Dzikir ini mengajarkan kita untuk selalu memohon ampunan Allah dari dosa-dosa kita, baik yang disadari maupun tidak. Meskipun Rasulullah shallallahu 'alaihi wa sallam telah dijamin surga, beliau tetap banyak beristighfar sebagai teladan bagi umatnya.",
+    note: "Dibaca 100 kali dalam sehari (tidak terikat waktu pagi atau petang secara khusus).",
   },
 ];
