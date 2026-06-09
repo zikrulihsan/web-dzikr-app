@@ -66,7 +66,10 @@ export const useDzikrStore = create<DzikrState>()(
       },
       
       resetAllProgress: () => {
-        set({ progress: dzikrData.map(dzikr => ({ dzikrId: dzikr.id, completed: 0 })) });
+        set({
+          progress: dzikrData.map(dzikr => ({ dzikrId: dzikr.id, completed: 0 })),
+          currentIndex: 0,
+        });
       },
       
       incrementCount: (dzikrId: number) => {
