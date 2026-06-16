@@ -6,10 +6,11 @@
 }
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-rgb: 9, 13, 25;
-  --primary-color: 66, 135, 245;
-  --secondary-color: 100, 160, 255;
+  --foreground-rgb: 242, 245, 242;
+  --background-rgb: 14, 20, 19;
+  /* Emerald accent — propagates to every rgb(var(--primary-color)) usage */
+  --primary-color: 65, 193, 138;
+  --secondary-color: 120, 214, 176;
 }
 
 body {
@@ -67,4 +68,26 @@ body {
   -webkit-box-orient: vertical;
   line-clamp: 2;
   overflow: hidden;
+}
+
+/* Elegant Quranic script for Arabic text (font loaded in layout.tsx) */
+.arabic {
+  font-family: var(--font-amiri), 'Amiri', 'Scheherazade New', serif;
+  line-height: 2.05;
+  font-weight: 400;
+}
+
+/* Gentle presence ripple used on the community page */
+@keyframes presence-pulse {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.6;
+  }
+  80% {
+    transform: scale(1.95);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
 }

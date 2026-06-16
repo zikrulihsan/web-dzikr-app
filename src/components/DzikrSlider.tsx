@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { dzikrData } from '@/data/dzikrData';
 import { useDzikrStore } from '@/store/dzikrStore';
 import DzikrCard from './DzikrCard';
+import PresencePill from './PresencePill';
 import Icon from './Icon';
 // Import Swiper and required modules
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -219,6 +220,9 @@ const swiperStyles = {
           );
         })}
       </div>
+
+      {/* Community presence entry */}
+      <PresencePill />
 
       {/* Swiper container */}
       <div style={swiperStyles.contentContainer} ref={contentContainerRef}>

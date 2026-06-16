@@ -125,7 +125,7 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onIncrement, onDecrement, 
             transition: 'font-size 0.3s ease'
           }}>{dzikr.category}</h2>
           <div style={{display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <div style={{ 
+            <div className="arabic" style={{ 
               marginBottom: settings.showLatin || settings.showTranslation ? '0.5rem' : '2rem', 
               textAlign: 'center', 
               fontSize: !settings.showLatin && !settings.showTranslation ? '2.5rem' : '1.5rem', 
