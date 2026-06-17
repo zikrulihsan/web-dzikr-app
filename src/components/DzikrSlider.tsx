@@ -6,6 +6,7 @@ import { useDzikrStore } from '@/store/dzikrStore';
 import DzikrCard from './DzikrCard';
 import PresencePill from './PresencePill';
 import Icon from './Icon';
+import { useScoreSync } from '@/lib/useScoreSync';
 // Import Swiper and required modules
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
@@ -32,6 +33,9 @@ const DzikrSlider: React.FC = () => {
   } = useDzikrStore();
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
+
+  // Mirror daily progress to Supabase for the leaderboard (no-op without backend).
+  useScoreSync();
 
   // Custom styles for Swiper
 const swiperStyles = {

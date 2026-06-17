@@ -1,21 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useDzikrStore } from '@/store/dzikrStore';
+import { usePresence } from '@/lib/usePresence';
 import Icon from './Icon';
 
-interface Presence {
-  name: string;
-  tag: string;
-  time: string;
-  avatar: string;
-}
-
-// Anonymous presence — no real identity, just "someone is with you".
-const NAMES = ['Seseorang', 'Hamba Allah'];
-const TAGS = ['Ayat Kursi', 'Istighfar', 'Tasbih', 'Tahmid', 'Takbir', 'Shalawat'];
-const TIMES = ['baru saja', 'baru saja', '1 mnt', '2 mnt', '3 mnt', '5 mnt', '7 mnt', '9 mnt'];
+// Avatar gradients cycled across anonymous presence rows.
 const AVATARS = [
   'linear-gradient(135deg,#3a4d44,#26332e)',
   'linear-gradient(135deg,#4a4233,#2f2a20)',
@@ -23,13 +14,6 @@ const AVATARS = [
   'linear-gradient(135deg,#44384a,#2c2430)',
   'linear-gradient(135deg,#4a3a3a,#2f2424)',
 ];
-
-const PEOPLE: Presence[] = Array.from({ length: 8 }, (_, i) => ({
-  name: NAMES[i % NAMES.length],
-  tag: TAGS[i % TAGS.length],
-  time: TIMES[i],
-  avatar: AVATARS[i % AVATARS.length],
-}));
 
 const formatId = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
@@ -43,23 +27,11 @@ const pulse = (delay: number): React.CSSProperties => ({
 });
 
 const CommunityPresence: React.FC = () => {
-  const { settings } = useDzikrStore();
+  const { settings, progress } = useDzikrStore();
   const dark = settings.theme === 'dark';
-  const [live, setLive] = useState(1248);
-
-  // Simulated live presence. Swap this for a real subscription
-  // (e.g. websocket / Supabase realtime / polling) when you have a backend.
-  useEffect(() => {
-    const id = setInterval(() => {
-      setLive((v) => {
-        let n = v + (Math.floor(Math.random() * 7) - 2);
-        if (n < 1180) n = 1180;
-        if (n > 1340) n = 1340;
-        return n;
-      });
-    }, 2600);
-    return () => clearInterval(id);
-  }, []);
+  const myTotal = progress.reduce((s, p) => s + p.completed, 0);
+  // Real shared presence via Supabase Realtime.
+  const { count: live, people } = usePresence('', myTotal);
 
   const text = dark ? 'white' : '#333';
   const sub = dark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.55)';
@@ -87,7 +59,13 @@ const CommunityPresence: React.FC = () => {
           <Icon icon="fa-solid fa-chevron-left" size={18} />
         </Link>
         <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600 }}>Bersama Berdzikr</h1>
-        <span style={{ width: '2rem' }} />
+        <Link
+          href="/leaderboard"
+          aria-label="Peringkat"
+          style={{ color: sub, display: 'flex', alignItems: 'center', padding: '0.5rem' }}
+        >
+          <Icon icon="fa-solid fa-trophy" size={18} />
+        </Link>
       </header>
 
       {/* Hero — live presence count */}
@@ -173,9 +151,14 @@ const CommunityPresence: React.FC = () => {
           gap: 6,
         }}
       >
-        {PEOPLE.map((p, i) => (
+        {people.length === 0 && (
+          <div style={{ textAlign: 'center', fontSize: '0.85rem', color: sub, padding: '1.5rem 0' }}>
+            Menunggu yang lain bergabung…
+          </div>
+        )}
+        {people.map((p, i) => (
           <div
-            key={i}
+            key={p.key}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -191,14 +174,14 @@ const CommunityPresence: React.FC = () => {
                 height: 44,
                 borderRadius: '50%',
                 flex: 'none',
-                background: p.avatar,
+                background: AVATARS[i % AVATARS.length],
                 boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.06)',
               }}
             />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
-                <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>{p.name}</span>
-                <span style={{ fontSize: '0.72rem', color: sub, flex: 'none' }}>{p.time}</span>
+                <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>Hamba Allah</span>
+                <span style={{ fontSize: '0.72rem', color: sub, flex: 'none' }}>sekarang</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
                 <span style={{ fontSize: '0.78rem', color: sub }}>membaca</span>
@@ -212,25 +195,16 @@ const CommunityPresence: React.FC = () => {
                     fontWeight: 500,
                   }}
                 >
-                  {p.tag}
+                  {p.tag || 'Berdzikr'}
                 </span>
               </div>
             </div>
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                flex: 'none',
-                background: accent,
-                boxShadow: `0 0 10px -1px ${accent}`,
-              }}
-            />
+            <div style={{ flex: 'none', textAlign: 'right', minWidth: 44 }}>
+              <div style={{ fontSize: '1rem', fontWeight: 700, color: accent, lineHeight: 1 }}>{p.total}</div>
+              <div style={{ fontSize: '0.65rem', color: sub, marginTop: 2 }}>dibaca</div>
+            </div>
           </div>
         ))}
-        <div style={{ textAlign: 'center', fontSize: '0.78rem', color: sub, padding: '0.9rem 0 0.25rem' }}>
-          dan ribuan lainnya di seluruh dunia
-        </div>
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useDzikrStore } from '@/store/dzikrStore';
+import { dzikrData } from '@/data/dzikrData';
+import { usePresence } from '@/lib/usePresence';
 
 const formatId = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
@@ -11,21 +13,12 @@ const formatId = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.
  * Doubles as ambient presence: "you are not alone".
  */
 const PresencePill: React.FC = () => {
-  const { settings } = useDzikrStore();
+  const { settings, currentIndex, progress } = useDzikrStore();
   const dark = settings.theme === 'dark';
-  const [live, setLive] = useState(1248);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setLive((v) => {
-        let n = v + (Math.floor(Math.random() * 7) - 2);
-        if (n < 1180) n = 1180;
-        if (n > 1340) n = 1340;
-        return n;
-      });
-    }, 2600);
-    return () => clearInterval(id);
-  }, []);
+  const tag = dzikrData[currentIndex]?.category ?? '';
+  const myTotal = progress.reduce((s, p) => s + p.completed, 0);
+  // Real shared presence (replaces the simulated counter).
+  const { count: live } = usePresence(tag, myTotal);
 
   return (
     <Link
@@ -53,7 +46,7 @@ const PresencePill: React.FC = () => {
         }}
       />
       <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--primary-color))' }}>
-        {formatId(live)} sedang berdzikr bersama
+        {live > 0 ? `${formatId(live)} ` : ''}sedang berdzikr bersama
       </span>
       <span style={{ color: 'rgb(var(--primary-color))' }}>→</span>
     </Link>
