@@ -199,6 +199,7 @@ input:focus-visible {
 
 .slider-content {
   flex: 1;
+  min-height: 0;
   overflow: auto;
   padding-bottom: 122px;
   scrollbar-width: none;
@@ -221,10 +222,25 @@ input:focus-visible {
   margin: 0 auto;
   max-width: 620px;
   min-height: 480px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
   padding: 24px;
   position: relative;
+  scrollbar-color: rgba(var(--secondary-color), 0.35) transparent;
+  scrollbar-width: thin;
+  touch-action: pan-y;
   width: calc(100% - 32px);
+  -webkit-overflow-scrolling: touch;
+}
+
+.dzikr-card::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dzikr-card::-webkit-scrollbar-thumb {
+  background: rgba(var(--secondary-color), 0.35);
+  border-radius: 999px;
 }
 
 .dzikr-card::after {
