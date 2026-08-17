@@ -18,7 +18,14 @@ const PresencePill: React.FC = () => {
   const tag = dzikrData[currentIndex]?.category ?? '';
   const myTotal = progress.reduce((s, p) => s + p.completed, 0);
   // Real shared presence (replaces the simulated counter).
-  const { count: live } = usePresence(tag, myTotal);
+  const { count, others, status } = usePresence(tag, myTotal);
+
+  // Without a backend there is no community to link to — don't advertise one.
+  if (status === 'disabled') return null;
+
+  const live = status === 'live';
+  // `count` includes you, so only claim company when somebody else is here.
+  const label = others.length > 0 ? `${formatId(count)} sedang berdzikr bersama` : 'Berdzikr bersama';
 
   return (
     <Link
@@ -43,10 +50,11 @@ const PresencePill: React.FC = () => {
           height: 9,
           borderRadius: '50%',
           background: 'rgb(var(--primary-color))',
+          opacity: live ? 1 : 0.4,
         }}
       />
       <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--primary-color))' }}>
-        {live > 0 ? `${formatId(live)} ` : ''}sedang berdzikr bersama
+        {label}
       </span>
       <span style={{ color: 'rgb(var(--primary-color))' }}>→</span>
     </Link>

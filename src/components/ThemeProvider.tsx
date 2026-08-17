@@ -8,13 +8,20 @@ interface ThemeProviderProps {
 }
 
 const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const { settings } = useDzikrStore();
-  
+  const { settings, ensureToday } = useDzikrStore();
+
+  // Progress is persisted without a date of its own, so drop yesterday's counts
+  // before any screen reads them. Wraps every route, including /community and
+  // /leaderboard, which show the day's total too.
+  useEffect(() => {
+    ensureToday();
+  }, [ensureToday]);
+
   // Apply theme to document
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', settings.theme);
   }, [settings.theme]);
-  
+
   return (
     <div style={{ 
       display: 'flex', 

@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useDzikrStore } from '@/store/dzikrStore';
+import { dzikrData } from '@/data/dzikrData';
 import { usePresence } from '@/lib/usePresence';
 import Icon from './Icon';
 
@@ -27,11 +28,14 @@ const pulse = (delay: number): React.CSSProperties => ({
 });
 
 const CommunityPresence: React.FC = () => {
-  const { settings, progress } = useDzikrStore();
+  const { settings, progress, currentIndex } = useDzikrStore();
   const dark = settings.theme === 'dark';
   const myTotal = progress.reduce((s, p) => s + p.completed, 0);
-  // Real shared presence via Supabase Realtime.
-  const { count: live, people } = usePresence('', myTotal);
+  // Keep broadcasting the dzikr being read — this page shares one presence
+  // channel with the main screen, so sending a blank tag here would blank out
+  // what everybody else sees next to your name.
+  const tag = dzikrData[currentIndex]?.category ?? '';
+  const { count: live, others, status } = usePresence(tag, myTotal);
 
   const text = dark ? 'white' : '#333';
   const sub = dark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.55)';
@@ -151,12 +155,18 @@ const CommunityPresence: React.FC = () => {
           gap: 6,
         }}
       >
-        {people.length === 0 && (
+        {others.length === 0 && (
           <div style={{ textAlign: 'center', fontSize: '0.85rem', color: sub, padding: '1.5rem 0' }}>
-            Menunggu yang lain bergabung…
+            {status === 'disabled'
+              ? 'Fitur bersama belum aktif. Tambahkan konfigurasi Supabase untuk mengaktifkannya.'
+              : status === 'error'
+              ? 'Koneksi terputus. Memeriksa kembali…'
+              : status === 'connecting'
+              ? 'Menyambungkan…'
+              : 'Menunggu yang lain bergabung…'}
           </div>
         )}
-        {people.map((p, i) => (
+        {others.map((p, i) => (
           <div
             key={p.key}
             style={{
