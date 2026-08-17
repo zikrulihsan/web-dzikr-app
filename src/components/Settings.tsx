@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
+import Icon from './Icon';
 
 interface SettingsProps {
   isOpen: boolean;
@@ -10,217 +11,101 @@ interface SettingsProps {
 
 const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
   const { settings, updateSettings, toggleTheme } = useDzikrStore();
-  
   if (!isOpen) return null;
-  
+
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000
-    }}>
-      <div style={{
-        backgroundColor: settings.theme === 'dark' ? '#1e1e1e' : '#ffffff',
-        borderRadius: '0.5rem',
-        padding: '1.5rem',
-        width: '90%',
-        maxWidth: '400px',
-        maxHeight: '80vh',
-        overflow: 'auto',
-        color: settings.theme === 'dark' ? '#ffffff' : '#333333',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '1.5rem'
-        }}>
-          <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600 }}>Pengaturan</h2>
-          <button 
-            onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '1.5rem',
-              cursor: 'pointer',
-              color: settings.theme === 'dark' ? '#ffffff' : '#333333',
-              padding: '0.25rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            &times;
+    <div className="settings-overlay" role="presentation" onMouseDown={onClose}>
+      <section
+        className="settings-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <div className="settings-head">
+          <div>
+            <span className="category-pill">Preferensi</span>
+            <h2 id="settings-title" style={{ marginTop: 12 }}>Pengaturan</h2>
+          </div>
+          <button className="icon-button" type="button" onClick={onClose} aria-label="Tutup pengaturan">
+            <Icon icon="fa-solid fa-xmark" size={16} />
           </button>
         </div>
-        
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h3 style={{ fontSize: '1rem', marginBottom: '0.75rem' }}>Tampilan</h3>
-          
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '0.75rem'
-          }}>
-            <span>Mode Tema</span>
-            <button
-              onClick={toggleTheme}
-              style={{
-                backgroundColor: 'rgb(var(--primary-color))',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.25rem',
-                padding: '0.5rem 0.75rem',
-                fontSize: '0.875rem',
-                cursor: 'pointer'
-              }}
-            >
-              {settings.theme === 'dark' ? 'Terang' : 'Gelap'}
-            </button>
-          </div>
+
+        <div className="settings-section">
+          <h3>Tampilan</h3>
+          <button className="setting-row" type="button" onClick={toggleTheme} style={{ width: '100%', background: 'none', borderLeft: 0, borderRight: 0, borderTop: 0, color: 'inherit' }}>
+            <span className="setting-choice">
+              <span>Mode tema</span>
+              <small>Sesuaikan dengan kenyamanan mata</small>
+            </span>
+            <span className="category-pill">{settings.theme === 'dark' ? 'Gelap' : 'Terang'}</span>
+          </button>
         </div>
-        
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h3 style={{ fontSize: '1rem', marginBottom: '0.75rem' }}>Metode Penghitung</h3>
-          
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.75rem',
-            marginBottom: '1rem'
-          }}>
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.5rem'
-            }}>
-              <label style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer'
-              }}>
-                <input
-                  type="radio"
-                  name="countingMethod"
-                  checked={settings.countingMethod === 'penanda'}
-                  onChange={() => updateSettings({ countingMethod: 'penanda' })}
-                  style={{ width: '1rem', height: '1rem' }}
-                />
-                <span>Penanda (tandai sebagai selesai)</span>
-              </label>
-              
-              <label style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer'
-              }}>
-                <input
-                  type="radio"
-                  name="countingMethod"
-                  checked={settings.countingMethod === 'counter'}
-                  onChange={() => updateSettings({ countingMethod: 'counter' })}
-                  style={{ width: '1rem', height: '1rem' }}
-                />
-                <span>Counter (hitung satu per satu)</span>
-              </label>
+
+        <div className="settings-section">
+          <h3>Cara menghitung</h3>
+          <label className="setting-row">
+            <span className="setting-choice">
+              <span>Penanda</span>
+              <small>Satu tap untuk menandai selesai</small>
+            </span>
+            <input
+              type="radio"
+              name="countingMethod"
+              checked={settings.countingMethod === 'penanda'}
+              onChange={() => updateSettings({ countingMethod: 'penanda' })}
+            />
+          </label>
+          <label className="setting-row">
+            <span className="setting-choice">
+              <span>Counter</span>
+              <small>Hitung bacaan satu per satu</small>
+            </span>
+            <input
+              type="radio"
+              name="countingMethod"
+              checked={settings.countingMethod === 'counter'}
+              onChange={() => updateSettings({ countingMethod: 'counter' })}
+            />
+          </label>
+          {settings.countingMethod === 'counter' && (
+            <div className="settings-tip">
+              Utamakan menghitung dengan tangan sebagaimana yang dicontohkan Rasulullah.
             </div>
-            
-            {settings.countingMethod === 'counter' && (
-              <div style={{
-                backgroundColor: 'rgba(255, 165, 0, 0.1)',
-                padding: '0.75rem',
-                borderRadius: '0.25rem',
-                borderLeft: '3px solid orange',
-                fontSize: '0.875rem',
-                color: settings.theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.8)'
-              }}>
-                Utamakan menghitung dengan tangan sebagaimana yang dicontohkan oleh Rasulullah
-              </div>
-            )}
-          </div>
-          
-          <h3 style={{ fontSize: '1rem', marginBottom: '0.75rem' }}>Konten</h3>
-          
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.75rem'
-          }}>
-            <label style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <span>Tampilkan Terjemahan</span>
-              <input
-                type="checkbox"
-                checked={settings.showTranslation}
-                onChange={(e) => updateSettings({ showTranslation: e.target.checked })}
-                style={{ width: '1.25rem', height: '1.25rem' }}
-              />
-            </label>
-            
-            <label style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <span>Tampilkan Latin</span>
-              <input
-                type="checkbox"
-                checked={settings.showLatin}
-                onChange={(e) => updateSettings({ showLatin: e.target.checked })}
-                style={{ width: '1.25rem', height: '1.25rem' }}
-              />
-            </label>
-            
-            <label style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <span>Tampilkan Keterangan</span>
-              <input
-                type="checkbox"
-                checked={settings.showDescription}
-                onChange={(e) => updateSettings({ showDescription: e.target.checked })}
-                style={{ width: '1.25rem', height: '1.25rem' }}
-              />
-            </label>
-          </div>
+          )}
         </div>
-        
-        <button
-          onClick={onClose}
-          style={{
-            width: '100%',
-            backgroundColor: 'rgb(var(--primary-color))',
-            color: 'white',
-            border: 'none',
-            borderRadius: '0.25rem',
-            padding: '0.75rem',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            marginTop: '1rem'
-          }}
-        >
-          Tutup
-        </button>
-      </div>
+
+        <div className="settings-section">
+          <h3>Konten kartu</h3>
+          <label className="setting-row">
+            <span>Tampilkan terjemahan</span>
+            <input
+              type="checkbox"
+              checked={settings.showTranslation}
+              onChange={(event) => updateSettings({ showTranslation: event.target.checked })}
+            />
+          </label>
+          <label className="setting-row">
+            <span>Tampilkan latin</span>
+            <input
+              type="checkbox"
+              checked={settings.showLatin}
+              onChange={(event) => updateSettings({ showLatin: event.target.checked })}
+            />
+          </label>
+          <label className="setting-row">
+            <span>Tampilkan keterangan</span>
+            <input
+              type="checkbox"
+              checked={settings.showDescription}
+              onChange={(event) => updateSettings({ showDescription: event.target.checked })}
+            />
+          </label>
+        </div>
+
+        <button className="settings-close" type="button" onClick={onClose}>Simpan & tutup</button>
+      </section>
     </div>
   );
 };

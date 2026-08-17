@@ -8,11 +8,11 @@ import Icon from './Icon';
 
 // Avatar gradients cycled across anonymous presence rows.
 const AVATARS = [
-  'linear-gradient(135deg,#3a4d44,#26332e)',
-  'linear-gradient(135deg,#4a4233,#2f2a20)',
-  'linear-gradient(135deg,#33454d,#222e33)',
-  'linear-gradient(135deg,#44384a,#2c2430)',
-  'linear-gradient(135deg,#4a3a3a,#2f2424)',
+  'linear-gradient(135deg,#ee6a3b,#f0a88b)',
+  'linear-gradient(135deg,#173d32,#9fc9ae)',
+  'linear-gradient(135deg,#f2bd3a,#f6cf59)',
+  'linear-gradient(135deg,#7e6c93,#d9c8e9)',
+  'linear-gradient(135deg,#6a9fb8,#bbd8e8)',
 ];
 
 const formatId = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -22,23 +22,22 @@ const pulse = (delay: number): React.CSSProperties => ({
   width: 128,
   height: 128,
   borderRadius: '50%',
-  border: '1.5px solid rgb(var(--primary-color))',
+  border: '1.5px solid rgb(var(--secondary-color))',
   animation: `presence-pulse 3s ease-out ${delay}s infinite`,
 });
 
 const CommunityPresence: React.FC = () => {
-  const { settings, progress } = useDzikrStore();
-  const dark = settings.theme === 'dark';
+  const { progress } = useDzikrStore();
   const myTotal = progress.reduce((s, p) => s + p.completed, 0);
   // Real shared presence via Supabase Realtime.
   const { count: live, people } = usePresence('', myTotal);
 
-  const text = dark ? 'white' : '#333';
-  const sub = dark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.55)';
-  const rowBg = dark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)';
-  const hairline = dark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-  const accent = 'rgb(var(--primary-color))';
-  const accentSoft = 'rgba(var(--primary-color), 0.14)';
+  const text = 'var(--text-primary)';
+  const sub = 'var(--text-secondary)';
+  const rowBg = 'var(--surface-color)';
+  const hairline = 'var(--border-color)';
+  const accent = 'rgb(var(--secondary-color))';
+  const accentSoft = 'rgba(var(--secondary-color), 0.13)';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', color: text }}>
@@ -48,7 +47,8 @@ const CommunityPresence: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '1rem',
+          borderBottom: '1px solid var(--border-color)',
+          padding: '1.1rem 1.25rem',
         }}
       >
         <Link
@@ -58,7 +58,7 @@ const CommunityPresence: React.FC = () => {
         >
           <Icon icon="fa-solid fa-chevron-left" size={18} />
         </Link>
-        <h1 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 600 }}>Bersama Berdzikr</h1>
+        <h1 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, letterSpacing: '-0.03em' }}>Bersama Berdzikr</h1>
         <Link
           href="/leaderboard"
           aria-label="Peringkat"
@@ -95,7 +95,7 @@ const CommunityPresence: React.FC = () => {
               height: 118,
               borderRadius: '50%',
               background: `radial-gradient(circle at 50% 38%, ${accentSoft}, rgba(255,255,255,0.02))`,
-              border: dark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.06)',
+              border: '1px solid var(--border-color)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -166,6 +166,7 @@ const CommunityPresence: React.FC = () => {
               padding: '0.7rem 0.75rem',
               borderRadius: 18,
               background: rowBg,
+              border: '1px solid var(--border-color)',
             }}
           >
             <div
