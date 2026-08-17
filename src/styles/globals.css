@@ -385,6 +385,30 @@ input:focus-visible {
   line-height: 2;
 }
 
+.dzikr-card.font-arabic-small .dzikr-arabic {
+  font-size: clamp(25px, 6.2vw, 34px);
+}
+
+.dzikr-card.font-arabic-small .dzikr-arabic.is-medium {
+  font-size: clamp(22px, 5.4vw, 29px);
+}
+
+.dzikr-card.font-arabic-small .dzikr-arabic.is-long {
+  font-size: clamp(19px, 4.8vw, 25px);
+}
+
+.dzikr-card.font-arabic-large .dzikr-arabic {
+  font-size: clamp(32px, 8.2vw, 44px);
+}
+
+.dzikr-card.font-arabic-large .dzikr-arabic.is-medium {
+  font-size: clamp(29px, 7.1vw, 38px);
+}
+
+.dzikr-card.font-arabic-large .dzikr-arabic.is-long {
+  font-size: clamp(25px, 6.3vw, 33px);
+}
+
 .dzikr-latin {
   color: var(--text-secondary);
   font-family: Georgia, serif;
@@ -392,6 +416,14 @@ input:focus-visible {
   font-style: italic;
   line-height: 1.7;
   margin-bottom: 16px;
+}
+
+.dzikr-card.font-latin-small .dzikr-latin {
+  font-size: 12.5px;
+}
+
+.dzikr-card.font-latin-large .dzikr-latin {
+  font-size: 16px;
 }
 
 .dzikr-translation {
@@ -403,6 +435,14 @@ input:focus-visible {
   padding-left: 14px;
   text-align: left;
   width: 100%;
+}
+
+.dzikr-card.font-translation-small .dzikr-translation {
+  font-size: 12px;
+}
+
+.dzikr-card.font-translation-large .dzikr-translation {
+  font-size: 15.5px;
 }
 
 .dzikr-note {
@@ -658,6 +698,103 @@ input:focus-visible {
 .setting-choice small {
   color: var(--text-tertiary);
   font-size: 10px;
+}
+
+.settings-submenu-trigger {
+  background: none;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  color: inherit;
+  text-align: left;
+  width: 100%;
+}
+
+.submenu-chevron {
+  color: rgb(var(--secondary-color));
+  font-size: 18px;
+  line-height: 1;
+}
+
+.settings-submenu {
+  background: var(--surface-muted);
+  border-radius: 14px;
+  margin-top: 10px;
+  padding: 6px 14px;
+}
+
+.font-size-row {
+  border-bottom: 1px solid var(--border-color);
+  padding: 14px 0;
+}
+
+.font-size-row:last-child {
+  border-bottom: 0;
+}
+
+.font-size-label {
+  align-items: center;
+  display: flex;
+  font-size: 12px;
+  font-weight: 650;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+
+.font-preview {
+  align-items: center;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  display: inline-flex;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.font-preview.is-arabicFontSize {
+  font-family: var(--font-amiri), 'Amiri', serif;
+  font-size: 18px;
+}
+
+.font-preview.is-latinFontSize {
+  font-family: Georgia, serif;
+  font-size: 11px;
+  font-style: italic;
+}
+
+.font-preview.is-translationFontSize {
+  font-size: 12px;
+}
+
+.font-size-options {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  overflow: hidden;
+}
+
+.font-size-options button {
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 9px 7px;
+}
+
+.font-size-options button:last-child {
+  border-right: 0;
+}
+
+.font-size-options button.is-active {
+  background: rgb(var(--primary-color));
+  color: var(--background-color);
 }
 
 .settings-tip {

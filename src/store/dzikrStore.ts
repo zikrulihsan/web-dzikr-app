@@ -9,6 +9,7 @@ interface DzikrProgress {
 
 type Theme = 'dark' | 'light';
 type CountingMethod = 'penanda' | 'counter';
+export type FontSizePreference = 'small' | 'medium' | 'large';
 
 interface AppSettings {
   theme: Theme;
@@ -16,6 +17,9 @@ interface AppSettings {
   showLatin: boolean;
   showDescription: boolean;
   countingMethod: CountingMethod;
+  arabicFontSize: FontSizePreference;
+  latinFontSize: FontSizePreference;
+  translationFontSize: FontSizePreference;
   hasSeenTooltip: boolean;
 }
 
@@ -45,6 +49,9 @@ export const useDzikrStore = create<DzikrState>()(
         showLatin: true,
         showDescription: true,
         countingMethod: 'counter',
+        arabicFontSize: 'medium',
+        latinFontSize: 'medium',
+        translationFontSize: 'medium',
         hasSeenTooltip: false
       },
       

@@ -35,6 +35,9 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, onTap }
   const filledMarkers = dzikr.count <= 10
     ? progress
     : Math.ceil((progress / dzikr.count) * markerCount);
+  const arabicFontSize = settings.arabicFontSize ?? 'medium';
+  const latinFontSize = settings.latinFontSize ?? 'medium';
+  const translationFontSize = settings.translationFontSize ?? 'medium';
 
   const handleCardTap = (event: React.MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
@@ -44,7 +47,7 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, onTap }
 
   return (
     <article
-      className={`dzikr-card ${onTap ? 'is-tappable' : ''} ${isPulsing ? 'is-breathing' : ''}`}
+      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isPulsing ? 'is-breathing' : ''}`}
       onClick={handleCardTap}
     >
       <div className="card-head">

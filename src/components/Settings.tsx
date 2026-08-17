@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
+import type { FontSizePreference } from '@/store/dzikrStore';
 import Icon from './Icon';
 
 interface SettingsProps {
@@ -9,9 +10,47 @@ interface SettingsProps {
   onClose: () => void;
 }
 
+const fontSizeOptions: Array<{ label: string; value: FontSizePreference }> = [
+  { label: 'Kecil', value: 'small' },
+  { label: 'Sedang', value: 'medium' },
+  { label: 'Besar', value: 'large' },
+];
+
 const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
+  const [isTextSizeOpen, setIsTextSizeOpen] = useState(false);
   const { settings, updateSettings, toggleTheme } = useDzikrStore();
   if (!isOpen) return null;
+
+  const renderFontSizeControl = (
+    label: string,
+    preview: string,
+    settingKey: 'arabicFontSize' | 'latinFontSize' | 'translationFontSize',
+  ) => {
+    const currentValue = settings[settingKey] ?? 'medium';
+
+    return (
+      <div className="font-size-row">
+        <div className="font-size-label">
+          <span className={`font-preview is-${settingKey}`}>{preview}</span>
+          <span>{label}</span>
+        </div>
+        <div className="font-size-options" role="radiogroup" aria-label={`Ukuran font ${label}`}>
+          {fontSizeOptions.map((option) => (
+            <button
+              className={currentValue === option.value ? 'is-active' : ''}
+              key={option.value}
+              type="button"
+              role="radio"
+              aria-checked={currentValue === option.value}
+              onClick={() => updateSettings({ [settingKey]: option.value })}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="settings-overlay" role="presentation" onMouseDown={onClose}>
@@ -41,6 +80,27 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
             </span>
             <span className="category-pill">{settings.theme === 'dark' ? 'Gelap' : 'Terang'}</span>
           </button>
+
+          <button
+            className="setting-row settings-submenu-trigger"
+            type="button"
+            onClick={() => setIsTextSizeOpen((value) => !value)}
+            aria-expanded={isTextSizeOpen}
+          >
+            <span className="setting-choice">
+              <span>Ukuran teks</span>
+              <small>Atur Arab, Latin, dan Arti secara terpisah</small>
+            </span>
+            <span className="submenu-chevron" aria-hidden="true">{isTextSizeOpen ? '−' : '+'}</span>
+          </button>
+
+          {isTextSizeOpen && (
+            <div className="settings-submenu">
+              {renderFontSizeControl('Arab', 'ع', 'arabicFontSize')}
+              {renderFontSizeControl('Latin', 'Aa', 'latinFontSize')}
+              {renderFontSizeControl('Arti', 'A', 'translationFontSize')}
+            </div>
+          )}
         </div>
 
         <div className="settings-section">
