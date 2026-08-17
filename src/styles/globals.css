@@ -14,7 +14,7 @@
   --text-tertiary: #88938e;
   --border-color: rgba(23, 61, 50, 0.16);
   --primary-color: 23, 61, 50;
-  --secondary-color: 238, 106, 59;
+  --secondary-color: 101, 122, 84;
   --gold-color: 242, 189, 58;
   --success-color: #2f7d5f;
   --shadow-color: rgba(23, 61, 50, 0.12);
@@ -29,8 +29,8 @@
   --text-secondary: #b8c8c2;
   --text-tertiary: #849b93;
   --border-color: rgba(243, 240, 232, 0.15);
-  --primary-color: 238, 106, 59;
-  --secondary-color: 242, 189, 58;
+  --primary-color: 184, 199, 151;
+  --secondary-color: 184, 199, 151;
   --gold-color: 242, 189, 58;
   --success-color: #83c5a5;
   --shadow-color: rgba(0, 0, 0, 0.3);
@@ -82,7 +82,7 @@ input:focus-visible {
 .arabic {
   font-family: var(--font-amiri), 'Amiri', 'Scheherazade New', serif;
   font-weight: 400;
-  line-height: 2.05;
+  line-height: 1.9;
 }
 
 .app-header {
@@ -141,7 +141,7 @@ input:focus-visible {
   align-items: center;
   background: transparent;
   border: 1px solid var(--border-color);
-  border-radius: 50%;
+  border-radius: 14px;
   color: var(--text-secondary);
   cursor: pointer;
   display: inline-flex;
@@ -212,8 +212,8 @@ input:focus-visible {
 .dzikr-card {
   background: var(--surface-color);
   border: 1px solid var(--border-color);
-  border-radius: 28px;
-  box-shadow: 0 18px 50px var(--shadow-color);
+  border-radius: 22px;
+  box-shadow: 0 10px 28px var(--shadow-color);
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
@@ -227,7 +227,7 @@ input:focus-visible {
   overscroll-behavior-y: contain;
   padding: 24px;
   position: relative;
-  scrollbar-color: rgba(var(--secondary-color), 0.35) transparent;
+  scrollbar-color: rgba(var(--secondary-color), 0.26) transparent;
   scrollbar-width: thin;
   touch-action: pan-y;
   width: calc(100% - 32px);
@@ -235,24 +235,12 @@ input:focus-visible {
 }
 
 .dzikr-card::-webkit-scrollbar {
-  width: 4px;
+  width: 3px;
 }
 
 .dzikr-card::-webkit-scrollbar-thumb {
-  background: rgba(var(--secondary-color), 0.35);
+  background: rgba(var(--secondary-color), 0.26);
   border-radius: 999px;
-}
-
-.dzikr-card::after {
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
-  content: '';
-  height: 230px;
-  pointer-events: none;
-  position: absolute;
-  right: -145px;
-  top: -145px;
-  width: 230px;
 }
 
 .card-meta,
@@ -264,16 +252,16 @@ input:focus-visible {
 
 .category-pill {
   align-items: center;
-  background: rgba(var(--secondary-color), 0.13);
-  border-radius: 999px;
+  background: transparent;
+  border-radius: 0;
   color: rgb(var(--secondary-color));
   display: inline-flex;
   font-family: var(--font-geist-mono), monospace;
   font-size: 9px;
   font-weight: 700;
   gap: 7px;
-  letter-spacing: 0.08em;
-  padding: 7px 10px;
+  letter-spacing: 0.11em;
+  padding: 0;
   text-transform: uppercase;
 }
 
@@ -281,8 +269,8 @@ input:focus-visible {
   background: rgb(var(--secondary-color));
   border-radius: 50%;
   content: '';
-  height: 6px;
-  width: 6px;
+  height: 5px;
+  width: 5px;
 }
 
 .counter-badge {
@@ -327,30 +315,46 @@ input:focus-visible {
 
 .dzikr-arabic {
   color: var(--text-primary);
-  font-size: clamp(30px, 8vw, 44px);
-  margin-bottom: 20px;
+  font-size: clamp(28px, 7vw, 38px);
+  line-height: 1.9;
+  margin-bottom: 24px;
+  text-wrap: pretty;
+}
+
+.dzikr-arabic.is-medium {
+  font-size: clamp(25px, 6.2vw, 33px);
+  line-height: 1.95;
+}
+
+.dzikr-arabic.is-long {
+  font-size: clamp(22px, 5.5vw, 29px);
+  line-height: 2;
 }
 
 .dzikr-latin {
   color: var(--text-secondary);
   font-family: Georgia, serif;
-  font-size: 15px;
+  font-size: 14px;
   font-style: italic;
-  line-height: 1.55;
+  line-height: 1.7;
   margin-bottom: 16px;
 }
 
 .dzikr-translation {
+  border-left: 2px solid rgba(var(--secondary-color), 0.28);
   color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 13.5px;
+  line-height: 1.75;
   max-width: 520px;
+  padding-left: 14px;
+  text-align: left;
+  width: 100%;
 }
 
 .description-toggle {
   background: var(--surface-muted);
   border: 0;
-  border-radius: 16px;
+  border-radius: 12px;
   color: var(--text-primary);
   cursor: pointer;
   display: block;
@@ -615,7 +619,9 @@ input:focus-visible {
 @media (max-height: 720px) {
   .dzikr-card { min-height: 390px; }
   .dzikr-copy { padding-bottom: 14px; padding-top: 18px; }
-  .dzikr-arabic { font-size: 30px; margin-bottom: 12px; }
+  .dzikr-arabic { font-size: 28px; margin-bottom: 12px; }
+  .dzikr-arabic.is-medium { font-size: 25px; }
+  .dzikr-arabic.is-long { font-size: 22px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

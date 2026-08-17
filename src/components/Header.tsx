@@ -1,30 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import React, { useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
 import Settings from './Settings';
 import Icon from './Icon';
 
 const Header: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
   const { resetAllProgress } = useDzikrStore();
-
-  useEffect(() => {
-    const hasOpenedBefore = localStorage.getItem('hasOpenedApp');
-    if (!hasOpenedBefore) {
-      localStorage.setItem('hasOpenedApp', 'true');
-      setShowTooltip(true);
-      const timer = setTimeout(() => setShowTooltip(false), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   const handleSettingsClick = () => {
     setIsSettingsOpen(true);
-    setShowTooltip(false);
   };
 
   const handleResetAll = () => {
@@ -52,7 +38,6 @@ const Header: React.FC = () => {
           className="icon-button"
           id="settings-button"
           onClick={handleSettingsClick}
-          data-tooltip-id="settings-tooltip"
           aria-label="Buka pengaturan"
         >
           <Icon icon="fa-solid fa-sliders" size={15} />
@@ -60,25 +45,6 @@ const Header: React.FC = () => {
       </header>
 
       <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-
-      {showTooltip && (
-        <Tooltip
-          id="settings-tooltip"
-          place="bottom"
-          content="Atur tampilan dan cara menghitung dzikr di sini"
-          isOpen={showTooltip}
-          style={{
-            backgroundColor: 'var(--text-primary)',
-            color: 'var(--background-color)',
-            borderRadius: '12px',
-            fontSize: '12px',
-            maxWidth: '230px',
-            padding: '9px 12px',
-            textAlign: 'center',
-            zIndex: 9999,
-          }}
-        />
-      )}
     </>
   );
 };
