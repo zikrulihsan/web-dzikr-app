@@ -94,6 +94,14 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
             <span className="submenu-chevron" aria-hidden="true">{isTextSizeOpen ? '−' : '+'}</span>
           </button>
 
+          {isTextSizeOpen && (
+            <div className="settings-submenu">
+              {renderFontSizeControl('Arab', 'ع', 'arabicFontSize')}
+              {renderFontSizeControl('Latin', 'Aa', 'latinFontSize')}
+              {renderFontSizeControl('Arti', 'A', 'translationFontSize')}
+            </div>
+          )}
+
           <label className="setting-row">
             <span className="setting-choice">
               <span>Petunjuk tombol aksi</span>
@@ -105,14 +113,6 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               onChange={(event) => updateSettings({ showActionHint: event.target.checked })}
             />
           </label>
-
-          {isTextSizeOpen && (
-            <div className="settings-submenu">
-              {renderFontSizeControl('Arab', 'ع', 'arabicFontSize')}
-              {renderFontSizeControl('Latin', 'Aa', 'latinFontSize')}
-              {renderFontSizeControl('Arti', 'A', 'translationFontSize')}
-            </div>
-          )}
         </div>
 
         <div className="settings-section">
