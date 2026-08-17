@@ -2,11 +2,21 @@
 
 import React from 'react';
 import CommunityPresence from '@/components/CommunityPresence';
+import ThemeProvider from '@/components/ThemeProvider';
 
 export default function CommunityPage() {
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <CommunityPresence />
-    </div>
+    <ThemeProvider>
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        <CommunityPresence />
+      </div>
+    </ThemeProvider>
   );
 }
