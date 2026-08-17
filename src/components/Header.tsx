@@ -30,7 +30,7 @@ const Header: React.FC = () => {
           <span className="app-brand-mark">d.</span>
           <span className="app-brand-copy">
             <strong>Tap Tap Dzikr</strong>
-            <span>jeda kecil untuk hati</span>
+            <span>Alihkan kebiasaan tap tap medsos ke Rutin Berdzikir</span>
           </span>
         </div>
 

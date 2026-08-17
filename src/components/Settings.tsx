@@ -94,6 +94,18 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
             <span className="submenu-chevron" aria-hidden="true">{isTextSizeOpen ? '−' : '+'}</span>
           </button>
 
+          <label className="setting-row">
+            <span className="setting-choice">
+              <span>Petunjuk tombol aksi</span>
+              <small>Tampilkan kembali penjelasan tombol + atau ✓</small>
+            </span>
+            <input
+              type="checkbox"
+              checked={settings.showActionHint ?? true}
+              onChange={(event) => updateSettings({ showActionHint: event.target.checked })}
+            />
+          </label>
+
           {isTextSizeOpen && (
             <div className="settings-submenu">
               {renderFontSizeControl('Arab', 'ع', 'arabicFontSize')}

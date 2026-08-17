@@ -20,7 +20,7 @@ interface AppSettings {
   arabicFontSize: FontSizePreference;
   latinFontSize: FontSizePreference;
   translationFontSize: FontSizePreference;
-  hasSeenTooltip: boolean;
+  showActionHint: boolean;
 }
 
 interface DzikrState {
@@ -52,7 +52,7 @@ export const useDzikrStore = create<DzikrState>()(
         arabicFontSize: 'medium',
         latinFontSize: 'medium',
         translationFontSize: 'medium',
-        hasSeenTooltip: false
+        showActionHint: true
       },
       
       setCurrentIndex: (index: number) => set({ currentIndex: index }),
