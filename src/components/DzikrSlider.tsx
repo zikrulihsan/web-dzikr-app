@@ -21,6 +21,7 @@ const DzikrSlider: React.FC = () => {
     decrementCount,
     resetCount,
     settings,
+    updateSettings,
   } = useDzikrStore();
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
@@ -163,13 +164,24 @@ const DzikrSlider: React.FC = () => {
 
       {isClient && (
         <div className="action-float">
-          <span className="action-label">
-            {isCompleted
-              ? 'Lanjut dzikr berikutnya'
-              : settings.countingMethod === 'counter'
-                ? 'Tap untuk 1 bacaan'
-                : 'Tap untuk tandai selesai'}
-          </span>
+          {(settings.showActionHint ?? true) && (
+            <div className="action-label" role="status">
+              <span>
+                {isCompleted
+                  ? 'Lanjut dzikr berikutnya'
+                  : settings.countingMethod === 'counter'
+                    ? 'Tap + untuk 1 bacaan'
+                    : 'Tap ✓ untuk tandai selesai'}
+              </span>
+              <button
+                type="button"
+                onClick={() => updateSettings({ showActionHint: false })}
+                aria-label="Sembunyikan petunjuk tombol"
+              >
+                ×
+              </button>
+            </div>
+          )}
           <div className={`action-corrections ${currentProgress === 0 ? 'is-hidden' : ''}`}>
             <button
               className="action-small"
@@ -198,7 +210,13 @@ const DzikrSlider: React.FC = () => {
             onClick={handleIncrement}
             aria-label={isCompleted ? 'Lanjut ke dzikr berikutnya' : settings.countingMethod === 'penanda' ? 'Tandai selesai' : 'Tambah hitungan'}
           >
-            <Icon icon={isCompleted ? 'fa-solid fa-arrow-right' : 'fa-solid fa-check'} size={20} />
+            {isCompleted ? (
+              <Icon icon="fa-solid fa-arrow-right" size={20} />
+            ) : settings.countingMethod === 'counter' ? (
+              <span className="action-plus" aria-hidden="true">+</span>
+            ) : (
+              <Icon icon="fa-solid fa-check" size={20} />
+            )}
           </button>
         </div>
       )}

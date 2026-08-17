@@ -9,6 +9,7 @@ interface DzikrProgress {
 
 type Theme = 'dark' | 'light';
 type CountingMethod = 'penanda' | 'counter';
+export type FontSizePreference = 'small' | 'medium' | 'large';
 
 interface AppSettings {
   theme: Theme;
@@ -16,7 +17,10 @@ interface AppSettings {
   showLatin: boolean;
   showDescription: boolean;
   countingMethod: CountingMethod;
-  hasSeenTooltip: boolean;
+  arabicFontSize: FontSizePreference;
+  latinFontSize: FontSizePreference;
+  translationFontSize: FontSizePreference;
+  showActionHint: boolean;
 }
 
 interface DzikrState {
@@ -45,7 +49,10 @@ export const useDzikrStore = create<DzikrState>()(
         showLatin: true,
         showDescription: true,
         countingMethod: 'counter',
-        hasSeenTooltip: false
+        arabicFontSize: 'medium',
+        latinFontSize: 'medium',
+        translationFontSize: 'medium',
+        showActionHint: true
       },
       
       setCurrentIndex: (index: number) => set({ currentIndex: index }),
