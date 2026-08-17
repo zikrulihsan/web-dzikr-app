@@ -44,7 +44,7 @@ export const useDzikrStore = create<DzikrState>()(
         showTranslation: true,
         showLatin: true,
         showDescription: true,
-        countingMethod: 'penanda',
+        countingMethod: 'counter',
         hasSeenTooltip: false
       },
       

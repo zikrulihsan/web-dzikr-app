@@ -6,9 +6,11 @@ import type { DzikrItem } from '@/data/dzikrData';
 
 interface DzikrCardProps {
   dzikr: DzikrItem;
+  isPulsing?: boolean;
+  onTap?: () => void;
 }
 
-const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr }) => {
+const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, onTap }) => {
   const [expanded, setExpanded] = useState(false);
   const { getProgress, getCompletionPercentage, settings } = useDzikrStore();
 
@@ -21,25 +23,46 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr }) => {
       : dzikr.arabic.length > 110
         ? 'is-medium'
         : '';
+  const categoryPrefix = dzikr.category.startsWith('Membaca Surah ')
+    ? 'Membaca surah'
+    : dzikr.category.startsWith('Membaca ')
+      ? 'Membaca'
+      : 'Dzikir harian';
+  const categoryTitle = dzikr.category
+    .replace(/^Membaca Surah /, '')
+    .replace(/^Membaca /, '');
+  const markerCount = Math.min(dzikr.count, 10);
+  const filledMarkers = dzikr.count <= 10
+    ? progress
+    : Math.ceil((progress / dzikr.count) * markerCount);
+
+  const handleCardTap = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    if (!onTap || target.closest('button, a, input, label') || window.getSelection()?.toString()) return;
+    onTap();
+  };
 
   return (
-    <article className="dzikr-card">
-      <div>
-        <div className="card-meta">
-          <span className="category-pill">{dzikr.category}</span>
-          <span className="counter-badge">{isCompleted ? 'selesai ✦' : `${Math.round(percentage)}%`}</span>
+    <article
+      className={`dzikr-card ${onTap ? 'is-tappable' : ''} ${isPulsing ? 'is-breathing' : ''}`}
+      onClick={handleCardTap}
+    >
+      <div className="card-head">
+        <span className="card-eyebrow">{categoryPrefix}</span>
+        <div className="card-title-row">
+          <h1>{categoryTitle}</h1>
+          <span className="counter-badge" aria-label={`${progress} dari ${dzikr.count} bacaan`}>
+            {progress} <span>/</span> {dzikr.count}
+          </span>
         </div>
 
-        <div className="card-progress" aria-label={`Progres ${Math.round(percentage)} persen`}>
-          <div
-            className={`card-progress-fill ${isCompleted ? 'is-complete' : ''}`}
-            style={{ width: `${percentage}%` }}
-          />
-        </div>
-
-        <div className="card-counter">
-          <span>Dibaca {progress}×</span>
-          <span>Target {dzikr.count}×</span>
+        <div className="count-markers" aria-label={`Progres ${Math.round(percentage)} persen`}>
+          {Array.from({ length: markerCount }, (_, index) => (
+            <span
+              className={`count-marker ${index < filledMarkers ? 'is-filled' : ''}`}
+              key={index}
+            />
+          ))}
         </div>
       </div>
 
@@ -57,6 +80,8 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr }) => {
         {settings.showTranslation && (
           <p className="dzikr-translation">{dzikr.translation}</p>
         )}
+
+        {dzikr.note && <p className="dzikr-note">{dzikr.note}</p>}
       </div>
 
       {settings.showDescription && (dzikr.description || dzikr.source) && (
