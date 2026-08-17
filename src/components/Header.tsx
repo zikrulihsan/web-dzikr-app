@@ -1,130 +1,81 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useDzikrStore } from '@/store/dzikrStore';
-import Settings from './Settings';
+import React, { useEffect, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
+import { useDzikrStore } from '@/store/dzikrStore';
+import Settings from './Settings';
 import Icon from './Icon';
 
 const Header: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-  const { settings, resetAllProgress, updateSettings } = useDzikrStore();
-  
-  // Show tooltip only on first app open and never again
+  const { resetAllProgress } = useDzikrStore();
+
   useEffect(() => {
-    // Check if this is the very first app open
     const hasOpenedBefore = localStorage.getItem('hasOpenedApp');
-    
     if (!hasOpenedBefore) {
-      // Mark that the app has been opened before
       localStorage.setItem('hasOpenedApp', 'true');
-      
-      // Show tooltip
       setShowTooltip(true);
-      
-      // Auto-hide tooltip after 5 seconds
-      const timer = setTimeout(() => {
-        setShowTooltip(false);
-        // No need to update settings since we're using localStorage
-      }, 5000);
-      
+      const timer = setTimeout(() => setShowTooltip(false), 5000);
       return () => clearTimeout(timer);
     }
   }, []);
-  
+
   const handleSettingsClick = () => {
     setIsSettingsOpen(true);
-    if (showTooltip) {
-      setShowTooltip(false);
-    }
+    setShowTooltip(false);
   };
-  
+
   const handleResetAll = () => {
     if (window.confirm('Apakah Anda yakin ingin mengatur ulang semua progres dzikr?')) {
       resetAllProgress();
     }
   };
-  
+
   return (
     <>
-      <header style={{
-        padding: '1rem',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: settings.theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-        borderBottom: settings.theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
-        color: settings.theme === 'dark' ? 'white' : '#333'
-      }}>
-        {/* Reset All Button */}
-        <button 
-          onClick={handleResetAll}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: settings.theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '0.875rem',
-            padding: '0.5rem'
-          }}
-          aria-label="Reset all progress"
-        >
-          <Icon icon="fa-solid fa-refresh" size={18} />
+      <header className="app-header">
+        <button className="icon-button" onClick={handleResetAll} aria-label="Atur ulang semua progres">
+          <Icon icon="fa-solid fa-rotate-left" size={14} />
         </button>
-        
-        {/* App Title */}
-        <h1 style={{ 
-          margin: 0, 
-          fontSize: '1.5rem', 
-          fontWeight: 600,
-          color: settings.theme === 'dark' ? 'white' : '#333'
-        }}>Daily Dzikr</h1>
-        
-        {/* Settings Button */}
-        <button 
+
+        <div className="app-brand" aria-label="Tap Tap Dzikr">
+          <span className="app-brand-mark">d.</span>
+          <span className="app-brand-copy">
+            <strong>Tap Tap Dzikr</strong>
+            <span>jeda kecil untuk hati</span>
+          </span>
+        </div>
+
+        <button
+          className="icon-button"
           id="settings-button"
           onClick={handleSettingsClick}
           data-tooltip-id="settings-tooltip"
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: settings.theme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '0.875rem',
-            padding: '0.5rem'
-          }}
-          aria-label="Open settings"
+          aria-label="Buka pengaturan"
         >
-         <Icon icon="fa-solid fa-gear" size={18} /> 
+          <Icon icon="fa-solid fa-sliders" size={15} />
         </button>
       </header>
-      
-      {/* Settings Modal */}
+
       <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
-      
-      {/* Tooltip */}
+
       {showTooltip && (
         <Tooltip
           id="settings-tooltip"
           place="bottom"
-          content="Klik di sini untuk mengatur tampilan dan metode penghitungan"
+          content="Atur tampilan dan cara menghitung dzikr di sini"
           isOpen={showTooltip}
           style={{
-            backgroundColor: settings.theme === 'dark' ? '#f5f5f5' : '#333',
-            color: settings.theme === 'dark' ? '#333' : '#f5f5f5',
-            padding: '8px 12px',
-            borderRadius: '6px',
-            fontSize: '14px',
-            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
+            backgroundColor: 'var(--text-primary)',
+            color: 'var(--background-color)',
+            borderRadius: '12px',
+            fontSize: '12px',
+            maxWidth: '230px',
+            padding: '9px 12px',
+            textAlign: 'center',
             zIndex: 9999,
-            maxWidth: '250px',
-            textAlign: 'center'
           }}
         />
       )}

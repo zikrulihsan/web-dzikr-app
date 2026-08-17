@@ -13,8 +13,7 @@ const formatId = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.
  * Doubles as ambient presence: "you are not alone".
  */
 const PresencePill: React.FC = () => {
-  const { settings, currentIndex, progress } = useDzikrStore();
-  const dark = settings.theme === 'dark';
+  const { currentIndex, progress } = useDzikrStore();
   const tag = dzikrData[currentIndex]?.category ?? '';
   const myTotal = progress.reduce((s, p) => s + p.completed, 0);
   // Real shared presence (replaces the simulated counter).
@@ -23,32 +22,13 @@ const PresencePill: React.FC = () => {
   return (
     <Link
       href="/community"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 9,
-        margin: '0.25rem auto 0',
-        padding: '0.5rem 0.9rem',
-        borderRadius: 999,
-        background: 'rgba(var(--primary-color), 0.14)',
-        border: dark ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.05)',
-        width: 'fit-content',
-        textDecoration: 'none',
-      }}
+      className="presence-pill"
     >
-      <span
-        style={{
-          width: 9,
-          height: 9,
-          borderRadius: '50%',
-          background: 'rgb(var(--primary-color))',
-        }}
-      />
-      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'rgb(var(--primary-color))' }}>
+      <span className="presence-dot" />
+      <span>
         {live > 0 ? `${formatId(live)} ` : ''}sedang berdzikr bersama
       </span>
-      <span style={{ color: 'rgb(var(--primary-color))' }}>→</span>
+      <span aria-hidden="true">→</span>
     </Link>
   );
 };

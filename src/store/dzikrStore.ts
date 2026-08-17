@@ -40,7 +40,7 @@ export const useDzikrStore = create<DzikrState>()(
       currentIndex: 0,
       progress: dzikrData.map(dzikr => ({ dzikrId: dzikr.id, completed: 0 })),
       settings: {
-        theme: 'dark',
+        theme: 'light',
         showTranslation: true,
         showLatin: true,
         showDescription: true,
