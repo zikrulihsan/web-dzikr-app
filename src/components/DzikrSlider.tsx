@@ -3,15 +3,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
-import { EffectCoverflow } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/effect-coverflow';
 import '@/styles/swiper-custom.css';
 import { dzikrData } from '@/data/dzikrData';
 import { useDzikrStore } from '@/store/dzikrStore';
 import { useScoreSync } from '@/lib/useScoreSync';
 import DzikrCard from './DzikrCard';
-import PresencePill from './PresencePill';
 import Icon from './Icon';
 
 const DzikrSlider: React.FC = () => {
@@ -27,7 +24,9 @@ const DzikrSlider: React.FC = () => {
   } = useDzikrStore();
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
+  const [pulsingDzikrId, setPulsingDzikrId] = useState<number | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
+  const pulseTimerRef = useRef<number | null>(null);
 
   useScoreSync();
 
@@ -45,7 +44,10 @@ const DzikrSlider: React.FC = () => {
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
+    };
   }, [currentIndex, setCurrentIndex]);
 
   useEffect(() => {
@@ -74,16 +76,21 @@ const DzikrSlider: React.FC = () => {
       return;
     }
 
+    if ('vibrate' in navigator) navigator.vibrate(10);
+    setPulsingDzikrId(currentDzikr.id);
+    if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
+    pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), 420);
+
     if (settings.countingMethod === 'penanda') {
       for (let count = currentProgress; count < currentDzikr.count; count += 1) {
         incrementCount(currentDzikr.id);
       }
-      moveNext(300);
+      moveNext(500);
       return;
     }
 
     incrementCount(currentDzikr.id);
-    if (currentProgress + 1 >= currentDzikr.count) moveNext(500);
+    if (currentProgress + 1 >= currentDzikr.count) moveNext(650);
   };
 
   return (
@@ -105,17 +112,31 @@ const DzikrSlider: React.FC = () => {
         })}
       </div>
 
-      <PresencePill />
+      <nav className="slider-position" aria-label="Navigasi dzikr">
+        <button
+          type="button"
+          onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
+          disabled={currentIndex === 0}
+          aria-label="Dzikr sebelumnya"
+        >
+          ‹
+        </button>
+        <span>{currentIndex + 1} / {dzikrData.length}</span>
+        <button
+          type="button"
+          onClick={() => setCurrentIndex(Math.min(dzikrData.length - 1, currentIndex + 1))}
+          disabled={currentIndex === dzikrData.length - 1}
+          aria-label="Dzikr berikutnya"
+        >
+          ›
+        </button>
+      </nav>
 
       <div className="slider-content" ref={contentContainerRef}>
         {isClient ? (
           <Swiper
-            effect="coverflow"
             grabCursor
-            centeredSlides
-            slidesPerView="auto"
-            coverflowEffect={{ rotate: 0, stretch: 0, depth: 80, modifier: 1, slideShadows: false }}
-            modules={[EffectCoverflow]}
+            slidesPerView={1}
             initialSlide={currentIndex}
             onSwiper={setSwiperInstance}
             onSlideChange={(swiper) => {
@@ -123,9 +144,13 @@ const DzikrSlider: React.FC = () => {
               scrollContentToTop();
             }}
           >
-            {dzikrData.map((dzikr) => (
+            {dzikrData.map((dzikr, index) => (
               <SwiperSlide key={dzikr.id}>
-                <DzikrCard dzikr={dzikr} />
+                <DzikrCard
+                  dzikr={dzikr}
+                  isPulsing={pulsingDzikrId === dzikr.id}
+                  onTap={index === currentIndex ? handleIncrement : undefined}
+                />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -137,11 +162,17 @@ const DzikrSlider: React.FC = () => {
       </div>
 
       {isClient && (
-        <div className="action-dock">
-          {currentDzikr.note && <p className="action-note">{currentDzikr.note}</p>}
-          <div className="action-group">
+        <div className="action-float">
+          <span className="action-label">
+            {isCompleted
+              ? 'Lanjut dzikr berikutnya'
+              : settings.countingMethod === 'counter'
+                ? 'Tap untuk 1 bacaan'
+                : 'Tap untuk tandai selesai'}
+          </span>
+          <div className={`action-corrections ${currentProgress === 0 ? 'is-hidden' : ''}`}>
             <button
-              className={`action-small ${currentProgress === 0 ? 'is-hidden' : ''}`}
+              className="action-small"
               type="button"
               onClick={() => decrementCount(currentDzikr.id)}
               aria-label="Kurangi hitungan"
@@ -151,22 +182,7 @@ const DzikrSlider: React.FC = () => {
             </button>
 
             <button
-              className={`action-main ${isCompleted ? 'is-complete' : ''}`}
-              type="button"
-              onClick={handleIncrement}
-              aria-label={isCompleted ? 'Lanjut ke dzikr berikutnya' : settings.countingMethod === 'penanda' ? 'Tandai selesai' : 'Tambah hitungan'}
-            >
-              {isCompleted ? (
-                <Icon icon="fa-solid fa-arrow-right" size={20} />
-              ) : settings.countingMethod === 'penanda' ? (
-                <Icon icon="fa-solid fa-check" size={20} />
-              ) : (
-                '+'
-              )}
-            </button>
-
-            <button
-              className={`action-small ${currentProgress === 0 ? 'is-hidden' : ''}`}
+              className="action-small"
               type="button"
               onClick={() => resetCount(currentDzikr.id)}
               aria-label="Atur ulang dzikr ini"
@@ -175,6 +191,15 @@ const DzikrSlider: React.FC = () => {
               <Icon icon="fa-solid fa-rotate-left" size={13} />
             </button>
           </div>
+
+          <button
+            className={`action-main ${isCompleted ? 'is-complete' : ''}`}
+            type="button"
+            onClick={handleIncrement}
+            aria-label={isCompleted ? 'Lanjut ke dzikr berikutnya' : settings.countingMethod === 'penanda' ? 'Tandai selesai' : 'Tambah hitungan'}
+          >
+            <Icon icon={isCompleted ? 'fa-solid fa-arrow-right' : 'fa-solid fa-check'} size={20} />
+          </button>
         </div>
       )}
     </div>

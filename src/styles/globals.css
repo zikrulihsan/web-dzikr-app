@@ -88,8 +88,8 @@ input:focus-visible {
 .app-header {
   align-items: center;
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
-  padding: 18px 20px 12px;
+  grid-template-columns: 38px 1fr 38px;
+  padding: 10px 16px 6px;
   position: relative;
   z-index: 20;
 }
@@ -108,13 +108,13 @@ input:focus-visible {
   color: var(--background-color);
   display: inline-flex;
   flex: none;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 750;
-  height: 30px;
+  height: 26px;
   justify-content: center;
   letter-spacing: -0.06em;
-  margin-right: 9px;
-  width: 30px;
+  margin-right: 8px;
+  width: 26px;
 }
 
 .app-brand-copy {
@@ -124,14 +124,14 @@ input:focus-visible {
 }
 
 .app-brand-copy strong {
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: -0.03em;
 }
 
 .app-brand-copy span {
   color: var(--text-tertiary);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 8px;
+  font-size: 7px;
   letter-spacing: 0.08em;
   margin-top: 4px;
   text-transform: uppercase;
@@ -145,10 +145,10 @@ input:focus-visible {
   color: var(--text-secondary);
   cursor: pointer;
   display: inline-flex;
-  height: 40px;
+  height: 36px;
   justify-content: center;
   transition: background 180ms ease, color 180ms ease, transform 180ms ease;
-  width: 40px;
+  width: 36px;
 }
 
 .icon-button:hover {
@@ -160,16 +160,16 @@ input:focus-visible {
 .slider-shell {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 70px);
+  height: calc(100dvh - 52px);
   overflow: hidden;
   position: relative;
 }
 
 .progress-rail {
   display: flex;
-  gap: 5px;
+  gap: 6px;
   justify-content: center;
-  margin: 12px auto 10px;
+  margin: 5px auto 3px;
   max-width: 620px;
   padding: 0 24px;
   width: 100%;
@@ -181,16 +181,16 @@ input:focus-visible {
   padding: 0;
   background: var(--border-color);
   border-radius: 999px;
-  flex: 1;
-  height: 3px;
-  max-width: 34px;
+  flex: none;
+  height: 6px;
+  width: 6px;
   overflow: hidden;
   transition: background 200ms ease, transform 200ms ease;
 }
 
 .progress-segment.is-active {
   background: rgb(var(--secondary-color));
-  transform: scaleY(1.6);
+  transform: scale(1.45);
 }
 
 .progress-segment.is-complete {
@@ -201,7 +201,7 @@ input:focus-visible {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding-bottom: 122px;
+  padding-bottom: 8px;
   scrollbar-width: none;
 }
 
@@ -243,11 +243,61 @@ input:focus-visible {
   border-radius: 999px;
 }
 
-.card-meta,
-.card-counter {
+.slider-position {
   align-items: center;
+  color: var(--text-tertiary);
   display: flex;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  gap: 8px;
+  justify-content: center;
+  letter-spacing: 0.08em;
+  margin: 1px auto 0;
+}
+
+.slider-position button {
+  background: transparent;
+  border: 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 22px;
+  height: 24px;
+  line-height: 1;
+  width: 24px;
+}
+
+.slider-position button:disabled {
+  opacity: 0.24;
+}
+
+.card-head {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
+}
+
+.card-eyebrow {
+  color: rgb(var(--secondary-color));
+  display: block;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.card-title-row {
+  align-items: baseline;
+  display: flex;
+  gap: 16px;
   justify-content: space-between;
+}
+
+.card-title-row h1 {
+  font-size: clamp(21px, 5.5vw, 28px);
+  font-weight: 680;
+  letter-spacing: -0.045em;
+  line-height: 1.1;
 }
 
 .category-pill {
@@ -274,33 +324,37 @@ input:focus-visible {
 }
 
 .counter-badge {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 10px;
+  font-size: 15px;
+  font-weight: 650;
+  white-space: nowrap;
 }
 
-.card-progress {
-  background: var(--surface-muted);
-  border-radius: 999px;
-  height: 5px;
-  margin: 18px 0 9px;
-  overflow: hidden;
-}
-
-.card-progress-fill {
-  background: rgb(var(--secondary-color));
-  border-radius: inherit;
-  height: 100%;
-  transition: width 250ms ease, background 250ms ease;
-}
-
-.card-progress-fill.is-complete {
-  background: var(--success-color);
-}
-
-.card-counter {
+.counter-badge span {
   color: var(--text-tertiary);
-  font-size: 11px;
+  font-weight: 450;
+}
+
+.count-markers {
+  display: flex;
+  gap: 7px;
+  margin-top: 13px;
+}
+
+.count-marker {
+  background: transparent;
+  border: 1.5px solid rgba(var(--secondary-color), 0.46);
+  border-radius: 50%;
+  height: 9px;
+  transition: background 220ms ease, transform 220ms ease;
+  width: 9px;
+}
+
+.count-marker.is-filled {
+  background: rgb(var(--secondary-color));
+  border-color: rgb(var(--secondary-color));
+  transform: scale(1.08);
 }
 
 .dzikr-copy {
@@ -309,7 +363,7 @@ input:focus-visible {
   flex: 1;
   flex-direction: column;
   justify-content: center;
-  padding: 30px 6px 22px;
+  padding: 28px 6px 24px;
   text-align: center;
 }
 
@@ -347,6 +401,18 @@ input:focus-visible {
   line-height: 1.75;
   max-width: 520px;
   padding-left: 14px;
+  text-align: left;
+  width: 100%;
+}
+
+.dzikr-note {
+  color: var(--text-tertiary);
+  font-family: Georgia, serif;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.65;
+  margin-top: 18px;
+  max-width: 520px;
   text-align: left;
   width: 100%;
 }
@@ -392,37 +458,45 @@ input:focus-visible {
   margin-top: 8px;
 }
 
-.action-dock {
+.action-float {
   align-items: center;
-  background: color-mix(in srgb, var(--background-color) 88%, transparent);
-  border-top: 1px solid var(--border-color);
-  bottom: 0;
+  bottom: max(18px, env(safe-area-inset-bottom));
   display: flex;
-  flex-direction: column;
-  left: 0;
-  padding: 10px 16px max(14px, env(safe-area-inset-bottom));
+  gap: 10px;
   position: fixed;
-  right: 0;
-  z-index: 30;
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
+  right: 18px;
+  z-index: 40;
 }
 
-.action-note {
-  color: var(--text-tertiary);
-  font-family: Georgia, serif;
-  font-size: 12px;
-  font-style: italic;
-  margin-bottom: 8px;
-  max-width: 520px;
-  text-align: center;
+.action-label {
+  background: color-mix(in srgb, var(--surface-color) 92%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  box-shadow: 0 6px 20px var(--shadow-color);
+  color: var(--text-secondary);
+  font-size: 10px;
+  padding: 8px 11px;
+  white-space: nowrap;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
-.action-group {
+.action-corrections {
   align-items: center;
-  display: grid;
-  gap: 14px;
-  grid-template-columns: 42px 70px 42px;
+  bottom: 68px;
+  display: flex;
+  gap: 8px;
+  opacity: 1;
+  position: absolute;
+  right: 0;
+  transform: translateY(0);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.action-corrections.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
 }
 
 .action-small,
@@ -437,24 +511,21 @@ input:focus-visible {
 }
 
 .action-small {
-  background: var(--surface-muted);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 6px 18px var(--shadow-color);
   color: var(--text-primary);
   height: 42px;
   width: 42px;
-}
-
-.action-small.is-hidden {
-  pointer-events: none;
-  visibility: hidden;
 }
 
 .action-main {
   background: rgb(var(--primary-color));
   box-shadow: 0 10px 25px rgba(var(--primary-color), 0.25);
   color: var(--background-color);
-  font-size: 30px;
-  height: 68px;
-  width: 68px;
+  font-size: 24px;
+  height: 60px;
+  width: 60px;
 }
 
 .action-main.is-complete {
@@ -464,6 +535,14 @@ input:focus-visible {
 .action-main:active,
 .action-small:active {
   transform: scale(0.94);
+}
+
+.dzikr-card.is-tappable {
+  cursor: pointer;
+}
+
+.dzikr-card.is-breathing {
+  animation: card-breathe 420ms ease;
 }
 
 .presence-pill {
@@ -610,9 +689,15 @@ input:focus-visible {
   100% { opacity: 0; }
 }
 
+@keyframes card-breathe {
+  0%, 100% { transform: scale(1); }
+  48% { transform: scale(0.992); box-shadow: 0 7px 22px var(--shadow-color); }
+}
+
 @media (min-width: 720px) {
   .app-header { padding-left: 32px; padding-right: 32px; }
   .dzikr-card { min-height: 520px; padding: 30px; }
+  .action-float { right: max(24px, calc((100vw - 620px) / 2 + 18px)); }
   .settings-overlay { align-items: center; }
 }
 
