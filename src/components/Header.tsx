@@ -2,12 +2,14 @@
 
 import React, { useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
+import { useFocusMode } from '@/lib/useFocusMode';
 import Settings from './Settings';
 import Icon from './Icon';
 
 const Header: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { resetAllProgress } = useDzikrStore();
+  const { enterFocusMode } = useFocusMode();
 
   const handleSettingsClick = () => {
     setIsSettingsOpen(true);
@@ -34,14 +36,25 @@ const Header: React.FC = () => {
           </span>
         </div>
 
-        <button
-          className="icon-button"
-          id="settings-button"
-          onClick={handleSettingsClick}
-          aria-label="Buka pengaturan"
-        >
-          <Icon icon="fa-solid fa-sliders" size={15} />
-        </button>
+        <div className="header-actions">
+          <button
+            className="icon-button"
+            onClick={enterFocusMode}
+            aria-label="Mode fokus layar penuh"
+            title="Mode fokus — hanya kartu dzikr"
+          >
+            <Icon icon="fa-solid fa-expand" size={14} />
+          </button>
+
+          <button
+            className="icon-button"
+            id="settings-button"
+            onClick={handleSettingsClick}
+            aria-label="Buka pengaturan"
+          >
+            <Icon icon="fa-solid fa-sliders" size={15} />
+          </button>
+        </div>
       </header>
 
       <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />

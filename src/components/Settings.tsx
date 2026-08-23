@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
 import type { FontSizePreference } from '@/store/dzikrStore';
+import { useFocusMode } from '@/lib/useFocusMode';
 import Icon from './Icon';
 
 interface SettingsProps {
@@ -19,6 +20,18 @@ const fontSizeOptions: Array<{ label: string; value: FontSizePreference }> = [
 const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
   const [isTextSizeOpen, setIsTextSizeOpen] = useState(false);
   const { settings, updateSettings, toggleTheme } = useDzikrStore();
+  const { isFocusMode, enterFocusMode, exitFocusMode } = useFocusMode();
+
+  // Entering focus mode is pointless behind the panel, so hand the screen back.
+  const handleFocusModeChange = (enabled: boolean) => {
+    if (enabled) {
+      enterFocusMode();
+      onClose();
+      return;
+    }
+    exitFocusMode();
+  };
+
   if (!isOpen) return null;
 
   const renderFontSizeControl = (
@@ -101,6 +114,18 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               {renderFontSizeControl('Arti', 'A', 'translationFontSize')}
             </div>
           )}
+
+          <label className="setting-row">
+            <span className="setting-choice">
+              <span>Mode fokus</span>
+              <small>Layar penuh, hanya kartu dzikr yang tampil</small>
+            </span>
+            <input
+              type="checkbox"
+              checked={isFocusMode}
+              onChange={(event) => handleFocusModeChange(event.target.checked)}
+            />
+          </label>
 
           <label className="setting-row">
             <span className="setting-choice">
