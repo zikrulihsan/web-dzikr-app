@@ -53,6 +53,23 @@ body {
   width: 100%;
 }
 
+.app-shell {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
 body {
   color: var(--text-primary);
   background: var(--background-color);
@@ -88,7 +105,7 @@ input:focus-visible {
 .app-header {
   align-items: center;
   display: grid;
-  grid-template-columns: 38px 1fr 38px;
+  grid-template-columns: 38px 1fr auto;
   padding: 10px 16px 6px;
   position: relative;
   z-index: 20;
@@ -151,6 +168,13 @@ input:focus-visible {
   justify-content: center;
   transition: background 180ms ease, color 180ms ease, transform 180ms ease;
   width: 36px;
+}
+
+.header-actions {
+  align-items: center;
+  display: flex;
+  gap: 2px;
+  justify-content: flex-end;
 }
 
 .icon-button:hover {
@@ -849,6 +873,93 @@ input:focus-visible {
   width: 100%;
 }
 
+/* ---- Mode fokus: hanya kartu dzikr yang tampil ---- */
+
+.focus-exit {
+  align-items: center;
+  background: color-mix(in srgb, var(--surface-color) 82%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  height: 34px;
+  justify-content: center;
+  opacity: 0.45;
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  top: max(14px, env(safe-area-inset-top));
+  transition: opacity 220ms ease, transform 160ms ease;
+  width: 34px;
+  z-index: 60;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.focus-exit:hover,
+.focus-exit:focus-visible {
+  opacity: 1;
+}
+
+.focus-exit:active {
+  transform: scale(0.94);
+}
+
+.app-shell.is-focus .app-header,
+.app-shell.is-focus .progress-rail,
+.app-shell.is-focus .slider-position {
+  display: none;
+}
+
+.app-shell.is-focus .slider-shell {
+  height: 100dvh;
+}
+
+.app-shell.is-focus .slider-content {
+  padding-bottom: 0;
+}
+
+.app-shell.is-focus .swiper {
+  padding: 0;
+}
+
+.app-shell.is-focus .dzikr-card {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+  max-width: none;
+  min-height: 100%;
+  padding: calc(env(safe-area-inset-top) + 22px) 20px calc(env(safe-area-inset-bottom) + 104px);
+  width: 100%;
+}
+
+/* Keep the reading column comfortable even though the surface is edge to edge. */
+.app-shell.is-focus .card-head,
+.app-shell.is-focus .dzikr-copy,
+.app-shell.is-focus .description-toggle {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 620px;
+  width: 100%;
+}
+
+/* Room for the floating exit button on narrow screens. */
+.app-shell.is-focus .card-head {
+  padding-right: 44px;
+}
+
+/* A full-bleed card cannot scale without exposing its edges, so the tap
+   feedback becomes a surface flash instead. */
+.app-shell.is-focus .dzikr-card.is-breathing {
+  animation: card-breathe-flat 420ms ease;
+}
+
+@keyframes card-breathe-flat {
+  0%, 100% { background: var(--surface-color); }
+  48% { background: var(--surface-muted); }
+}
+
 @keyframes presence-pulse {
   0% { transform: scale(0.75); opacity: 0.6; }
   80% { transform: scale(1.95); opacity: 0; }
@@ -865,10 +976,13 @@ input:focus-visible {
   .dzikr-card { min-height: 520px; padding: 30px; }
   .action-float { right: max(24px, calc((100vw - 620px) / 2 + 18px)); }
   .settings-overlay { align-items: center; }
+  .app-shell.is-focus .card-head { padding-right: 0; }
+  .app-shell.is-focus .dzikr-card { padding-left: 30px; padding-right: 30px; }
 }
 
 @media (max-height: 720px) {
   .dzikr-card { min-height: 390px; }
+  .app-shell.is-focus .dzikr-card { min-height: 100%; }
   .dzikr-copy { padding-bottom: 14px; padding-top: 18px; }
   .dzikr-arabic { font-size: 28px; margin-bottom: 12px; }
   .dzikr-arabic.is-medium { font-size: 25px; }

@@ -21,6 +21,7 @@ interface AppSettings {
   latinFontSize: FontSizePreference;
   translationFontSize: FontSizePreference;
   showActionHint: boolean;
+  focusMode: boolean;
 }
 
 interface DzikrState {
@@ -35,6 +36,7 @@ interface DzikrState {
   getProgress: (dzikrId: number) => number;
   getCompletionPercentage: (dzikrId: number) => number;
   toggleTheme: () => void;
+  toggleFocusMode: () => void;
   updateSettings: (settings: Partial<AppSettings>) => void;
 }
 
@@ -52,7 +54,8 @@ export const useDzikrStore = create<DzikrState>()(
         arabicFontSize: 'medium',
         latinFontSize: 'medium',
         translationFontSize: 'medium',
-        showActionHint: true
+        showActionHint: true,
+        focusMode: false
       },
       
       setCurrentIndex: (index: number) => set({ currentIndex: index }),
@@ -67,6 +70,11 @@ export const useDzikrStore = create<DzikrState>()(
         });
       },
       
+      toggleFocusMode: () => {
+        const { settings } = get();
+        set({ settings: { ...settings, focusMode: !settings.focusMode } });
+      },
+
       updateSettings: (newSettings: Partial<AppSettings>) => {
         const { settings } = get();
         set({ settings: { ...settings, ...newSettings } });
