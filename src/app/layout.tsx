@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Amiri } from 'next/font/google';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
@@ -34,6 +34,33 @@ export const metadata: Metadata = {
     description: 'Ganti kebiasaan tap tap medsos dengan tap tap dzikr.',
     images: ['/og.png'],
   },
+  manifest: '/site.webmanifest',
+  applicationName: 'Tap Tap Dzikr',
+  appleWebApp: {
+    capable: true,
+    title: 'Tap Tap Dzikr',
+    statusBarStyle: 'default',
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '16x16 32x32 48x48' },
+      { url: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/icon-192.png', type: 'image/png', sizes: '192x192' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f3f0e8' },
+    { media: '(prefers-color-scheme: dark)', color: '#212121' },
+  ],
 };
 
 export default function RootLayout({
