@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Tap Tap Dzikr">
+  <circle cx="256" cy="256" r="256" fill="#173D32"/>
+  <g fill="#F3F0E8">
+    <circle cx="211" cy="306" r="89" fill="none" stroke="#F3F0E8" stroke-width="58"/>
+    <rect x="271" y="104" width="58" height="320"/>
+    <circle cx="387" cy="392" r="32"/>
+  </g>
+</svg>
