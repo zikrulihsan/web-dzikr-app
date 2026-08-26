@@ -191,50 +191,6 @@ input:focus-visible {
   position: relative;
 }
 
-.period-switch {
-  align-items: center;
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  margin: 6px auto 0;
-  padding: 0 16px;
-}
-
-.period-switch button {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  padding: 5px 12px;
-  text-transform: uppercase;
-  transition: background 200ms ease, border-color 200ms ease, color 200ms ease;
-}
-
-.period-switch button.is-active {
-  background: rgb(var(--primary-color));
-  border-color: rgb(var(--primary-color));
-  color: var(--background-color);
-}
-
-/* "Otomatis" is a mode, not a third list, so it never takes the solid fill. */
-.period-switch .period-auto {
-  border-style: dashed;
-  opacity: 0.75;
-}
-
-.period-switch .period-auto.is-active {
-  background: transparent;
-  border-color: rgb(var(--secondary-color));
-  border-style: solid;
-  color: rgb(var(--secondary-color));
-  opacity: 1;
-}
-
 .progress-rail {
   display: flex;
   gap: 6px;
@@ -968,7 +924,6 @@ input:focus-visible {
 }
 
 .app-shell.is-focus .app-header,
-.app-shell.is-focus .period-switch,
 .app-shell.is-focus .progress-rail,
 .app-shell.is-focus .slider-position {
   display: none;
