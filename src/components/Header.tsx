@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
 import { useFocusMode } from '@/lib/useFocusMode';
+import { useActivePeriod } from '@/lib/useDzikrPeriod';
+import { periodLabel } from '@/lib/dzikrPeriod';
 import Settings from './Settings';
 import Icon from './Icon';
 
@@ -10,13 +12,15 @@ const Header: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { resetAllProgress } = useDzikrStore();
   const { enterFocusMode } = useFocusMode();
+  const activePeriod = useActivePeriod();
 
   const handleSettingsClick = () => {
     setIsSettingsOpen(true);
   };
 
   const handleResetAll = () => {
-    if (window.confirm('Apakah Anda yakin ingin mengatur ulang semua progres dzikr?')) {
+    // Only the period on screen is cleared; the other half of the day stands.
+    if (window.confirm(`Atur ulang semua progres ${periodLabel[activePeriod].toLowerCase()}?`)) {
       resetAllProgress();
     }
   };
@@ -24,7 +28,11 @@ const Header: React.FC = () => {
   return (
     <>
       <header className="app-header">
-        <button className="icon-button" onClick={handleResetAll} aria-label="Atur ulang semua progres">
+        <button
+          className="icon-button"
+          onClick={handleResetAll}
+          aria-label={`Atur ulang progres ${periodLabel[activePeriod].toLowerCase()}`}
+        >
           <Icon icon="fa-solid fa-rotate-left" size={14} />
         </button>
 
@@ -32,7 +40,7 @@ const Header: React.FC = () => {
           <span className="app-brand-mark">d.</span>
           <span className="app-brand-copy">
             <strong>Tap Tap Dzikr</strong>
-            <span>Alihkan kebiasaan tap tap medsos ke Rutin Berdzikir</span>
+            <span>{periodLabel[activePeriod]} · alihkan tap tap medsos ke dzikr</span>
           </span>
         </div>
 

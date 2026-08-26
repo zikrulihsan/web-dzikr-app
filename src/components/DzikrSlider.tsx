@@ -5,11 +5,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
 import '@/styles/swiper-custom.css';
-import { dzikrData } from '@/data/dzikrData';
+import { getDzikrList, type DzikrPeriod } from '@/data/dzikrData';
 import { useDzikrStore } from '@/store/dzikrStore';
 import { useScoreSync } from '@/lib/useScoreSync';
+import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
+import PeriodSwitch from './PeriodSwitch';
 
 const DzikrSlider: React.FC = () => {
   const {
@@ -28,8 +30,13 @@ const DzikrSlider: React.FC = () => {
   const [pulsingDzikrId, setPulsingDzikrId] = useState<number | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
   const pulseTimerRef = useRef<number | null>(null);
+  const previousPeriodRef = useRef<DzikrPeriod | null>(null);
 
   useScoreSync();
+  const activePeriod = usePeriodWatcher();
+  const dzikrList = getDzikrList(activePeriod);
+  // A stored index can outlive the list it belonged to (petang is shorter).
+  const activeIndex = Math.min(Math.max(currentIndex, 0), dzikrList.length - 1);
 
   const scrollContentToTop = () => {
     if (contentContainerRef.current) contentContainerRef.current.scrollTop = 0;
@@ -38,10 +45,10 @@ const DzikrSlider: React.FC = () => {
   useEffect(() => {
     setIsClient(true);
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowRight' && currentIndex < dzikrData.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else if (event.key === 'ArrowLeft' && currentIndex > 0) {
-        setCurrentIndex(currentIndex - 1);
+      if (event.key === 'ArrowRight' && activeIndex < dzikrList.length - 1) {
+        setCurrentIndex(activeIndex + 1);
+      } else if (event.key === 'ArrowLeft' && activeIndex > 0) {
+        setCurrentIndex(activeIndex - 1);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -49,23 +56,32 @@ const DzikrSlider: React.FC = () => {
       window.removeEventListener('keydown', handleKeyDown);
       if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
     };
-  }, [currentIndex, setCurrentIndex]);
+  }, [activeIndex, dzikrList.length, setCurrentIndex]);
 
+  // Crossing into the other part of the day starts a fresh reading session.
   useEffect(() => {
-    if (swiperInstance && swiperInstance.activeIndex !== currentIndex) {
-      swiperInstance.slideTo(currentIndex);
+    if (previousPeriodRef.current && previousPeriodRef.current !== activePeriod) {
+      setCurrentIndex(0);
       scrollContentToTop();
     }
-  }, [currentIndex, swiperInstance]);
+    previousPeriodRef.current = activePeriod;
+  }, [activePeriod, setCurrentIndex]);
 
-  const currentDzikr = dzikrData[currentIndex];
+  useEffect(() => {
+    if (swiperInstance && swiperInstance.activeIndex !== activeIndex) {
+      swiperInstance.slideTo(activeIndex);
+      scrollContentToTop();
+    }
+  }, [activeIndex, swiperInstance]);
+
+  const currentDzikr = dzikrList[activeIndex];
   const currentProgress = getProgress(currentDzikr.id);
   const isCompleted = currentProgress >= currentDzikr.count;
 
   const moveNext = (delay = 0) => {
-    if (currentIndex < dzikrData.length - 1) {
+    if (activeIndex < dzikrList.length - 1) {
       window.setTimeout(() => {
-        setCurrentIndex(currentIndex + 1);
+        setCurrentIndex(activeIndex + 1);
         scrollContentToTop();
       }, delay);
     }
@@ -96,10 +112,12 @@ const DzikrSlider: React.FC = () => {
 
   return (
     <div className="slider-shell">
+      <PeriodSwitch activePeriod={activePeriod} />
+
       <div className="progress-rail" aria-label="Daftar progres dzikr">
-        {dzikrData.map((dzikr, index) => {
+        {dzikrList.map((dzikr, index) => {
           const completed = getCompletionPercentage(dzikr.id) === 100;
-          const state = completed ? 'is-complete' : index === currentIndex ? 'is-active' : '';
+          const state = completed ? 'is-complete' : index === activeIndex ? 'is-active' : '';
           return (
             <button
               className={`progress-segment ${state}`}
@@ -107,7 +125,7 @@ const DzikrSlider: React.FC = () => {
               type="button"
               onClick={() => setCurrentIndex(index)}
               aria-label={`Buka dzikr ${index + 1}: ${dzikr.category}`}
-              aria-current={index === currentIndex ? 'step' : undefined}
+              aria-current={index === activeIndex ? 'step' : undefined}
             />
           );
         })}
@@ -116,17 +134,17 @@ const DzikrSlider: React.FC = () => {
       <nav className="slider-position" aria-label="Navigasi dzikr">
         <button
           type="button"
-          onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
-          disabled={currentIndex === 0}
+          onClick={() => setCurrentIndex(Math.max(0, activeIndex - 1))}
+          disabled={activeIndex === 0}
           aria-label="Dzikr sebelumnya"
         >
           ‹
         </button>
-        <span>{currentIndex + 1} / {dzikrData.length}</span>
+        <span>{activeIndex + 1} / {dzikrList.length}</span>
         <button
           type="button"
-          onClick={() => setCurrentIndex(Math.min(dzikrData.length - 1, currentIndex + 1))}
-          disabled={currentIndex === dzikrData.length - 1}
+          onClick={() => setCurrentIndex(Math.min(dzikrList.length - 1, activeIndex + 1))}
+          disabled={activeIndex === dzikrList.length - 1}
           aria-label="Dzikr berikutnya"
         >
           ›
@@ -138,26 +156,28 @@ const DzikrSlider: React.FC = () => {
           <Swiper
             grabCursor
             slidesPerView={1}
-            initialSlide={currentIndex}
+            // Remount on a period change so the slides match the new list.
+            key={activePeriod}
+            initialSlide={activeIndex}
             onSwiper={setSwiperInstance}
             onSlideChange={(swiper) => {
               setCurrentIndex(swiper.activeIndex);
               scrollContentToTop();
             }}
           >
-            {dzikrData.map((dzikr, index) => (
+            {dzikrList.map((dzikr, index) => (
               <SwiperSlide key={dzikr.id}>
                 <DzikrCard
                   dzikr={dzikr}
                   isPulsing={pulsingDzikrId === dzikr.id}
-                  onTap={index === currentIndex ? handleIncrement : undefined}
+                  onTap={index === activeIndex ? handleIncrement : undefined}
                 />
               </SwiperSlide>
             ))}
           </Swiper>
         ) : (
           <div style={{ padding: '18px 0 24px' }}>
-            <DzikrCard dzikr={dzikrData[0]} />
+            <DzikrCard dzikr={dzikrList[0]} />
           </div>
         )}
       </div>

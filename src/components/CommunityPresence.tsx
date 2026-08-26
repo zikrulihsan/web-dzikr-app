@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useDzikrStore } from '@/store/dzikrStore';
+import { totalCompleted, useDzikrStore } from '@/store/dzikrStore';
+import { useResolvedTheme } from '@/lib/useResolvedTheme';
 import { usePresence } from '@/lib/usePresence';
 import Icon from './Icon';
 
@@ -27,9 +28,9 @@ const pulse = (delay: number): React.CSSProperties => ({
 });
 
 const CommunityPresence: React.FC = () => {
-  const { settings, progress } = useDzikrStore();
-  const dark = settings.theme === 'dark';
-  const myTotal = progress.reduce((s, p) => s + p.completed, 0);
+  const progress = useDzikrStore((state) => state.progress);
+  const dark = useResolvedTheme() === 'dark';
+  const myTotal = totalCompleted(progress);
   // Real shared presence via Supabase Realtime.
   const { count: live, people } = usePresence('', myTotal);
 

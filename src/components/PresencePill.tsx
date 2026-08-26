@@ -2,8 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useDzikrStore } from '@/store/dzikrStore';
-import { dzikrData } from '@/data/dzikrData';
+import { totalCompleted, useDzikrStore } from '@/store/dzikrStore';
+import { getDzikrList } from '@/data/dzikrData';
+import { useActivePeriod } from '@/lib/useDzikrPeriod';
 import { usePresence } from '@/lib/usePresence';
 
 const formatId = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -14,8 +15,8 @@ const formatId = (n: number) => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.
  */
 const PresencePill: React.FC = () => {
   const { currentIndex, progress } = useDzikrStore();
-  const tag = dzikrData[currentIndex]?.category ?? '';
-  const myTotal = progress.reduce((s, p) => s + p.completed, 0);
+  const tag = getDzikrList(useActivePeriod())[currentIndex]?.category ?? '';
+  const myTotal = totalCompleted(progress);
   // Real shared presence (replaces the simulated counter).
   const { count: live } = usePresence(tag, myTotal);
 

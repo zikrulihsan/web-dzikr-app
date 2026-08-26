@@ -2,14 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useDzikrStore } from '@/store/dzikrStore';
+import { useResolvedTheme } from '@/lib/useResolvedTheme';
 import { fetchLeaderboard, subscribeLeaderboard, type LeaderboardRow } from '@/lib/dzikrSync';
 import { supabase, ensureAnonUser } from '@/lib/supabase';
 import Icon from './Icon';
 
 const Leaderboard: React.FC = () => {
-  const { settings } = useDzikrStore();
-  const dark = settings.theme === 'dark';
+  const dark = useResolvedTheme() === 'dark';
   const [rows, setRows] = useState<LeaderboardRow[]>([]);
   const [meId, setMeId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
