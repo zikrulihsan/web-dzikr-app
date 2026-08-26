@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useDzikrStore } from '@/store/dzikrStore';
+import { totalCompleted, useDzikrStore } from '@/store/dzikrStore';
 import { syncDailyTotal } from './dzikrSync';
 
 /**
@@ -15,7 +15,7 @@ export function useScoreSync() {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const total = progress.reduce((sum, p) => sum + p.completed, 0);
+    const total = totalCompleted(progress);
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       void syncDailyTotal(total);

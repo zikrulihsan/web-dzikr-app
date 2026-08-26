@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
-import type { FontSizePreference } from '@/store/dzikrStore';
+import type { FontSizePreference, PeriodPreference, ThemePreference } from '@/store/dzikrStore';
 import { useFocusMode } from '@/lib/useFocusMode';
+import { useResolvedTheme } from '@/lib/useResolvedTheme';
+import { periodLabel } from '@/lib/dzikrPeriod';
 import Icon from './Icon';
 
 interface SettingsProps {
@@ -17,10 +19,36 @@ const fontSizeOptions: Array<{ label: string; value: FontSizePreference }> = [
   { label: 'Besar', value: 'large' },
 ];
 
+const themeOptions: Array<{ label: string; value: ThemePreference }> = [
+  { label: 'Terang', value: 'light' },
+  { label: 'Gelap', value: 'dark' },
+  { label: 'Otomatis', value: 'auto' },
+];
+
+const periodOptions: Array<{ label: string; value: PeriodPreference }> = [
+  { label: 'Pagi', value: 'pagi' },
+  { label: 'Petang', value: 'petang' },
+  { label: 'Otomatis', value: 'auto' },
+];
+
 const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
   const [isTextSizeOpen, setIsTextSizeOpen] = useState(false);
-  const { settings, updateSettings, toggleTheme } = useDzikrStore();
+  const { settings, updateSettings, detectedPeriod } = useDzikrStore();
   const { isFocusMode, enterFocusMode, exitFocusMode } = useFocusMode();
+  const resolvedTheme = useResolvedTheme();
+
+  const theme = settings.theme ?? 'auto';
+  const periodPreference = settings.periodPreference ?? 'auto';
+
+  const themeHint =
+    theme === 'auto'
+      ? `Mengikuti sistem — sekarang ${resolvedTheme === 'dark' ? 'gelap' : 'terang'}`
+      : 'Sesuaikan dengan kenyamanan mata';
+
+  const periodHint =
+    periodPreference === 'auto'
+      ? `Mengikuti jam di perangkat — sekarang ${periodLabel[detectedPeriod]}`
+      : `Dikunci pada ${periodLabel[periodPreference]}`;
 
   // Entering focus mode is pointless behind the panel, so hand the screen back.
   const handleFocusModeChange = (enabled: boolean) => {
@@ -85,14 +113,55 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
         </div>
 
         <div className="settings-section">
+          <h3>Waktu dzikr</h3>
+          <div className="setting-stack">
+            <span className="setting-choice">
+              <span>Dzikr pagi atau petang</span>
+              <small>{periodHint}</small>
+            </span>
+            <div className="segmented" role="radiogroup" aria-label="Waktu dzikr">
+              {periodOptions.map((option) => (
+                <button
+                  className={periodPreference === option.value ? 'is-active' : ''}
+                  key={option.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={periodPreference === option.value}
+                  onClick={() => updateSettings({ periodPreference: option.value })}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="settings-tip">
+            Pada mode otomatis, bacaan berganti sendiri ke dzikr petang mulai pukul 15.00 waktu
+            perangkat Anda, dan kembali ke dzikr pagi pukul 03.00.
+          </div>
+        </div>
+
+        <div className="settings-section">
           <h3>Tampilan</h3>
-          <button className="setting-row" type="button" onClick={toggleTheme} style={{ width: '100%', background: 'none', borderLeft: 0, borderRight: 0, borderTop: 0, color: 'inherit' }}>
+          <div className="setting-stack">
             <span className="setting-choice">
               <span>Mode tema</span>
-              <small>Sesuaikan dengan kenyamanan mata</small>
+              <small>{themeHint}</small>
             </span>
-            <span className="category-pill">{settings.theme === 'dark' ? 'Gelap' : 'Terang'}</span>
-          </button>
+            <div className="segmented" role="radiogroup" aria-label="Mode tema">
+              {themeOptions.map((option) => (
+                <button
+                  className={theme === option.value ? 'is-active' : ''}
+                  key={option.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={theme === option.value}
+                  onClick={() => updateSettings({ theme: option.value })}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <button
             className="setting-row settings-submenu-trigger"

@@ -1,8 +1,10 @@
 import React from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
+import { useResolvedTheme } from '@/lib/useResolvedTheme';
 
 const ThemeToggle: React.FC = () => {
-  const { settings, toggleTheme } = useDzikrStore();
+  const toggleTheme = useDzikrStore((state) => state.toggleTheme);
+  const theme = useResolvedTheme();
   
   return (
     <button
@@ -14,13 +16,13 @@ const ThemeToggle: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: settings.theme === 'dark' ? 'white' : '#333',
+        color: theme === 'dark' ? 'white' : '#333',
         fontSize: '1.25rem',
         padding: '0.5rem',
       }}
-      aria-label={`Switch to ${settings.theme === 'dark' ? 'light' : 'dark'} mode`}
+      aria-label="Ganti mode tema (terang, gelap, otomatis)"
     >
-      {settings.theme === 'dark' ? (
+      {theme === 'dark' ? (
         // Sun icon for dark mode (to switch to light)
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path

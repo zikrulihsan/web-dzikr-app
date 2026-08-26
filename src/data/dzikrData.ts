@@ -1,3 +1,5 @@
+export type DzikrPeriod = "pagi" | "petang";
+
 export interface DzikrItem {
   id: number;
   arabic: string;
@@ -10,7 +12,17 @@ export interface DzikrItem {
   note?: string;
 }
 
-export const dzikrData: DzikrItem[] = [
+/** Wording that differs when the same dzikr is recited at petang. */
+type EveningWording = Partial<Omit<DzikrItem, "id" | "count">>;
+
+interface DzikrEntry extends DzikrItem {
+  /** Times of day this dzikr belongs to. Omitted means pagi and petang. */
+  periods?: DzikrPeriod[];
+  /** Merged over the pagi wording to build the petang text. */
+  evening?: EveningWording;
+}
+
+const dzikrEntries: DzikrEntry[] = [
   {
     id: 1,
     arabic:
@@ -76,7 +88,14 @@ export const dzikrData: DzikrItem[] = [
     category: "Dzikir #1",
     description:
       "Faedah: Meminta pada Allah kebaikan di hari ini dan kebaikan sesudahnya, juga agar terhindar dari kejelekan di hari ini dan kejelekan sesudahnya. Di dalamnya berisi pula permintaan agar terhindar dari rasa malas padahal mampu untuk beramal, juga agar terhindar dari kejelekan di masa tua. Di dalamnya juga berisi permintaan agar terselamatkan dari siksa kubur dan siksa neraka yang merupakan siksa terberat di hari kiamat kelak.\nHikmah: Dzikir ini mengajarkan kita untuk memulai hari dengan mengakui kekuasaan Allah dan memohon perlindungan-Nya. Ini mengingatkan kita bahwa segala sesuatu adalah milik Allah dan kita bergantung pada-Nya untuk keselamatan dan kebaikan dalam hidup kita.",
-    note: "Untuk dzikir petang, dibaca: أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ... (Amsayna wa amsal mulku lillah...)",
+    evening: {
+      arabic:
+        "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَـهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيْكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيْرُ. رَبِّ أَسْأَلُكَ خَيْرَ مَا فِيْ هَذِهِ اللَّيْلَةِ وَخَيْرَ مَا بَعْدَهَا، وَأَعُوْذُ بِكَ مِنْ شَرِّ مَا فِيْ هَذِهِ اللَّيْلَةِ وَشَرِّ مَا بَعْدَهَا، رَبِّ أَعُوْذُ بِكَ مِنَ الْكَسَلِ وَسُوْءِ الْكِبَرِ، رَبِّ أَعُوْذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ",
+      latin:
+        "Amsainaa wa amsal mulku lillah walhamdulillah, laa ilaha illallah wahdahu laa syarika lah, lahul mulku walahul hamdu wa huwa 'ala kulli syai-in qodir. Robbi as-aluka khoiro maa fii hadzihil lailah wa khoiro maa ba'dahaa, wa a'udzu bika min syarri maa fii hadzihil lailah wa syarri maa ba'dahaa. Robbi a'udzu bika minal kasali wa su-il kibar. Robbi a'udzu bika min 'adzabin fin naari wa 'adzabin fil qobri.",
+      translation:
+        "Kami telah memasuki waktu petang dan kerajaan hanya milik Allah, segala puji bagi Allah. Tidak ada ilah (yang berhak disembah) kecuali Allah semata, tiada sekutu bagi-Nya. Milik Allah kerajaan dan bagi-Nya pujian. Dia-lah Yang Mahakuasa atas segala sesuatu. Wahai Rabbku, aku mohon kepada-Mu kebaikan di malam ini dan kebaikan sesudahnya. Aku berlindung kepada-Mu dari kejahatan malam ini dan kejahatan sesudahnya. Wahai Rabbku, aku berlindung kepada-Mu dari kemalasan dan kejelekan di hari tua. Wahai Rabbku, aku berlindung kepada-Mu dari siksaan di neraka dan siksaan di alam kubur.",
+    },
   },
   {
     id: 6,
@@ -89,7 +108,12 @@ export const dzikrData: DzikrItem[] = [
     category: "Dzikir #2",
     description:
       "Faedah: Dengan dzikir ini, kita telah menyerahkan segala urusan kepada Allah di pagi hari, di petang hari, ketika hidup dan ketika mati.\nHikmah: Dzikir ini mengingatkan kita bahwa Allah adalah sumber kehidupan dan kematian. Kita bergantung pada-Nya dalam setiap aspek kehidupan kita, dari bangun tidur hingga kembali tidur, dan bahkan dalam kematian dan kebangkitan kita.",
-    note: "Untuk dzikir petang, dibaca: اَللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوْتُ وَإِلَيْكَ الْمَصِيْرُ (Allahumma bika amsaynaa wa bika ash-bahnaa wa bika nahyaa wa bika namuutu wa ilaikal mashiir).",
+    evening: {
+      arabic: "اَللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوْتُ وَإِلَيْكَ الْمَصِيْرُ",
+      latin: "Allahumma bika amsaynaa wa bika ash-bahnaa wa bika nahyaa wa bika namuutu wa ilaikal mashiir.",
+      translation:
+        "Ya Allah, dengan rahmat dan pertolongan-Mu kami memasuki waktu petang, dan dengan rahmat dan pertolongan-Mu kami memasuki waktu pagi. Dengan rahmat dan pertolongan-Mu kami hidup dan dengan kehendak-Mu kami mati. Dan kepada-Mu tempat kembali (bagi semua makhluk).",
+    },
   },
   {
     id: 7,
@@ -118,7 +142,15 @@ export const dzikrData: DzikrItem[] = [
     category: "Syahadat Pagi",
     description:
       "Faedah: Barangsiapa yang mengucapkannya sebanyak empat kali di pagi atau petang hari, maka Allah akan membebaskannya dari api neraka.\nHikmah: Dzikir ini mengajarkan kita untuk memperbaharui syahadat di setiap pagi dan petang, dengan menjadikan Allah, para malaikat pemikul Arsy, dan seluruh makhluk sebagai saksi atas keimanan kita kepada Allah dan kerasulan Nabi Muhammad shallallahu 'alaihi wa sallam.",
-    note: "Untuk dzikir petang, kata 'أَصْبَحْتُ' (ash-bahtu) diganti menjadi 'أَمْسَيْتُ' (amsaytu).",
+    evening: {
+      category: "Syahadat Petang",
+      arabic:
+        "اَللَّهُمَّ إِنِّيْ أَمْسَيْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلاَئِكَتَكَ وَجَمِيْعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللهُ لاَ إِلَـهَ إِلاَّ أَنْتَ وَحْدَكَ لاَ شَرِيْكَ لَكَ، وَأَنَّ مُحَمَّدًا عَبْدُكَ وَرَسُوْلُكَ",
+      latin:
+        "Allahumma innii amsaytu usyhiduka wa usyhidu hamalata 'arsyika wa malaa-ikatak wa jami'a kholqik, annaka antallahu laa ilaha illa anta wahdaka laa syariika lak, wa anna Muhammadan 'abduka wa rosuuluk.",
+      translation:
+        "Ya Allah, sesungguhnya aku di waktu petang ini mempersaksikan Engkau, para malaikat yang memikul Arsy-Mu, malaikat-malaikat-Mu, dan seluruh makhluk-Mu, bahwa sesungguhnya Engkau adalah Allah, tiada ilah yang berhak disembah kecuali Engkau semata, tiada sekutu bagi-Mu, dan sesungguhnya Muhammad adalah hamba dan utusan-Mu.",
+    },
   },
   {
     id: 8,
@@ -200,7 +232,14 @@ export const dzikrData: DzikrItem[] = [
     category: "Dzikir #8",
     description:
       "Faedah: Dzikir ini menunjukkan bahwa kita berada di atas fitrah Islam, kalimat ikhlas (kalimat syahadat), agama Nabi Muhammad shallallahu 'alaihi wa sallam, dan millah (agama) Ibrahim yang lurus.\nHikmah: Dzikir ini mengajarkan kita untuk meneguhkan identitas kita sebagai Muslim yang mengikuti ajaran Nabi Muhammad SAW dan agama Ibrahim yang lurus. Ini mengingatkan kita untuk selalu berpegang teguh pada fitrah Islam dan menjauhi kesyirikan.",
-    note: "Untuk dzikir petang, dibaca: أَمْسَيْنَا عَلَى فِطْرَةِ اْلإِسْلاَمِ... (Amsaynaa 'ala fithrotil islam...)",
+    evening: {
+      arabic:
+        "أَمْسَيْنَا عَلَى فِطْرَةِ اْلإِسْلاَمِ وَعَلَى كَلِمَةِ اْلإِخْلاَصِ، وَعَلَى دِيْنِ نَبِيِّنَا مُحَمَّدٍ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ، وَعَلَى مِلَّةِ أَبِيْنَا إِبْرَاهِيْمَ، حَنِيْفًا مُسْلِمًا وَمَا كَانَ مِنَ الْمُشْرِكِيْنَ",
+      latin:
+        "Amsaynaa 'ala fithrotil islaam wa 'alaa kalimatil ikhlaash, wa 'alaa diini nabiyyinaa Muhammadin shallallahu 'alaihi wa sallam, wa 'alaa millati abiinaa Ibraahiima haniifam muslimaaw wa maa kaana minal musyrikin.",
+      translation:
+        "Di waktu petang kami memegang agama Islam, kalimat ikhlas (kalimat syahadat), agama Nabi kami Muhammad shallallahu 'alaihi wa sallam, dan agama bapak kami Ibrahim, yang berdiri di atas jalan yang lurus, muslim dan tidak tergolong orang-orang musyrik.",
+    },
   },
   {
     id: 14,
@@ -242,7 +281,22 @@ export const dzikrData: DzikrItem[] = [
       "Faedah: Barangsiapa yang mengucapkan 'Laa ilaaha illallah wahdahu laa syariika lah, lahul mulku walahul hamdu wa huwa 'ala kulli syai-in qodiir' sebanyak 100x dalam sehari, maka itu seperti membebaskan 10 budak, dicatat baginya 100 kebaikan, dihapuskan darinya 100 kejelekan, dirinya akan terjaga dari gangguan setan pada hari itu hingga petang, dan tidak ada seorang pun yang lebih baik amalannya dari apa yang ia lakukan, kecuali orang yang mengamalkan lebih banyak dari itu.\nHikmah: Dzikir ini dibaca 100 kali dalam sehari (tidak terikat waktu pagi/petang secara khusus) dan merupakan salah satu dzikir paling utama yang menggabungkan tauhid dan pujian.",
   },
   {
+    id: 21,
+    periods: ["petang"],
+    arabic: "أَعُوْذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+    latin: "A'udzu bikalimaatillaahit taammaati min syarri maa kholaq.",
+    translation:
+      "Aku berlindung dengan kalimat-kalimat Allah yang sempurna dari kejahatan makhluk yang diciptakan-Nya.",
+    source: "HR. Muslim no. 2709",
+    count: 3,
+    category: "Perlindungan Petang",
+    description:
+      "Faedah: Barangsiapa yang mengucapkan dzikir ini sebanyak tiga kali ketika petang hari, maka ia tidak akan dimudaratkan oleh sengatan binatang berbisa pada malam itu.\nHikmah: Dzikir ini mengajarkan kita untuk berlindung kepada Allah dengan kalimat-kalimat-Nya yang sempurna, terutama menjelang malam ketika gangguan sering datang tanpa terlihat.",
+    note: "Dibaca tiga kali di petang hari saja.",
+  },
+  {
     id: 17,
+    periods: ["pagi"],
     arabic:
       "سُبْحَانَ اللهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ",
     latin:
@@ -258,6 +312,7 @@ export const dzikrData: DzikrItem[] = [
   },
   {
     id: 18,
+    periods: ["pagi"],
     arabic: "اَللَّهُمَّ إِنِّيْ أَسْأَلُكَ عِلْمًا نَافِعًا، وَرِزْقًا طَيِّبًا، وَعَمَلاً مُتَقَبَّلاً",
     latin: "Allahumma innii as-aluka 'ilman naafi'an, wa rizqon thoyyiban, wa 'amalan mutaqobbalan.",
     translation:
@@ -283,3 +338,25 @@ export const dzikrData: DzikrItem[] = [
     note: "Dibaca 100 kali dalam sehari (tidak terikat waktu pagi atau petang secara khusus).",
   },
 ];
+
+const resolveForPeriod = (entry: DzikrEntry, period: DzikrPeriod): DzikrItem => {
+  const { periods, evening, ...base } = entry;
+  return period === "petang" && evening ? { ...base, ...evening } : base;
+};
+
+const buildList = (period: DzikrPeriod): DzikrItem[] =>
+  dzikrEntries
+    .filter((entry) => !entry.periods || entry.periods.includes(period))
+    .map((entry) => resolveForPeriod(entry, period));
+
+/** Reading lists per part of the day; the petang wording is already applied. */
+export const dzikrByPeriod: Record<DzikrPeriod, DzikrItem[]> = {
+  pagi: buildList("pagi"),
+  petang: buildList("petang"),
+};
+
+export const getDzikrList = (period: DzikrPeriod): DzikrItem[] => dzikrByPeriod[period];
+
+/** Target repetitions for a dzikr, identical in both periods. */
+export const getDzikrCount = (dzikrId: number): number | undefined =>
+  dzikrEntries.find((entry) => entry.id === dzikrId)?.count;
