@@ -214,8 +214,8 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
           <h3>Cara menghitung</h3>
           <label className="setting-row">
             <span className="setting-choice">
-              <span>Penanda</span>
-              <small>Satu tap untuk menandai selesai</small>
+              <span>Sekali tap</span>
+              <small>Satu tap menandai satu dzikr selesai, lalu langsung lanjut</small>
             </span>
             <input
               type="radio"
@@ -227,7 +227,7 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
           <label className="setting-row">
             <span className="setting-choice">
               <span>Counter</span>
-              <small>Hitung bacaan satu per satu</small>
+              <small>Tap setiap kali membaca, misalnya 3× atau 33×</small>
             </span>
             <input
               type="radio"

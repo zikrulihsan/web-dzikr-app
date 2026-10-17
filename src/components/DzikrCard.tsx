@@ -49,6 +49,8 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, onTap }
     <article
       className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isPulsing ? 'is-breathing' : ''}`}
       onClick={handleCardTap}
+      // iOS Safari only applies :active (the press-in) when a touch listener exists.
+      onTouchStart={onTap ? () => undefined : undefined}
     >
       <div className="card-head">
         <span className="card-eyebrow">{categoryPrefix}</span>

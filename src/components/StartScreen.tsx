@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { useDzikrStore } from '@/store/dzikrStore';
 import { useActivePeriod } from '@/lib/useDzikrPeriod';
 import { periodLabel } from '@/lib/dzikrPeriod';
 import { prayerLabel } from '@/lib/prayerTimes';
@@ -20,6 +21,7 @@ const greeting = { pagi: 'Selamat pagi', petang: 'Selamat petang' } as const;
 const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
   const period = useActivePeriod();
   const { next, now, location } = usePrayerTimes();
+  const countingMethod = useDzikrStore((state) => state.settings.countingMethod);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -58,6 +60,21 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
         </div>
 
         <p className="start-hint">Ketuk di mana saja untuk mulai</p>
+
+        <p className="start-mode">
+          {countingMethod === 'penanda' ? (
+            <>
+              <strong>Mode sekali tap</strong>
+              <span>Baca dzikirnya sesuai jumlahnya, lalu tap sekali untuk menandai selesai.</span>
+            </>
+          ) : (
+            <>
+              <strong>Mode counter</strong>
+              <span>Tap setiap kali selesai membaca.</span>
+            </>
+          )}
+          <span className="start-mode-switch">Ubah di menu ⋯ → Menu</span>
+        </p>
       </div>
 
       <div className="start-prayer" aria-live="polite">

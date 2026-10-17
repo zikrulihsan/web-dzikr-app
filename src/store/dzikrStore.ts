@@ -82,7 +82,7 @@ const defaultSettings: AppSettings = {
   showTranslation: true,
   showLatin: true,
   showDescription: true,
-  countingMethod: 'counter',
+  countingMethod: 'penanda',
   arabicFontSize: 'medium',
   latinFontSize: 'medium',
   translationFontSize: 'medium',
@@ -187,7 +187,16 @@ export const useDzikrStore = create<DzikrState>()(
     }),
     {
       name: 'dzikr-storage',
-      version: 2,
+      version: 3,
+      // v3 makes one tap per dzikr the default. Stored settings always carry a
+      // counting method (the old default was written along with them), so move
+      // everyone over once; Pengaturan still switches back to the counter.
+      migrate: (persisted, version) => {
+        const state = persisted as { settings?: Partial<AppSettings> } | undefined;
+        if (version < 3 && state?.settings) state.settings.countingMethod = 'penanda';
+        // The merge below folds whatever is stored onto the defaults.
+        return state as DzikrState;
+      },
       partialize: (state) => ({
         currentIndex: state.currentIndex,
         progress: state.progress,

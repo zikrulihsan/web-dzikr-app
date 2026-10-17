@@ -12,6 +12,9 @@ import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
+// Length of the tap animation; the last tap of a dzikr moves on the moment it ends.
+const TAP_FEEDBACK_MS = 200;
+
 const DzikrSlider: React.FC = () => {
   const {
     currentIndex,
@@ -77,10 +80,12 @@ const DzikrSlider: React.FC = () => {
   const currentProgress = getProgress(currentDzikr.id);
   const isCompleted = currentProgress >= currentDzikr.count;
 
-  const moveNext = () => {
+  const moveNext = (delay = 0) => {
     if (activeIndex < dzikrList.length - 1) {
-      setCurrentIndex(activeIndex + 1);
-      scrollContentToTop();
+      window.setTimeout(() => {
+        setCurrentIndex(activeIndex + 1);
+        scrollContentToTop();
+      }, delay);
     }
   };
 
@@ -93,19 +98,19 @@ const DzikrSlider: React.FC = () => {
     if ('vibrate' in navigator) navigator.vibrate(10);
     setPulsingDzikrId(currentDzikr.id);
     if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
-    pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), 240);
+    pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), TAP_FEEDBACK_MS);
 
     if (settings.countingMethod === 'penanda') {
       for (let count = currentProgress; count < currentDzikr.count; count += 1) {
         incrementCount(currentDzikr.id);
       }
-      moveNext();
+      moveNext(TAP_FEEDBACK_MS);
       return;
     }
 
     incrementCount(currentDzikr.id);
-    // The last tap moves on as soon as it lands; the slide itself is the feedback.
-    if (currentProgress + 1 >= currentDzikr.count) moveNext();
+    // Tap, animation, slide: no pause beyond the animation itself.
+    if (currentProgress + 1 >= currentDzikr.count) moveNext(TAP_FEEDBACK_MS);
   };
 
   return (
@@ -188,7 +193,7 @@ const DzikrSlider: React.FC = () => {
                   ? 'Lanjut dzikr berikutnya'
                   : settings.countingMethod === 'counter'
                     ? 'Tap + untuk 1 bacaan'
-                    : 'Tap ✓ untuk tandai selesai'}
+                    : 'Sudah dibaca? Tap sekali untuk tandai selesai'}
               </span>
               <button
                 type="button"
