@@ -638,20 +638,17 @@ input:focus-visible {
 
 .dzikr-card.is-tappable {
   cursor: pointer;
-  transition: transform 90ms ease, background 90ms ease;
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Pressed: the card gives a little under the finger before the tap lands. */
-.dzikr-card.is-tappable:active {
-  transform: scale(0.975);
-}
-
+/* Pressed: the card gives under the finger and stays that way if it leaves. */
+.dzikr-card.is-tappable:active,
 .dzikr-card.is-leaving {
-  transform: scale(0.975);
+  transform: scale(0.95);
 }
 
 .dzikr-card.is-breathing {
-  animation: card-breathe 200ms cubic-bezier(0.3, 0.7, 0.4, 1);
+  animation: card-breathe 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .presence-pill {
@@ -1261,29 +1258,26 @@ input:focus-visible {
   padding-right: 44px;
 }
 
-/* A full-bleed card cannot scale without exposing its edges, so tap feedback
-   moves to the text column. Only transform changes: a colour change on a
-   surface that is sliding reads as a flicker. */
+/* Pressing a full-bleed card lifts it off the edges into a rounded card, the
+   way a pressed tile looks anywhere else. Only transform and radius move: a
+   colour change on a surface that is sliding reads as a flicker. */
+.app-shell.is-focus .dzikr-card.is-tappable {
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), border-radius 160ms ease;
+}
+
 .app-shell.is-focus .dzikr-card.is-tappable:active,
 .app-shell.is-focus .dzikr-card.is-leaving {
-  transform: none;
-}
-
-.app-shell.is-focus .dzikr-copy {
-  transition: transform 90ms ease;
-}
-
-.app-shell.is-focus .dzikr-card.is-tappable:active .dzikr-copy,
-.app-shell.is-focus .dzikr-card.is-leaving .dzikr-copy {
-  transform: scale(0.975);
+  border-radius: 28px;
+  transform: scale(0.95);
 }
 
 .app-shell.is-focus .dzikr-card.is-breathing {
-  animation: none;
+  animation: card-press 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.app-shell.is-focus .dzikr-card.is-breathing .dzikr-copy {
-  animation: card-breathe 200ms cubic-bezier(0.3, 0.7, 0.4, 1);
+@keyframes card-press {
+  0% { border-radius: 28px; transform: scale(0.95); }
+  100% { border-radius: 0; transform: scale(1); }
 }
 
 @keyframes presence-pulse {
@@ -1293,7 +1287,7 @@ input:focus-visible {
 }
 
 @keyframes card-breathe {
-  0% { transform: scale(0.975); }
+  0% { transform: scale(0.95); }
   100% { transform: scale(1); }
 }
 

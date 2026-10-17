@@ -15,3 +15,8 @@
 }
 
 .swiper-slide-active { opacity: 1; }
+
+/* Ease out so a finished card glides off instead of moving at constant speed. */
+.swiper-wrapper {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+}

@@ -13,9 +13,9 @@ import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
 // Length of the tap pulse on a tap that does not finish the dzikr.
-const TAP_FEEDBACK_MS = 200;
-// How long a finished card holds its pressed look: past the 220 ms slide.
-const LEAVE_HOLD_MS = 400;
+const TAP_FEEDBACK_MS = 260;
+// How long a finished card holds its pressed look: past the 340 ms slide.
+const LEAVE_HOLD_MS = 500;
 
 const DzikrSlider: React.FC = () => {
   const {
@@ -166,7 +166,7 @@ const DzikrSlider: React.FC = () => {
           <Swiper
             grabCursor
             slidesPerView={1}
-            speed={220}
+            speed={340}
             // Remount on a period change so the slides match the new list.
             key={activePeriod}
             initialSlide={activeIndex}
