@@ -77,12 +77,10 @@ const DzikrSlider: React.FC = () => {
   const currentProgress = getProgress(currentDzikr.id);
   const isCompleted = currentProgress >= currentDzikr.count;
 
-  const moveNext = (delay = 0) => {
+  const moveNext = () => {
     if (activeIndex < dzikrList.length - 1) {
-      window.setTimeout(() => {
-        setCurrentIndex(activeIndex + 1);
-        scrollContentToTop();
-      }, delay);
+      setCurrentIndex(activeIndex + 1);
+      scrollContentToTop();
     }
   };
 
@@ -95,18 +93,19 @@ const DzikrSlider: React.FC = () => {
     if ('vibrate' in navigator) navigator.vibrate(10);
     setPulsingDzikrId(currentDzikr.id);
     if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
-    pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), 420);
+    pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), 240);
 
     if (settings.countingMethod === 'penanda') {
       for (let count = currentProgress; count < currentDzikr.count; count += 1) {
         incrementCount(currentDzikr.id);
       }
-      moveNext(500);
+      moveNext();
       return;
     }
 
     incrementCount(currentDzikr.id);
-    if (currentProgress + 1 >= currentDzikr.count) moveNext(650);
+    // The last tap moves on as soon as it lands; the slide itself is the feedback.
+    if (currentProgress + 1 >= currentDzikr.count) moveNext();
   };
 
   return (
@@ -153,6 +152,7 @@ const DzikrSlider: React.FC = () => {
           <Swiper
             grabCursor
             slidesPerView={1}
+            speed={220}
             // Remount on a period change so the slides match the new list.
             key={activePeriod}
             initialSlide={activeIndex}

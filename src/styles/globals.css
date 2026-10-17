@@ -635,7 +635,7 @@ input:focus-visible {
 }
 
 .dzikr-card.is-breathing {
-  animation: card-breathe 420ms ease;
+  animation: card-breathe 240ms ease;
 }
 
 .presence-pill {
@@ -1227,7 +1227,7 @@ input:focus-visible {
 /* A full-bleed card cannot scale without exposing its edges, so the tap
    feedback becomes a surface flash instead. */
 .app-shell.is-focus .dzikr-card.is-breathing {
-  animation: card-breathe-flat 420ms ease;
+  animation: card-breathe-flat 240ms ease;
 }
 
 @keyframes card-breathe-flat {
