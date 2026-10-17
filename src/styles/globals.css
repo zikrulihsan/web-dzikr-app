@@ -893,7 +893,14 @@ input:focus-visible {
 
 /* ---- Mode fokus: hanya kartu dzikr yang tampil ---- */
 
-.focus-exit {
+.focus-menu {
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  top: max(14px, env(safe-area-inset-top));
+  z-index: 60;
+}
+
+.focus-menu-trigger {
   align-items: center;
   background: color-mix(in srgb, var(--surface-color) 82%, transparent);
   border: 1px solid var(--border-color);
@@ -903,24 +910,274 @@ input:focus-visible {
   display: inline-flex;
   height: 34px;
   justify-content: center;
-  opacity: 0.45;
-  position: fixed;
-  right: max(14px, env(safe-area-inset-right));
-  top: max(14px, env(safe-area-inset-top));
-  transition: opacity 220ms ease, transform 160ms ease;
+  opacity: 0.55;
+  transition: opacity 220ms ease, transform 160ms ease, color 160ms ease;
   width: 34px;
-  z-index: 60;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
-.focus-exit:hover,
-.focus-exit:focus-visible {
+.focus-menu-trigger:hover,
+.focus-menu-trigger:focus-visible,
+.focus-menu-trigger.is-open {
+  color: var(--text-primary);
   opacity: 1;
 }
 
-.focus-exit:active {
+.focus-menu-trigger:active {
   transform: scale(0.94);
+}
+
+.focus-menu-panel {
+  animation: menu-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  box-shadow: 0 18px 44px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 212px;
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: 44px;
+  transform-origin: top right;
+}
+
+.focus-menu-panel button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  font-size: 14px;
+  gap: 12px;
+  padding: 11px 12px;
+  text-align: left;
+  width: 100%;
+}
+
+.focus-menu-panel button i {
+  color: var(--text-secondary);
+  width: 18px;
+}
+
+.focus-menu-panel button:hover,
+.focus-menu-panel button:focus-visible {
+  background: var(--surface-muted);
+}
+
+.focus-menu-prayer {
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 4px;
+  padding: 8px 12px 12px;
+}
+
+.focus-menu-prayer span {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.focus-menu-prayer strong {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+@keyframes menu-in {
+  from { opacity: 0; transform: scale(0.94) translateY(-4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ---- Layar awal: ketuk di mana saja untuk mulai ---- */
+
+.start-screen {
+  align-items: center;
+  animation: start-in 420ms ease both;
+  background: var(--background-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  inset: 0;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 28px);
+  position: fixed;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  z-index: 80;
+}
+
+.start-screen:focus {
+  outline: none;
+}
+
+.start-glow {
+  background: radial-gradient(circle, rgba(var(--gold-color), 0.22) 0%, transparent 62%);
+  height: 140vmax;
+  left: 50%;
+  pointer-events: none;
+  position: absolute;
+  top: -70vmax;
+  transform: translateX(-50%);
+  width: 140vmax;
+}
+
+.start-screen.is-petang .start-glow {
+  background: radial-gradient(circle, rgba(var(--secondary-color), 0.24) 0%, transparent 62%);
+  top: auto;
+  bottom: -80vmax;
+}
+
+.start-top {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 10px;
+  position: relative;
+}
+
+.start-top .app-brand-mark {
+  margin-right: 0;
+}
+
+.start-center {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  text-align: center;
+}
+
+.start-greeting {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.start-title {
+  font-size: clamp(34px, 9vw, 52px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.start-tap {
+  height: 120px;
+  margin: 34px 0 18px;
+  position: relative;
+  width: 120px;
+}
+
+.start-dot,
+.start-ripple {
+  border-radius: 50%;
+  inset: 0;
+  margin: auto;
+  position: absolute;
+}
+
+.start-dot {
+  animation: start-breathe 2.4s ease-in-out infinite;
+  background: rgb(var(--primary-color));
+  box-shadow: 0 10px 30px var(--shadow-color);
+  height: 56px;
+  width: 56px;
+}
+
+.start-ripple {
+  animation: start-ripple 2.4s ease-out infinite;
+  border: 1.5px solid rgba(var(--primary-color), 0.45);
+  height: 56px;
+  width: 56px;
+}
+
+.start-ripple.is-late {
+  animation-delay: 1.2s;
+}
+
+.start-hint {
+  animation: start-hint 2.4s ease-in-out infinite;
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.start-prayer {
+  align-items: center;
+  background: color-mix(in srgb, var(--surface-color) 78%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: min(100%, 280px);
+  padding: 14px 22px 16px;
+  position: relative;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.start-prayer-label {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.start-prayer-main {
+  align-items: baseline;
+  display: flex;
+  gap: 10px;
+}
+
+.start-prayer-main strong {
+  font-size: 20px;
+  font-weight: 650;
+}
+
+.start-prayer-clock {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.start-prayer-countdown {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+@keyframes start-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes start-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.9); }
+}
+
+@keyframes start-ripple {
+  0% { opacity: 0.9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(2.1); }
+}
+
+@keyframes start-hint {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 
 .app-shell.is-focus .app-header,
@@ -962,7 +1219,7 @@ input:focus-visible {
   width: 100%;
 }
 
-/* Room for the floating exit button on narrow screens. */
+/* Room for the floating menu button on narrow screens. */
 .app-shell.is-focus .card-head {
   padding-right: 44px;
 }

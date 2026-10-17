@@ -1,17 +1,20 @@
 import type { DzikrPeriod } from '@/data/dzikrData';
+import { getPrayerTimes, readStoredLocation, type Coordinates } from './prayerTimes';
 
 /**
- * Dzikir pagi runs from before Shubuh until mid-afternoon; dzikir petang takes
- * over around Ashar and holds through the night. The boundaries are read off
- * the device clock, so the app follows whichever timezone the reader is in
- * without asking for a location.
+ * Dzikir pagi runs from Subuh until Ashar; dzikir petang takes over at Ashar
+ * and holds through the night until the next Subuh. Both boundaries come from
+ * prayer times for the reader's location (Jakarta until they share one), so
+ * the switch follows the sun rather than a fixed hour.
  */
-export const PAGI_START_HOUR = 3;
-export const PETANG_START_HOUR = 15;
-
-export function detectPeriod(now: Date = new Date()): DzikrPeriod {
-  const hour = now.getHours();
-  return hour >= PAGI_START_HOUR && hour < PETANG_START_HOUR ? 'pagi' : 'petang';
+export function detectPeriod(
+  now: Date = new Date(),
+  location: Coordinates = typeof window === 'undefined' ? { latitude: 0, longitude: 0 } : readStoredLocation(),
+): DzikrPeriod {
+  const times = getPrayerTimes(now, location);
+  const subuh = times.find((prayer) => prayer.name === 'subuh')!.time;
+  const ashar = times.find((prayer) => prayer.name === 'ashar')!.time;
+  return now >= subuh && now < ashar ? 'pagi' : 'petang';
 }
 
 export const periodLabel: Record<DzikrPeriod, string> = {

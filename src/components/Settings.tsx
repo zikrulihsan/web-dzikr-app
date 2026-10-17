@@ -47,7 +47,7 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
 
   const periodHint =
     periodPreference === 'auto'
-      ? `Mengikuti jam di perangkat — sekarang ${periodLabel[detectedPeriod]}`
+      ? `Mengikuti waktu shalat — sekarang ${periodLabel[detectedPeriod]}`
       : `Dikunci pada ${periodLabel[periodPreference]}`;
 
   // Entering focus mode is pointless behind the panel, so hand the screen back.
@@ -135,8 +135,9 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
             </div>
           </div>
           <div className="settings-tip">
-            Pada mode otomatis, bacaan berganti sendiri ke dzikr petang mulai pukul 15.00 waktu
-            perangkat Anda, dan kembali ke dzikr pagi pukul 03.00.
+            Pada mode otomatis, dzikr pagi tampil dari Subuh sampai Ashar, lalu berganti ke dzikr
+            petang sampai Subuh berikutnya, mengikuti waktu shalat di lokasi Anda (Jakarta bila
+            lokasi tidak diizinkan).
           </div>
         </div>
 
