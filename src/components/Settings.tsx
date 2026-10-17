@@ -6,6 +6,8 @@ import type { FontSizePreference, PeriodPreference, ThemePreference } from '@/st
 import { useFocusMode } from '@/lib/useFocusMode';
 import { useResolvedTheme } from '@/lib/useResolvedTheme';
 import { periodLabel } from '@/lib/dzikrPeriod';
+import { MAX_DISPLAY_NAME } from '@/lib/dzikrSync';
+import { supabase } from '@/lib/supabase';
 import Icon from './Icon';
 
 interface SettingsProps {
@@ -139,6 +141,26 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
             perangkat Anda, dan kembali ke dzikr pagi pukul 03.00.
           </div>
         </div>
+
+        {supabase && (
+          <div className="settings-section">
+            <h3>Bersama</h3>
+            <label className="setting-stack">
+              <span className="setting-choice">
+                <span>Nama tampilan</span>
+                <small>Dilihat orang lain saat kamu sedang berdzikr dan di peringkat</small>
+              </span>
+              <input
+                className="setting-input"
+                type="text"
+                value={settings.displayName ?? ''}
+                maxLength={MAX_DISPLAY_NAME}
+                placeholder="Hamba Allah"
+                onChange={(event) => updateSettings({ displayName: event.target.value })}
+              />
+            </label>
+          </div>
+        )}
 
         <div className="settings-section">
           <h3>Tampilan</h3>

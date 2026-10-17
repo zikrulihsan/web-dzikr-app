@@ -44,3 +44,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Tap the "Count" button to increment the counter for each dzikr
 - Tap "Reset" to reset the counter for a specific dzikr
 - Tap "Show more..." to expand the description
+
+## Dzikr bersama (live)
+
+The main screen shows how many people are reading right now, everyone's dzikr
+count for today, and a ticker naming who else is here ("Ahmad sedang
+berdzikr"). It runs on Supabase: Realtime Presence for who's online, and the
+`scores` table (with Realtime) for today's totals. Without the env vars below
+the app still works, just offline and on its own.
+
+1. Create a Supabase project and enable **Authentication → Sign In / Providers →
+   Anonymous sign-ins**.
+2. Run `supabase/schema.sql` in the SQL editor (safe to re-run).
+3. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in
+   `.env.local` and in Netlify's environment variables (see `.env.local.example`).

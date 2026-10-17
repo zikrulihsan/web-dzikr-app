@@ -638,7 +638,17 @@ input:focus-visible {
   animation: card-breathe 420ms ease;
 }
 
-.presence-pill {
+.live-presence {
+  align-items: center;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 3px;
+  margin: 2px auto 4px;
+  max-width: calc(100% - 32px);
+}
+
+.live-pill {
   align-items: center;
   background: var(--surface-color);
   border: 1px solid var(--border-color);
@@ -646,25 +656,88 @@ input:focus-visible {
   color: var(--text-secondary);
   display: flex;
   font-size: 11px;
-  font-weight: 600;
-  gap: 8px;
-  margin: 3px auto 2px;
-  padding: 8px 12px;
+  font-weight: 500;
+  gap: 7px;
+  max-width: 100%;
+  padding: 7px 12px;
   text-decoration: none;
   transition: transform 180ms ease;
-  width: fit-content;
+  white-space: nowrap;
 }
 
-.presence-pill:hover {
+.live-pill strong {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.live-pill:hover {
   transform: translateY(-1px);
 }
 
-.presence-dot {
-  background: rgb(var(--secondary-color));
+.live-sep {
+  color: var(--text-tertiary);
+}
+
+.live-chevron {
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.live-dot {
+  background: var(--text-tertiary);
   border-radius: 50%;
-  box-shadow: 0 0 0 4px rgba(var(--secondary-color), 0.12);
+  flex: none;
   height: 7px;
+  position: relative;
   width: 7px;
+}
+
+.live-dot.is-live {
+  background: #2fa36b;
+}
+
+.live-dot.is-live::after {
+  animation: live-ping 2.4s ease-out infinite;
+  border: 1.5px solid #2fa36b;
+  border-radius: 50%;
+  content: '';
+  inset: -4px;
+  position: absolute;
+}
+
+.live-ticker {
+  color: var(--text-tertiary);
+  font-size: 10.5px;
+  height: 14px;
+  line-height: 14px;
+  max-width: 100%;
+  overflow: hidden;
+  text-align: center;
+}
+
+.live-ticker-line {
+  animation: live-ticker-in 420ms ease both;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.live-ticker-line strong {
+  color: var(--text-secondary);
+  font-weight: 650;
+}
+
+@keyframes live-ping {
+  0% { opacity: 0.7; transform: scale(0.6); }
+  80%, 100% { opacity: 0; transform: scale(1.8); }
+}
+
+@keyframes live-ticker-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .settings-overlay {
@@ -864,6 +937,16 @@ input:focus-visible {
   padding: 12px 0;
 }
 
+.setting-input {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 14px;
+  padding: 9px 12px;
+  width: 100%;
+}
+
 .setting-stack:last-child {
   border-bottom: 0;
 }
@@ -924,6 +1007,7 @@ input:focus-visible {
 }
 
 .app-shell.is-focus .app-header,
+.app-shell.is-focus .live-presence,
 .app-shell.is-focus .progress-rail,
 .app-shell.is-focus .slider-position {
   display: none;

@@ -10,6 +10,7 @@ import { useDzikrStore } from '@/store/dzikrStore';
 import { useScoreSync } from '@/lib/useScoreSync';
 import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
+import LivePresence from './LivePresence';
 import Icon from './Icon';
 
 const DzikrSlider: React.FC = () => {
@@ -111,6 +112,8 @@ const DzikrSlider: React.FC = () => {
 
   return (
     <div className="slider-shell">
+      <LivePresence />
+
       <div className="progress-rail" aria-label="Daftar progres dzikr">
         {dzikrList.map((dzikr, index) => {
           const completed = getCompletionPercentage(dzikr.id) === 100;

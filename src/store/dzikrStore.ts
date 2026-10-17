@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { DzikrPeriod, getDzikrCount } from '@/data/dzikrData';
+import { localDayKey } from '@/lib/localDay';
 
 export type ThemePreference = 'dark' | 'light' | 'auto';
 export type PeriodPreference = DzikrPeriod | 'auto';
@@ -52,16 +53,21 @@ interface AppSettings {
   translationFontSize: FontSizePreference;
   showActionHint: boolean;
   focusMode: boolean;
+  /** Name shown to others on the community page; empty means "Hamba Allah". */
+  displayName: string;
 }
 
 interface DzikrState {
   currentIndex: number;
   progress: ProgressState;
+  /** Local day the progress belongs to; a new day starts a fresh checklist. */
+  progressDay: string;
   /** Part of the day derived from the device clock; refreshed by usePeriodWatcher. */
   detectedPeriod: DzikrPeriod;
   settings: AppSettings;
   setCurrentIndex: (index: number) => void;
   setDetectedPeriod: (period: DzikrPeriod) => void;
+  rolloverDay: (day?: string) => void;
   getActivePeriod: () => DzikrPeriod;
   incrementCount: (dzikrId: number) => void;
   decrementCount: (dzikrId: number) => void;
@@ -88,6 +94,7 @@ const defaultSettings: AppSettings = {
   translationFontSize: 'medium',
   showActionHint: true,
   focusMode: false,
+  displayName: '',
 };
 
 export const useDzikrStore = create<DzikrState>()(
@@ -95,6 +102,7 @@ export const useDzikrStore = create<DzikrState>()(
     (set, get) => ({
       currentIndex: 0,
       progress: { pagi: {}, petang: {} },
+      progressDay: '',
       // A fixed default keeps the server render and the first client render in
       // step; usePeriodWatcher corrects it as soon as the app mounts.
       detectedPeriod: 'pagi',
@@ -104,6 +112,18 @@ export const useDzikrStore = create<DzikrState>()(
 
       setDetectedPeriod: (period: DzikrPeriod) => {
         if (get().detectedPeriod !== period) set({ detectedPeriod: period });
+      },
+
+      rolloverDay: (day = localDayKey()) => {
+        const { progressDay } = get();
+        if (progressDay === day) return;
+        // Storage from before day tracking carries no day: adopt today as-is
+        // rather than wiping a reading that may be in progress.
+        if (!progressDay) {
+          set({ progressDay: day });
+          return;
+        }
+        set({ progressDay: day, progress: { pagi: {}, petang: {} }, currentIndex: 0 });
       },
 
       getActivePeriod: () => {
@@ -191,6 +211,7 @@ export const useDzikrStore = create<DzikrState>()(
       partialize: (state) => ({
         currentIndex: state.currentIndex,
         progress: state.progress,
+        progressDay: state.progressDay,
         settings: state.settings,
       }),
       // Shallow-merge by default would drop any setting added after the reader
