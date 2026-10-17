@@ -641,10 +641,29 @@ input:focus-visible {
   transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Pressed: the card gives under the finger and stays that way if it leaves. */
-.dzikr-card.is-tappable:active,
-.dzikr-card.is-leaving {
+/* Pressed: the card gives under the finger. */
+.dzikr-card.is-tappable:active {
   transform: scale(0.95);
+}
+
+/* Tap to advance moves in depth, the way the press does: the finished card
+   carries on into the screen and the next one comes up from below. */
+.dzikr-card.is-sinking {
+  animation: card-sink 150ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.dzikr-card.is-rising {
+  animation: card-rise 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes card-sink {
+  from { opacity: 1; transform: scale(0.95); }
+  to { opacity: 0; transform: scale(0.86); }
+}
+
+@keyframes card-rise {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .dzikr-card.is-breathing {
@@ -1265,10 +1284,24 @@ input:focus-visible {
   transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), border-radius 160ms ease;
 }
 
-.app-shell.is-focus .dzikr-card.is-tappable:active,
-.app-shell.is-focus .dzikr-card.is-leaving {
+.app-shell.is-focus .dzikr-card.is-tappable:active {
   border-radius: 28px;
   transform: scale(0.95);
+}
+
+/* Off the edges, the full-bleed card reads as a card while it moves in depth,
+   and settles back to the edges as it lands. */
+.app-shell.is-focus .dzikr-card.is-sinking {
+  border-radius: 28px;
+}
+
+.app-shell.is-focus .dzikr-card.is-rising {
+  animation-name: card-rise-flat;
+}
+
+@keyframes card-rise-flat {
+  from { border-radius: 28px; opacity: 0; transform: scale(0.92); }
+  to { border-radius: 0; opacity: 1; transform: scale(1); }
 }
 
 .app-shell.is-focus .dzikr-card.is-breathing {

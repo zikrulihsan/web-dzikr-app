@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
@@ -14,8 +14,10 @@ import Icon from './Icon';
 
 // Length of the tap pulse on a tap that does not finish the dzikr.
 const TAP_FEEDBACK_MS = 260;
-// How long a finished card holds its pressed look: past the 340 ms slide.
-const LEAVE_HOLD_MS = 500;
+// A finished card is pressed in, so it keeps going in: it sinks away, then the
+// next card rises up in its place. Swipes still slide sideways.
+const SINK_MS = 150;
+const RISE_MS = 300;
 
 const DzikrSlider: React.FC = () => {
   const {
@@ -32,9 +34,15 @@ const DzikrSlider: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
   const [pulsingDzikrId, setPulsingDzikrId] = useState<number | null>(null);
-  const [leavingDzikrId, setLeavingDzikrId] = useState<number | null>(null);
+  const [sinkingDzikrId, setSinkingDzikrId] = useState<number | null>(null);
+  const [risingDzikrId, setRisingDzikrId] = useState<number | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
   const pulseTimerRef = useRef<number | null>(null);
+  const advanceTimerRef = useRef<number | null>(null);
+  // Set while a card sinks, so taps land on nothing until the next one is up.
+  const isAdvancingRef = useRef(false);
+  // The next slideTo should jump instead of sliding (the depth effect covers it).
+  const jumpNextSlideRef = useRef(false);
   const previousPeriodRef = useRef<DzikrPeriod | null>(null);
 
   useScoreSync();
@@ -60,6 +68,7 @@ const DzikrSlider: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
+      if (advanceTimerRef.current) window.clearTimeout(advanceTimerRef.current);
     };
   }, [activeIndex, dzikrList.length, setCurrentIndex]);
 
@@ -72,16 +81,23 @@ const DzikrSlider: React.FC = () => {
     previousPeriodRef.current = activePeriod;
   }, [activePeriod, setCurrentIndex]);
 
-  useEffect(() => {
+  // Layout effect: a jump must land before paint, or the old card shows for a frame.
+  useLayoutEffect(() => {
     if (swiperInstance && swiperInstance.activeIndex !== activeIndex) {
-      swiperInstance.slideTo(activeIndex);
+      swiperInstance.slideTo(activeIndex, jumpNextSlideRef.current ? 0 : undefined);
       scrollContentToTop();
     }
+    jumpNextSlideRef.current = false;
   }, [activeIndex, swiperInstance]);
 
   const currentDzikr = dzikrList[activeIndex];
   const currentProgress = getProgress(currentDzikr.id);
   const isCompleted = currentProgress >= currentDzikr.count;
+  // While a finished card sinks, the controls already show the next card's
+  // fresh state, so they do not flash "done" for a moment.
+  const isSinking = sinkingDzikrId === currentDzikr.id;
+  const showCompleted = isCompleted && !isSinking;
+  const hideCorrections = currentProgress === 0 || isSinking;
 
   const moveNext = () => {
     if (activeIndex < dzikrList.length - 1) {
@@ -90,27 +106,36 @@ const DzikrSlider: React.FC = () => {
     }
   };
 
-  const handleIncrement = () => {
-    if (isCompleted) {
+  const hasNext = activeIndex < dzikrList.length - 1;
+
+  const sinkToNext = () => {
+    const nextDzikr = dzikrList[activeIndex + 1];
+    isAdvancingRef.current = true;
+    setSinkingDzikrId(currentDzikr.id);
+    advanceTimerRef.current = window.setTimeout(() => {
+      jumpNextSlideRef.current = true;
+      setRisingDzikrId(nextDzikr.id);
       moveNext();
+      isAdvancingRef.current = false;
+      // The sunk card stays invisible until it is off screen, then resets.
+      advanceTimerRef.current = window.setTimeout(() => {
+        setSinkingDzikrId(null);
+        setRisingDzikrId(null);
+      }, RISE_MS);
+    }, SINK_MS);
+  };
+
+  const handleIncrement = () => {
+    if (isAdvancingRef.current) return;
+    if (isCompleted) {
+      if (hasNext) sinkToNext();
       return;
     }
 
     if ('vibrate' in navigator) navigator.vibrate(10);
-    if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
 
     const finishes =
       settings.countingMethod === 'penanda' || currentProgress + 1 >= currentDzikr.count;
-    const hasNext = activeIndex < dzikrList.length - 1;
-
-    if (finishes && hasNext) {
-      // The card stays pressed in and slides away at once, with no bounce back.
-      setLeavingDzikrId(currentDzikr.id);
-      pulseTimerRef.current = window.setTimeout(() => setLeavingDzikrId(null), LEAVE_HOLD_MS);
-    } else {
-      setPulsingDzikrId(currentDzikr.id);
-      pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), TAP_FEEDBACK_MS);
-    }
 
     if (settings.countingMethod === 'penanda') {
       for (let count = currentProgress; count < currentDzikr.count; count += 1) {
@@ -119,7 +144,15 @@ const DzikrSlider: React.FC = () => {
     } else {
       incrementCount(currentDzikr.id);
     }
-    if (finishes) moveNext();
+
+    if (finishes && hasNext) {
+      sinkToNext();
+      return;
+    }
+
+    if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
+    setPulsingDzikrId(currentDzikr.id);
+    pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), TAP_FEEDBACK_MS);
   };
 
   return (
@@ -181,7 +214,9 @@ const DzikrSlider: React.FC = () => {
                 <DzikrCard
                   dzikr={dzikr}
                   isPulsing={pulsingDzikrId === dzikr.id}
-                  isLeaving={leavingDzikrId === dzikr.id}
+                  motion={
+                    sinkingDzikrId === dzikr.id ? 'sinking' : risingDzikrId === dzikr.id ? 'rising' : undefined
+                  }
                   onTap={index === activeIndex ? handleIncrement : undefined}
                 />
               </SwiperSlide>
@@ -199,7 +234,7 @@ const DzikrSlider: React.FC = () => {
           {(settings.showActionHint ?? true) && (
             <div className="action-label" role="status">
               <span>
-                {isCompleted
+                {showCompleted
                   ? 'Lanjut dzikr berikutnya'
                   : settings.countingMethod === 'counter'
                     ? 'Tap + untuk 1 bacaan'
@@ -214,13 +249,13 @@ const DzikrSlider: React.FC = () => {
               </button>
             </div>
           )}
-          <div className={`action-corrections ${currentProgress === 0 ? 'is-hidden' : ''}`}>
+          <div className={`action-corrections ${hideCorrections ? 'is-hidden' : ''}`}>
             <button
               className="action-small"
               type="button"
               onClick={() => decrementCount(currentDzikr.id)}
               aria-label="Kurangi hitungan"
-              tabIndex={currentProgress === 0 ? -1 : 0}
+              tabIndex={hideCorrections ? -1 : 0}
             >
               −
             </button>
@@ -230,19 +265,19 @@ const DzikrSlider: React.FC = () => {
               type="button"
               onClick={() => resetCount(currentDzikr.id)}
               aria-label="Atur ulang dzikr ini"
-              tabIndex={currentProgress === 0 ? -1 : 0}
+              tabIndex={hideCorrections ? -1 : 0}
             >
               <Icon icon="fa-solid fa-rotate-left" size={13} />
             </button>
           </div>
 
           <button
-            className={`action-main ${isCompleted ? 'is-complete' : ''}`}
+            className={`action-main ${showCompleted ? 'is-complete' : ''}`}
             type="button"
             onClick={handleIncrement}
-            aria-label={isCompleted ? 'Lanjut ke dzikr berikutnya' : settings.countingMethod === 'penanda' ? 'Tandai selesai' : 'Tambah hitungan'}
+            aria-label={showCompleted ? 'Lanjut ke dzikr berikutnya' : settings.countingMethod === 'penanda' ? 'Tandai selesai' : 'Tambah hitungan'}
           >
-            {isCompleted ? (
+            {showCompleted ? (
               <Icon icon="fa-solid fa-arrow-right" size={20} />
             ) : settings.countingMethod === 'counter' ? (
               <span className="action-plus" aria-hidden="true">+</span>
