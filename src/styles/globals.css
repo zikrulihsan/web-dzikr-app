@@ -43,6 +43,12 @@ body {
   overflow: hidden;
 }
 
+/* Mobile browsers paint a blue/grey box over any tapped element with a click
+   handler, including the whole dzikr card; it flashed on every tap. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .app-main {
   display: flex;
   flex: 1;
@@ -1255,23 +1261,11 @@ input:focus-visible {
   padding-right: 44px;
 }
 
-/* A full-bleed card cannot scale without exposing its edges, so the tap
-   feedback becomes a surface flash instead. */
-.app-shell.is-focus .dzikr-card.is-breathing {
-  animation: card-breathe-flat 200ms ease-out;
-}
-
+/* A full-bleed card cannot scale without exposing its edges, so tap feedback
+   moves to the text column. Only transform changes: a colour change on a
+   surface that is sliding reads as a flicker. */
+.app-shell.is-focus .dzikr-card.is-tappable:active,
 .app-shell.is-focus .dzikr-card.is-leaving {
-  background: var(--surface-muted);
-  transform: none;
-}
-
-.app-shell.is-focus .dzikr-card.is-leaving .dzikr-copy {
-  transform: scale(0.975);
-}
-
-.app-shell.is-focus .dzikr-card.is-tappable:active {
-  background: var(--surface-muted);
   transform: none;
 }
 
@@ -1279,17 +1273,17 @@ input:focus-visible {
   transition: transform 90ms ease;
 }
 
-.app-shell.is-focus .dzikr-card.is-tappable:active .dzikr-copy {
+.app-shell.is-focus .dzikr-card.is-tappable:active .dzikr-copy,
+.app-shell.is-focus .dzikr-card.is-leaving .dzikr-copy {
   transform: scale(0.975);
+}
+
+.app-shell.is-focus .dzikr-card.is-breathing {
+  animation: none;
 }
 
 .app-shell.is-focus .dzikr-card.is-breathing .dzikr-copy {
   animation: card-breathe 200ms cubic-bezier(0.3, 0.7, 0.4, 1);
-}
-
-@keyframes card-breathe-flat {
-  0% { background: var(--surface-muted); }
-  100% { background: var(--surface-color); }
 }
 
 @keyframes presence-pulse {
