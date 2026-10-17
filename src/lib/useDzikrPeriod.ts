@@ -14,13 +14,18 @@ export function useActivePeriod(): DzikrPeriod {
 
 /**
  * Keeps the detected part of the day in step with the device clock so an open
- * tab flips from pagi to petang on its own. Mount once (in DzikrSlider).
+ * tab flips from pagi to petang on its own, and starts a fresh checklist when
+ * the date changes. Mount once (in DzikrSlider).
  */
 export function usePeriodWatcher(): DzikrPeriod {
   const setDetectedPeriod = useDzikrStore((state) => state.setDetectedPeriod);
+  const rolloverDay = useDzikrStore((state) => state.rolloverDay);
 
   useEffect(() => {
-    const sync = () => setDetectedPeriod(detectPeriod());
+    const sync = () => {
+      rolloverDay();
+      setDetectedPeriod(detectPeriod());
+    };
     sync();
 
     // A minute is plenty: the boundary only moves once per hour block, and a
@@ -34,7 +39,7 @@ export function usePeriodWatcher(): DzikrPeriod {
       document.removeEventListener('visibilitychange', sync);
       window.removeEventListener('focus', sync);
     };
-  }, [setDetectedPeriod]);
+  }, [rolloverDay, setDetectedPeriod]);
 
   return useActivePeriod();
 }
