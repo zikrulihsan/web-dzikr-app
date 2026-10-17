@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
@@ -12,12 +12,9 @@ import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
-// Length of the tap pulse on a tap that does not finish the dzikr.
-const TAP_FEEDBACK_MS = 260;
-// A finished card is pressed in, so it keeps going in: it sinks away, then the
-// next card rises up in its place. Swipes still slide sideways.
-const SINK_MS = 150;
-const RISE_MS = 300;
+// Every tap flashes the card; a tap that finishes the dzikr slides on as soon
+// as the flash is over.
+const FLASH_MS = 160;
 
 const DzikrSlider: React.FC = () => {
   const {
@@ -33,16 +30,11 @@ const DzikrSlider: React.FC = () => {
   } = useDzikrStore();
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
-  const [pulsingDzikrId, setPulsingDzikrId] = useState<number | null>(null);
-  const [sinkingDzikrId, setSinkingDzikrId] = useState<number | null>(null);
-  const [risingDzikrId, setRisingDzikrId] = useState<number | null>(null);
+  const [flashingDzikrId, setFlashingDzikrId] = useState<number | null>(null);
+  // The finished card between its last tap and the slide away.
+  const [advancingDzikrId, setAdvancingDzikrId] = useState<number | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
-  const pulseTimerRef = useRef<number | null>(null);
-  const advanceTimerRef = useRef<number | null>(null);
-  // Set while a card sinks, so taps land on nothing until the next one is up.
-  const isAdvancingRef = useRef(false);
-  // The next slideTo should jump instead of sliding (the depth effect covers it).
-  const jumpNextSlideRef = useRef(false);
+  const flashTimerRef = useRef<number | null>(null);
   const previousPeriodRef = useRef<DzikrPeriod | null>(null);
 
   useScoreSync();
@@ -67,8 +59,7 @@ const DzikrSlider: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
-      if (advanceTimerRef.current) window.clearTimeout(advanceTimerRef.current);
+      if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current);
     };
   }, [activeIndex, dzikrList.length, setCurrentIndex]);
 
@@ -81,23 +72,21 @@ const DzikrSlider: React.FC = () => {
     previousPeriodRef.current = activePeriod;
   }, [activePeriod, setCurrentIndex]);
 
-  // Layout effect: a jump must land before paint, or the old card shows for a frame.
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (swiperInstance && swiperInstance.activeIndex !== activeIndex) {
-      swiperInstance.slideTo(activeIndex, jumpNextSlideRef.current ? 0 : undefined);
+      swiperInstance.slideTo(activeIndex);
       scrollContentToTop();
     }
-    jumpNextSlideRef.current = false;
   }, [activeIndex, swiperInstance]);
 
   const currentDzikr = dzikrList[activeIndex];
   const currentProgress = getProgress(currentDzikr.id);
   const isCompleted = currentProgress >= currentDzikr.count;
-  // While a finished card sinks, the controls already show the next card's
-  // fresh state, so they do not flash "done" for a moment.
-  const isSinking = sinkingDzikrId === currentDzikr.id;
-  const showCompleted = isCompleted && !isSinking;
-  const hideCorrections = currentProgress === 0 || isSinking;
+  // Until a finished card slides away, the controls already show the next
+  // card's fresh state, so they do not flash "done" for a moment.
+  const isAdvancing = advancingDzikrId === currentDzikr.id;
+  const showCompleted = isCompleted && !isAdvancing;
+  const hideCorrections = currentProgress === 0 || isAdvancing;
 
   const moveNext = () => {
     if (activeIndex < dzikrList.length - 1) {
@@ -108,27 +97,28 @@ const DzikrSlider: React.FC = () => {
 
   const hasNext = activeIndex < dzikrList.length - 1;
 
-  const sinkToNext = () => {
-    const nextDzikr = dzikrList[activeIndex + 1];
-    isAdvancingRef.current = true;
-    setSinkingDzikrId(currentDzikr.id);
-    advanceTimerRef.current = window.setTimeout(() => {
-      jumpNextSlideRef.current = true;
-      setRisingDzikrId(nextDzikr.id);
+  const flash = (then?: () => void) => {
+    if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current);
+    setFlashingDzikrId(currentDzikr.id);
+    flashTimerRef.current = window.setTimeout(() => {
+      setFlashingDzikrId(null);
+      then?.();
+    }, FLASH_MS);
+  };
+
+  const flashToNext = () => {
+    setAdvancingDzikrId(currentDzikr.id);
+    flash(() => {
       moveNext();
-      isAdvancingRef.current = false;
-      // The sunk card stays invisible until it is off screen, then resets.
-      advanceTimerRef.current = window.setTimeout(() => {
-        setSinkingDzikrId(null);
-        setRisingDzikrId(null);
-      }, RISE_MS);
-    }, SINK_MS);
+      setAdvancingDzikrId(null);
+    });
   };
 
   const handleIncrement = () => {
-    if (isAdvancingRef.current) return;
+    // Taps during the flash before a slide would land on a finished card.
+    if (isAdvancing) return;
     if (isCompleted) {
-      if (hasNext) sinkToNext();
+      if (hasNext) flashToNext();
       return;
     }
 
@@ -145,14 +135,8 @@ const DzikrSlider: React.FC = () => {
       incrementCount(currentDzikr.id);
     }
 
-    if (finishes && hasNext) {
-      sinkToNext();
-      return;
-    }
-
-    if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
-    setPulsingDzikrId(currentDzikr.id);
-    pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), TAP_FEEDBACK_MS);
+    if (finishes && hasNext) flashToNext();
+    else flash();
   };
 
   return (
@@ -213,10 +197,7 @@ const DzikrSlider: React.FC = () => {
               <SwiperSlide key={dzikr.id}>
                 <DzikrCard
                   dzikr={dzikr}
-                  isPulsing={pulsingDzikrId === dzikr.id}
-                  motion={
-                    sinkingDzikrId === dzikr.id ? 'sinking' : risingDzikrId === dzikr.id ? 'rising' : undefined
-                  }
+                  isFlashing={flashingDzikrId === dzikr.id}
                   onTap={index === activeIndex ? handleIncrement : undefined}
                 />
               </SwiperSlide>

@@ -6,13 +6,11 @@ import type { DzikrItem } from '@/data/dzikrData';
 
 interface DzikrCardProps {
   dzikr: DzikrItem;
-  isPulsing?: boolean;
-  /** Tap-to-advance depth motion: the finished card sinks, the next one rises. */
-  motion?: 'sinking' | 'rising';
+  isFlashing?: boolean;
   onTap?: () => void;
 }
 
-const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, motion, onTap }) => {
+const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isFlashing = false, onTap }) => {
   const [expanded, setExpanded] = useState(false);
   const { getProgress, getCompletionPercentage, settings } = useDzikrStore();
 
@@ -49,10 +47,8 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, motion,
 
   return (
     <article
-      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isPulsing ? 'is-breathing' : ''} ${motion ? `is-${motion}` : ''}`}
+      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isFlashing ? 'is-flashing' : ''}`}
       onClick={handleCardTap}
-      // iOS Safari only applies :active (the press-in) when a touch listener exists.
-      onTouchStart={onTap ? () => undefined : undefined}
     >
       <div className="card-head">
         <span className="card-eyebrow">{categoryPrefix}</span>
