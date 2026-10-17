@@ -7,10 +7,12 @@ import type { DzikrItem } from '@/data/dzikrData';
 interface DzikrCardProps {
   dzikr: DzikrItem;
   isPulsing?: boolean;
+  /** Finished and sliding away: hold the pressed look instead of springing back. */
+  isLeaving?: boolean;
   onTap?: () => void;
 }
 
-const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, onTap }) => {
+const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, isLeaving = false, onTap }) => {
   const [expanded, setExpanded] = useState(false);
   const { getProgress, getCompletionPercentage, settings } = useDzikrStore();
 
@@ -47,7 +49,7 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, onTap }
 
   return (
     <article
-      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isPulsing ? 'is-breathing' : ''}`}
+      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isPulsing ? 'is-breathing' : ''} ${isLeaving ? 'is-leaving' : ''}`}
       onClick={handleCardTap}
       // iOS Safari only applies :active (the press-in) when a touch listener exists.
       onTouchStart={onTap ? () => undefined : undefined}

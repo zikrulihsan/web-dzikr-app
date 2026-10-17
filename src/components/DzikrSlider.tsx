@@ -12,8 +12,10 @@ import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
-// Length of the tap animation; the last tap of a dzikr moves on the moment it ends.
+// Length of the tap pulse on a tap that does not finish the dzikr.
 const TAP_FEEDBACK_MS = 200;
+// How long a finished card holds its pressed look: past the 220 ms slide.
+const LEAVE_HOLD_MS = 400;
 
 const DzikrSlider: React.FC = () => {
   const {
@@ -30,6 +32,7 @@ const DzikrSlider: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
   const [pulsingDzikrId, setPulsingDzikrId] = useState<number | null>(null);
+  const [leavingDzikrId, setLeavingDzikrId] = useState<number | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
   const pulseTimerRef = useRef<number | null>(null);
   const previousPeriodRef = useRef<DzikrPeriod | null>(null);
@@ -80,12 +83,10 @@ const DzikrSlider: React.FC = () => {
   const currentProgress = getProgress(currentDzikr.id);
   const isCompleted = currentProgress >= currentDzikr.count;
 
-  const moveNext = (delay = 0) => {
+  const moveNext = () => {
     if (activeIndex < dzikrList.length - 1) {
-      window.setTimeout(() => {
-        setCurrentIndex(activeIndex + 1);
-        scrollContentToTop();
-      }, delay);
+      setCurrentIndex(activeIndex + 1);
+      scrollContentToTop();
     }
   };
 
@@ -96,21 +97,29 @@ const DzikrSlider: React.FC = () => {
     }
 
     if ('vibrate' in navigator) navigator.vibrate(10);
-    setPulsingDzikrId(currentDzikr.id);
     if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
-    pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), TAP_FEEDBACK_MS);
+
+    const finishes =
+      settings.countingMethod === 'penanda' || currentProgress + 1 >= currentDzikr.count;
+    const hasNext = activeIndex < dzikrList.length - 1;
+
+    if (finishes && hasNext) {
+      // The card stays pressed in and slides away at once, with no bounce back.
+      setLeavingDzikrId(currentDzikr.id);
+      pulseTimerRef.current = window.setTimeout(() => setLeavingDzikrId(null), LEAVE_HOLD_MS);
+    } else {
+      setPulsingDzikrId(currentDzikr.id);
+      pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), TAP_FEEDBACK_MS);
+    }
 
     if (settings.countingMethod === 'penanda') {
       for (let count = currentProgress; count < currentDzikr.count; count += 1) {
         incrementCount(currentDzikr.id);
       }
-      moveNext(TAP_FEEDBACK_MS);
-      return;
+    } else {
+      incrementCount(currentDzikr.id);
     }
-
-    incrementCount(currentDzikr.id);
-    // Tap, animation, slide: no pause beyond the animation itself.
-    if (currentProgress + 1 >= currentDzikr.count) moveNext(TAP_FEEDBACK_MS);
+    if (finishes) moveNext();
   };
 
   return (
@@ -172,6 +181,7 @@ const DzikrSlider: React.FC = () => {
                 <DzikrCard
                   dzikr={dzikr}
                   isPulsing={pulsingDzikrId === dzikr.id}
+                  isLeaving={leavingDzikrId === dzikr.id}
                   onTap={index === activeIndex ? handleIncrement : undefined}
                 />
               </SwiperSlide>

@@ -637,7 +637,11 @@ input:focus-visible {
 
 /* Pressed: the card gives a little under the finger before the tap lands. */
 .dzikr-card.is-tappable:active {
-  transform: scale(0.985);
+  transform: scale(0.975);
+}
+
+.dzikr-card.is-leaving {
+  transform: scale(0.975);
 }
 
 .dzikr-card.is-breathing {
@@ -1257,9 +1261,26 @@ input:focus-visible {
   animation: card-breathe-flat 200ms ease-out;
 }
 
+.app-shell.is-focus .dzikr-card.is-leaving {
+  background: var(--surface-muted);
+  transform: none;
+}
+
+.app-shell.is-focus .dzikr-card.is-leaving .dzikr-copy {
+  transform: scale(0.975);
+}
+
 .app-shell.is-focus .dzikr-card.is-tappable:active {
   background: var(--surface-muted);
   transform: none;
+}
+
+.app-shell.is-focus .dzikr-copy {
+  transition: transform 90ms ease;
+}
+
+.app-shell.is-focus .dzikr-card.is-tappable:active .dzikr-copy {
+  transform: scale(0.975);
 }
 
 .app-shell.is-focus .dzikr-card.is-breathing .dzikr-copy {
