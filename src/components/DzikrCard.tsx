@@ -6,11 +6,12 @@ import type { DzikrItem } from '@/data/dzikrData';
 
 interface DzikrCardProps {
   dzikr: DzikrItem;
-  isFlashing?: boolean;
+  /** Just arrived by a tap: eases in instead of sliding across. */
+  isEntering?: boolean;
   onTap?: () => void;
 }
 
-const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isFlashing = false, onTap }) => {
+const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isEntering = false, onTap }) => {
   const [expanded, setExpanded] = useState(false);
   const { getProgress, getCompletionPercentage, settings } = useDzikrStore();
 
@@ -47,7 +48,7 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isFlashing = false, onTap 
 
   return (
     <article
-      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isFlashing ? 'is-flashing' : ''}`}
+      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isEntering ? 'is-entering' : ''}`}
       onClick={handleCardTap}
     >
       <div className="card-head">

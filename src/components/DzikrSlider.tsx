@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
@@ -12,9 +12,9 @@ import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
-// Every tap flashes the card; a tap that finishes the dzikr slides on as soon
-// as the flash is over.
-const FLASH_MS = 160;
+// A tap that finishes a dzikr moves on at once: the slider jumps and the next
+// card eases in from a little to the right. Swipes keep the normal slide.
+const ENTER_MS = 280;
 
 const DzikrSlider: React.FC = () => {
   const {
@@ -30,11 +30,11 @@ const DzikrSlider: React.FC = () => {
   } = useDzikrStore();
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
-  const [flashingDzikrId, setFlashingDzikrId] = useState<number | null>(null);
-  // The finished card between its last tap and the slide away.
-  const [advancingDzikrId, setAdvancingDzikrId] = useState<number | null>(null);
+  const [enteringDzikrId, setEnteringDzikrId] = useState<number | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
-  const flashTimerRef = useRef<number | null>(null);
+  const enterTimerRef = useRef<number | null>(null);
+  // Set for the next slide change only: jump instead of sliding.
+  const jumpNextSlideRef = useRef(false);
   const previousPeriodRef = useRef<DzikrPeriod | null>(null);
 
   useScoreSync();
@@ -59,7 +59,7 @@ const DzikrSlider: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current);
+      if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
     };
   }, [activeIndex, dzikrList.length, setCurrentIndex]);
 
@@ -72,21 +72,18 @@ const DzikrSlider: React.FC = () => {
     previousPeriodRef.current = activePeriod;
   }, [activePeriod, setCurrentIndex]);
 
-  useEffect(() => {
+  // Layout effect so a jump lands before paint, together with the entering card.
+  useLayoutEffect(() => {
     if (swiperInstance && swiperInstance.activeIndex !== activeIndex) {
-      swiperInstance.slideTo(activeIndex);
+      swiperInstance.slideTo(activeIndex, jumpNextSlideRef.current ? 0 : undefined);
       scrollContentToTop();
     }
+    jumpNextSlideRef.current = false;
   }, [activeIndex, swiperInstance]);
 
   const currentDzikr = dzikrList[activeIndex];
   const currentProgress = getProgress(currentDzikr.id);
   const isCompleted = currentProgress >= currentDzikr.count;
-  // Until a finished card slides away, the controls already show the next
-  // card's fresh state, so they do not flash "done" for a moment.
-  const isAdvancing = advancingDzikrId === currentDzikr.id;
-  const showCompleted = isCompleted && !isAdvancing;
-  const hideCorrections = currentProgress === 0 || isAdvancing;
 
   const moveNext = () => {
     if (activeIndex < dzikrList.length - 1) {
@@ -97,28 +94,18 @@ const DzikrSlider: React.FC = () => {
 
   const hasNext = activeIndex < dzikrList.length - 1;
 
-  const flash = (then?: () => void) => {
-    if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current);
-    setFlashingDzikrId(currentDzikr.id);
-    flashTimerRef.current = window.setTimeout(() => {
-      setFlashingDzikrId(null);
-      then?.();
-    }, FLASH_MS);
-  };
-
-  const flashToNext = () => {
-    setAdvancingDzikrId(currentDzikr.id);
-    flash(() => {
-      moveNext();
-      setAdvancingDzikrId(null);
-    });
+  const advance = () => {
+    if (!hasNext) return;
+    if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
+    jumpNextSlideRef.current = true;
+    setEnteringDzikrId(dzikrList[activeIndex + 1].id);
+    moveNext();
+    enterTimerRef.current = window.setTimeout(() => setEnteringDzikrId(null), ENTER_MS);
   };
 
   const handleIncrement = () => {
-    // Taps during the flash before a slide would land on a finished card.
-    if (isAdvancing) return;
     if (isCompleted) {
-      if (hasNext) flashToNext();
+      advance();
       return;
     }
 
@@ -135,8 +122,7 @@ const DzikrSlider: React.FC = () => {
       incrementCount(currentDzikr.id);
     }
 
-    if (finishes && hasNext) flashToNext();
-    else flash();
+    if (finishes) advance();
   };
 
   return (
@@ -197,7 +183,7 @@ const DzikrSlider: React.FC = () => {
               <SwiperSlide key={dzikr.id}>
                 <DzikrCard
                   dzikr={dzikr}
-                  isFlashing={flashingDzikrId === dzikr.id}
+                  isEntering={enteringDzikrId === dzikr.id}
                   onTap={index === activeIndex ? handleIncrement : undefined}
                 />
               </SwiperSlide>
@@ -215,7 +201,7 @@ const DzikrSlider: React.FC = () => {
           {(settings.showActionHint ?? true) && (
             <div className="action-label" role="status">
               <span>
-                {showCompleted
+                {isCompleted
                   ? 'Lanjut dzikr berikutnya'
                   : settings.countingMethod === 'counter'
                     ? 'Tap + untuk 1 bacaan'
@@ -230,13 +216,13 @@ const DzikrSlider: React.FC = () => {
               </button>
             </div>
           )}
-          <div className={`action-corrections ${hideCorrections ? 'is-hidden' : ''}`}>
+          <div className={`action-corrections ${currentProgress === 0 ? 'is-hidden' : ''}`}>
             <button
               className="action-small"
               type="button"
               onClick={() => decrementCount(currentDzikr.id)}
               aria-label="Kurangi hitungan"
-              tabIndex={hideCorrections ? -1 : 0}
+              tabIndex={currentProgress === 0 ? -1 : 0}
             >
               −
             </button>
@@ -246,19 +232,19 @@ const DzikrSlider: React.FC = () => {
               type="button"
               onClick={() => resetCount(currentDzikr.id)}
               aria-label="Atur ulang dzikr ini"
-              tabIndex={hideCorrections ? -1 : 0}
+              tabIndex={currentProgress === 0 ? -1 : 0}
             >
               <Icon icon="fa-solid fa-rotate-left" size={13} />
             </button>
           </div>
 
           <button
-            className={`action-main ${showCompleted ? 'is-complete' : ''}`}
+            className={`action-main ${isCompleted ? 'is-complete' : ''}`}
             type="button"
             onClick={handleIncrement}
-            aria-label={showCompleted ? 'Lanjut ke dzikr berikutnya' : settings.countingMethod === 'penanda' ? 'Tandai selesai' : 'Tambah hitungan'}
+            aria-label={isCompleted ? 'Lanjut ke dzikr berikutnya' : settings.countingMethod === 'penanda' ? 'Tandai selesai' : 'Tambah hitungan'}
           >
-            {showCompleted ? (
+            {isCompleted ? (
               <Icon icon="fa-solid fa-arrow-right" size={20} />
             ) : settings.countingMethod === 'counter' ? (
               <span className="action-plus" aria-hidden="true">+</span>

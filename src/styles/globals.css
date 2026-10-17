@@ -640,15 +640,15 @@ input:focus-visible {
   cursor: pointer;
 }
 
-/* Tap feedback is a short warm flash of the card surface; nothing moves.
-   It ends before a finished card slides, so a colour never travels. */
-.dzikr-card.is-flashing {
-  animation: card-flash 160ms ease-out;
+/* The next card after a finishing tap: it eases in from a little to the
+   right, the direction the list runs, rather than sliding a full screen. */
+.dzikr-card.is-entering {
+  animation: card-enter 280ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@keyframes card-flash {
-  0% { background-color: color-mix(in srgb, var(--surface-color) 82%, rgb(var(--gold-color))); }
-  100% { background-color: var(--surface-color); }
+@keyframes card-enter {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .presence-pill {
