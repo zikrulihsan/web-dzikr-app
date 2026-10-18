@@ -30,10 +30,15 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onTap }) => {
   const categoryTitle = dzikr.category
     .replace(/^Membaca Surah /, '')
     .replace(/^Membaca /, '');
-  const markerCount = Math.min(dzikr.count, 10);
-  const filledMarkers = dzikr.count <= 10
-    ? progress
-    : Math.ceil((progress / dzikr.count) * markerCount);
+  // One tap marks the whole dzikr, so a single marker and the count to read
+  // say more than a progress of 0/3.
+  const isOneTap = settings.countingMethod === 'penanda';
+  const markerCount = isOneTap ? 1 : Math.min(dzikr.count, 10);
+  const filledMarkers = isOneTap
+    ? (isCompleted ? 1 : 0)
+    : dzikr.count <= 10
+      ? progress
+      : Math.ceil((progress / dzikr.count) * markerCount);
   const arabicFontSize = settings.arabicFontSize ?? 'medium';
   const latinFontSize = settings.latinFontSize ?? 'medium';
   const translationFontSize = settings.translationFontSize ?? 'medium';
@@ -53,9 +58,15 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onTap }) => {
         <span className="card-eyebrow">{categoryPrefix}</span>
         <div className="card-title-row">
           <h1>{categoryTitle}</h1>
-          <span className="counter-badge" aria-label={`${progress} dari ${dzikr.count} bacaan`}>
-            {progress} <span>/</span> {dzikr.count}
-          </span>
+          {isOneTap ? (
+            <span className="counter-badge" aria-label={`Dibaca ${dzikr.count} kali`}>
+              {dzikr.count}<span>×</span>
+            </span>
+          ) : (
+            <span className="counter-badge" aria-label={`${progress} dari ${dzikr.count} bacaan`}>
+              {progress} <span>/</span> {dzikr.count}
+            </span>
+          )}
         </div>
 
         <div className="count-markers" aria-label={`Progres ${Math.round(percentage)} persen`}>

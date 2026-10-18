@@ -48,7 +48,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
       </div>
 
       <div className="start-center">
-        <span className="start-greeting">Assalamu'alaykum Warahmatullah</span>
+        <span className="start-greeting">Assalamu'alaykum Warahmatullahi Wabarakatuh</span>
         <h1 className="start-title">{periodLabel[period]}</h1>
 
         <div className="start-tap" aria-hidden="true">
@@ -71,7 +71,9 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
               <span>Tap setiap kali selesai membaca.</span>
             </>
           )}
-          <span className="start-mode-switch">Ubah di menu ⋯ → Menu</span>
+          <span className="start-mode-switch">
+            Cara menghitung, ukuran huruf, latin, terjemahan, tema, dan mulai ulang ada di menu ⋯ kanan atas.
+          </span>
         </p>
       </div>
 

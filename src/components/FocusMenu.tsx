@@ -10,6 +10,16 @@ import { formatClock, usePrayerTimes } from '@/lib/usePrayerTimes';
 import Settings from './Settings';
 import Icon from './Icon';
 
+const MENU_HINT_KEY = 'dzikr-menu-hint-seen';
+
+const hasSeenMenuHint = () => {
+  try {
+    return window.localStorage.getItem(MENU_HINT_KEY) === '1';
+  } catch {
+    return true;
+  }
+};
+
 /**
  * The one control left on screen while reading full screen: a small button
  * that opens restart, the full menu and a light/dark switch.
@@ -23,6 +33,19 @@ const FocusMenu: React.FC = () => {
   const theme = useResolvedTheme();
   const { next } = usePrayerTimes();
   const menuRef = useRef<HTMLDivElement>(null);
+  // First visit only: point at the button, since it is the one way to settings.
+  const [showHint, setShowHint] = useState(false);
+
+  useEffect(() => setShowHint(!hasSeenMenuHint()), []);
+
+  const dismissHint = () => {
+    setShowHint(false);
+    try {
+      window.localStorage.setItem(MENU_HINT_KEY, '1');
+    } catch {
+      /* ignore */
+    }
+  };
 
   useEffect(() => {
     if (!isOpen) return;
@@ -59,17 +82,31 @@ const FocusMenu: React.FC = () => {
 
   return (
     <>
+      {/* Catches taps so dismissing the hint does not also count a dzikr. */}
+      {showHint && <div className="menu-hint-backdrop" onClick={dismissHint} aria-hidden="true" />}
+
       <div className="focus-menu" ref={menuRef}>
         <button
-          className={`focus-menu-trigger ${isOpen ? 'is-open' : ''}`}
+          className={`focus-menu-trigger ${isOpen ? 'is-open' : ''} ${showHint ? 'is-hinted' : ''}`}
           type="button"
-          onClick={() => setIsOpen((open) => !open)}
+          onClick={() => {
+            if (showHint) dismissHint();
+            setIsOpen((open) => !open);
+          }}
           aria-label="Buka menu"
           aria-expanded={isOpen}
           aria-haspopup="menu"
         >
           <Icon icon={isOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-ellipsis'} size={15} />
         </button>
+
+        {showHint && (
+          <div className="menu-hint" role="dialog" aria-label="Petunjuk menu">
+            <strong>Menu ada di sini</strong>
+            <span>Atur cara menghitung, tampilan, tema, atau mulai ulang dari tombol ini.</span>
+            <button type="button" onClick={dismissHint}>Mengerti</button>
+          </div>
+        )}
 
         {isOpen && (
           <div className="focus-menu-panel" role="menu" aria-label="Menu">
