@@ -383,6 +383,34 @@ input:focus-visible {
   width: 9px;
 }
 
+.read-count {
+  color: var(--text-secondary);
+  display: block;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.done-mark {
+  align-items: center;
+  align-self: center;
+  border: 1.5px solid rgba(var(--secondary-color), 0.46);
+  border-radius: 50%;
+  color: #fff;
+  display: inline-flex;
+  flex: none;
+  height: 20px;
+  justify-content: center;
+  transition: background 220ms ease, border-color 220ms ease;
+  width: 20px;
+}
+
+.done-mark.is-done {
+  background: rgb(var(--secondary-color));
+  border-color: rgb(var(--secondary-color));
+}
+
 .count-marker.is-filled {
   background: rgb(var(--secondary-color));
   border-color: rgb(var(--secondary-color));

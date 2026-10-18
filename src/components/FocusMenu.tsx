@@ -82,7 +82,7 @@ const FocusMenu: React.FC = () => {
             </button>
             <button type="button" role="menuitem" onClick={handleMenu}>
               <Icon icon="fa-solid fa-sliders" size={14} />
-              <span>Menu</span>
+              <span>Pengaturan</span>
             </button>
             <button type="button" role="menuitem" onClick={handleTheme}>
               <Icon icon={theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon'} size={14} />
