@@ -540,39 +540,6 @@ input:focus-visible {
   z-index: 40;
 }
 
-.action-label {
-  align-items: center;
-  background: color-mix(in srgb, var(--surface-color) 92%, transparent);
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
-  box-shadow: 0 6px 20px var(--shadow-color);
-  color: var(--text-secondary);
-  display: flex;
-  font-size: 10px;
-  padding: 8px 11px;
-  white-space: nowrap;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-}
-
-.action-label button {
-  align-items: center;
-  background: var(--surface-muted);
-  border: 0;
-  border-radius: 50%;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: inline-flex;
-  flex: none;
-  font-size: 14px;
-  height: 20px;
-  justify-content: center;
-  line-height: 1;
-  margin-left: 7px;
-  padding: 0 0 1px;
-  width: 20px;
-}
-
 .action-plus {
   font-size: 29px;
   font-weight: 420;
@@ -930,25 +897,60 @@ input:focus-visible {
   transform: scale(0.94);
 }
 
-.focus-menu-trigger.is-hinted {
-  animation: menu-hint-ring 1.8s ease-out infinite;
-  color: var(--text-primary);
-  opacity: 1;
-}
-
-@keyframes menu-hint-ring {
-  0% { box-shadow: 0 0 0 0 rgba(var(--secondary-color), 0.45); }
-  70%, 100% { box-shadow: 0 0 0 12px rgba(var(--secondary-color), 0); }
-}
-
-.menu-hint-backdrop {
-  background: rgba(0, 0, 0, 0.28);
+.focus-menu-backdrop {
   inset: 0;
   position: fixed;
   z-index: 59;
 }
 
-.menu-hint {
+.onboarding {
+  background: rgba(0, 0, 0, 0.38);
+  inset: 0;
+  position: fixed;
+  z-index: 80;
+}
+
+.onboarding-sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  inset: 0;
+  position: absolute;
+}
+
+.onboarding-sides span {
+  align-items: flex-end;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 22vh;
+}
+
+.onboarding-sides span::after {
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 999px;
+  color: #fff;
+  content: attr(data-label);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+}
+
+.onboarding-sides span + span {
+  border-left: 1px dashed rgba(255, 255, 255, 0.45);
+}
+
+.onboarding-spot {
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+  position: fixed;
+  animation: onboarding-ring 1.8s ease-out infinite;
+}
+
+@keyframes onboarding-ring {
+  0% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 0 3px rgba(255, 255, 255, 0.5); }
+  70%, 100% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 0 16px rgba(255, 255, 255, 0); }
+}
+
+.onboarding-bubble {
   animation: menu-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
   background: var(--surface-color);
   border: 1px solid var(--border-color);
@@ -961,35 +963,36 @@ input:focus-visible {
   gap: 6px;
   line-height: 1.5;
   padding: 14px 16px;
-  position: absolute;
+  position: fixed;
+  width: min(280px, calc(100vw - 28px));
+}
+
+.onboarding-bubble.is-center {
+  left: 0;
+  margin: 0 auto;
   right: 0;
-  top: 48px;
-  transform-origin: top right;
-  width: min(260px, calc(100vw - 28px));
+  top: 22%;
 }
 
-/* The pointer up to the button. */
-.menu-hint::before {
-  background: var(--surface-color);
-  border-left: 1px solid var(--border-color);
-  border-top: 1px solid var(--border-color);
-  content: '';
-  height: 12px;
-  position: absolute;
-  right: 11px;
-  top: -7px;
-  transform: rotate(45deg);
-  width: 12px;
-}
-
-.menu-hint strong {
+.onboarding-bubble strong {
   color: var(--text-primary);
   font-size: 14px;
   font-weight: 650;
 }
 
-.menu-hint button {
-  align-self: flex-end;
+.onboarding-actions {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.onboarding-actions span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.onboarding-actions button {
   background: rgb(var(--secondary-color));
   border: 0;
   border-radius: 999px;
@@ -997,7 +1000,6 @@ input:focus-visible {
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  margin-top: 4px;
   padding: 7px 16px;
 }
 
@@ -1199,14 +1201,32 @@ input:focus-visible {
   max-width: 300px;
 }
 
-.start-mode strong {
-  color: var(--text-secondary);
-  font-weight: 650;
+.start-quote {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 22px 0 0;
+  max-width: 320px;
 }
 
-.start-mode-switch {
+.start-quote .arabic {
+  color: var(--text-primary);
+  font-size: 24px;
+  line-height: 1.7;
+}
+
+.start-quote blockquote {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.start-quote figcaption {
+  color: var(--text-tertiary);
   font-size: 11.5px;
-  opacity: 0.85;
+  letter-spacing: 0.04em;
 }
 
 .start-prayer {

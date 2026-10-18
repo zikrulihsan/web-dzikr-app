@@ -197,17 +197,6 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
             />
           </label>
 
-          <label className="setting-row">
-            <span className="setting-choice">
-              <span>Petunjuk tombol aksi</span>
-              <small>Tampilkan kembali penjelasan tombol + atau ✓</small>
-            </span>
-            <input
-              type="checkbox"
-              checked={settings.showActionHint ?? true}
-              onChange={(event) => updateSettings({ showActionHint: event.target.checked })}
-            />
-          </label>
         </div>
 
         <div className="settings-section">

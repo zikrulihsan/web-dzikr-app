@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useDzikrStore } from '@/store/dzikrStore';
 import { useActivePeriod } from '@/lib/useDzikrPeriod';
 import { periodLabel } from '@/lib/dzikrPeriod';
 import { prayerLabel } from '@/lib/prayerTimes';
@@ -19,7 +18,6 @@ interface StartScreenProps {
 const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
   const period = useActivePeriod();
   const { next, now, location } = usePrayerTimes();
-  const countingMethod = useDzikrStore((state) => state.settings.countingMethod);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -59,22 +57,13 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
 
         <p className="start-hint">Ketuk di mana saja untuk mulai</p>
 
-        <p className="start-mode">
-          {countingMethod === 'penanda' ? (
-            <>
-              <strong>Mode sekali tap</strong>
-              <span>Baca dzikirnya sesuai jumlahnya, lalu tap sekali untuk menandai selesai.</span>
-            </>
-          ) : (
-            <>
-              <strong>Mode counter</strong>
-              <span>Tap setiap kali selesai membaca.</span>
-            </>
-          )}
-          <span className="start-mode-switch">
-            Cara menghitung, ukuran huruf, latin, terjemahan, tema, dan mulai ulang ada di menu ⋯ kanan atas.
-          </span>
-        </p>
+        <figure className="start-quote">
+          <span className="arabic" dir="rtl" lang="ar">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</span>
+          <blockquote>Ingatlah, hanya dengan mengingat Allah hati menjadi tenteram.</blockquote>
+          <figcaption>QS. Ar-Ra&apos;d: 28</figcaption>
+        </figure>
+
+        <p className="start-mode">Sesuaikan tampilan di pengaturan ⋯ kanan atas.</p>
       </div>
 
       <div className="start-prayer" aria-live="polite">

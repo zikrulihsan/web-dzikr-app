@@ -12,8 +12,9 @@ import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
-// A tap that finishes the dzikr swaps straight to the next card, with no
-// animation. Swipes keep the normal slide.
+// A tap on the right of the card counts (and, once the dzikr is done, swaps
+// straight to the next card with no animation); a tap on the left swaps back
+// to the previous one. Swipes keep the normal slide.
 
 const DzikrSlider: React.FC = () => {
   const {
@@ -25,7 +26,6 @@ const DzikrSlider: React.FC = () => {
     decrementCount,
     resetCount,
     settings,
-    updateSettings,
   } = useDzikrStore();
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
@@ -90,6 +90,18 @@ const DzikrSlider: React.FC = () => {
   const swapToNext = () => {
     jumpNextSlideRef.current = true;
     moveNext();
+  };
+
+  const swapToPrevious = () => {
+    if (activeIndex === 0) return;
+    jumpNextSlideRef.current = true;
+    setCurrentIndex(activeIndex - 1);
+    scrollContentToTop();
+  };
+
+  const handleCardTap = (side: 'left' | 'right') => {
+    if (side === 'left') swapToPrevious();
+    else handleIncrement();
   };
 
   const handleIncrement = () => {
@@ -171,7 +183,7 @@ const DzikrSlider: React.FC = () => {
               <SwiperSlide key={dzikr.id}>
                 <DzikrCard
                   dzikr={dzikr}
-                  onTap={index === activeIndex ? handleIncrement : undefined}
+                  onTap={index === activeIndex ? handleCardTap : undefined}
                 />
               </SwiperSlide>
             ))}
@@ -185,24 +197,6 @@ const DzikrSlider: React.FC = () => {
 
       {isClient && (
         <div className="action-float">
-          {(settings.showActionHint ?? true) && (
-            <div className="action-label" role="status">
-              <span>
-                {isCompleted
-                  ? 'Lanjut dzikr berikutnya'
-                  : settings.countingMethod === 'counter'
-                    ? 'Tap + untuk 1 bacaan'
-                    : 'Sudah dibaca? Tap sekali untuk tandai selesai'}
-              </span>
-              <button
-                type="button"
-                onClick={() => updateSettings({ showActionHint: false })}
-                aria-label="Sembunyikan petunjuk tombol"
-              >
-                ×
-              </button>
-            </div>
-          )}
           <div className={`action-corrections ${currentProgress === 0 ? 'is-hidden' : ''}`}>
             <button
               className="action-small"

@@ -6,7 +6,8 @@ import type { DzikrItem } from '@/data/dzikrData';
 
 interface DzikrCardProps {
   dzikr: DzikrItem;
-  onTap?: () => void;
+  /** Which half of the card was tapped: right reads on, left goes back. */
+  onTap?: (side: 'left' | 'right') => void;
 }
 
 const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onTap }) => {
@@ -46,7 +47,8 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onTap }) => {
   const handleCardTap = (event: React.MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
     if (!onTap || target.closest('button, a, input, label') || window.getSelection()?.toString()) return;
-    onTap();
+    const rect = event.currentTarget.getBoundingClientRect();
+    onTap(event.clientX < rect.left + rect.width / 2 ? 'left' : 'right');
   };
 
   return (
