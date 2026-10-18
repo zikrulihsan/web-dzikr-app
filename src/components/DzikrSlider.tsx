@@ -13,9 +13,9 @@ import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
 // A tap presses the card in (CSS :active) and flashes it. A tap that finishes
-// the dzikr swaps straight to the next card with no slide, and the flash
-// lands on the new card. Swipes keep the normal slide.
-const FLASH_MS = 200;
+// the dzikr then swaps straight to the next card, with no slide, once the
+// flash is over. Swipes keep the normal slide.
+const FLASH_MS = 160;
 
 const DzikrSlider: React.FC = () => {
   const {
@@ -85,6 +85,11 @@ const DzikrSlider: React.FC = () => {
   const currentDzikr = dzikrList[activeIndex];
   const currentProgress = getProgress(currentDzikr.id);
   const isCompleted = currentProgress >= currentDzikr.count;
+  // Between a finishing tap and the swap the controls keep their fresh look,
+  // so the button does not flash the "next" arrow for a moment.
+  const isSwapping =
+    isCompleted && flashingDzikrId === currentDzikr.id && activeIndex < dzikrList.length - 1;
+  const showCompleted = isCompleted && !isSwapping;
 
   const moveNext = () => {
     if (activeIndex < dzikrList.length - 1) {
@@ -99,19 +104,22 @@ const DzikrSlider: React.FC = () => {
     flashTimerRef.current = window.setTimeout(() => setFlashingDzikrId(null), FLASH_MS);
   };
 
-  // Swap to the next card without a slide; the flash marks the change.
+  // Flash the tapped card, then swap to the next one without a slide.
   const swapToNext = () => {
-    const nextDzikr = dzikrList[activeIndex + 1];
-    if (!nextDzikr) {
-      flash(currentDzikr.id);
-      return;
-    }
-    jumpNextSlideRef.current = true;
-    flash(nextDzikr.id);
-    moveNext();
+    const hasNext = activeIndex < dzikrList.length - 1;
+    if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current);
+    setFlashingDzikrId(currentDzikr.id);
+    flashTimerRef.current = window.setTimeout(() => {
+      setFlashingDzikrId(null);
+      if (!hasNext) return;
+      jumpNextSlideRef.current = true;
+      moveNext();
+    }, FLASH_MS);
   };
 
   const handleIncrement = () => {
+    // A tap during the flash before a swap would land on a finished card.
+    if (isSwapping) return;
     if (isCompleted) {
       swapToNext();
       return;
@@ -209,7 +217,7 @@ const DzikrSlider: React.FC = () => {
           {(settings.showActionHint ?? true) && (
             <div className="action-label" role="status">
               <span>
-                {isCompleted
+                {showCompleted
                   ? 'Lanjut dzikr berikutnya'
                   : settings.countingMethod === 'counter'
                     ? 'Tap + untuk 1 bacaan'
@@ -224,13 +232,13 @@ const DzikrSlider: React.FC = () => {
               </button>
             </div>
           )}
-          <div className={`action-corrections ${currentProgress === 0 ? 'is-hidden' : ''}`}>
+          <div className={`action-corrections ${(currentProgress === 0 || isSwapping) ? 'is-hidden' : ''}`}>
             <button
               className="action-small"
               type="button"
               onClick={() => decrementCount(currentDzikr.id)}
               aria-label="Kurangi hitungan"
-              tabIndex={currentProgress === 0 ? -1 : 0}
+              tabIndex={(currentProgress === 0 || isSwapping) ? -1 : 0}
             >
               −
             </button>
@@ -240,19 +248,19 @@ const DzikrSlider: React.FC = () => {
               type="button"
               onClick={() => resetCount(currentDzikr.id)}
               aria-label="Atur ulang dzikr ini"
-              tabIndex={currentProgress === 0 ? -1 : 0}
+              tabIndex={(currentProgress === 0 || isSwapping) ? -1 : 0}
             >
               <Icon icon="fa-solid fa-rotate-left" size={13} />
             </button>
           </div>
 
           <button
-            className={`action-main ${isCompleted ? 'is-complete' : ''}`}
+            className={`action-main ${showCompleted ? 'is-complete' : ''}`}
             type="button"
             onClick={handleIncrement}
-            aria-label={isCompleted ? 'Lanjut ke dzikr berikutnya' : settings.countingMethod === 'penanda' ? 'Tandai selesai' : 'Tambah hitungan'}
+            aria-label={showCompleted ? 'Lanjut ke dzikr berikutnya' : settings.countingMethod === 'penanda' ? 'Tandai selesai' : 'Tambah hitungan'}
           >
-            {isCompleted ? (
+            {showCompleted ? (
               <Icon icon="fa-solid fa-arrow-right" size={20} />
             ) : settings.countingMethod === 'counter' ? (
               <span className="action-plus" aria-hidden="true">+</span>
