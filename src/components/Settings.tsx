@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
 import type { FontSizePreference, PeriodPreference, ThemePreference } from '@/store/dzikrStore';
 import { useFocusMode } from '@/lib/useFocusMode';
@@ -32,7 +32,6 @@ const periodOptions: Array<{ label: string; value: PeriodPreference }> = [
 ];
 
 const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
-  const [isTextSizeOpen, setIsTextSizeOpen] = useState(false);
   const { settings, updateSettings, detectedPeriod } = useDzikrStore();
   const { isFocusMode, enterFocusMode, exitFocusMode } = useFocusMode();
   const resolvedTheme = useResolvedTheme();
@@ -113,36 +112,51 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
         </div>
 
         <div className="settings-section">
-          <h3>Waktu dzikr</h3>
-          <div className="setting-stack">
+          <h3>Cara menghitung</h3>
+          <label className="setting-row">
             <span className="setting-choice">
-              <span>Dzikr pagi atau petang</span>
-              <small>{periodHint}</small>
+              <span>Sekali tap <em className="setting-badge">Disarankan</em></span>
+              <small>Hitung dengan jari, lalu tap sekali untuk menandai dzikr selesai</small>
             </span>
-            <div className="segmented" role="radiogroup" aria-label="Waktu dzikr">
-              {periodOptions.map((option) => (
-                <button
-                  className={periodPreference === option.value ? 'is-active' : ''}
-                  key={option.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={periodPreference === option.value}
-                  onClick={() => updateSettings({ periodPreference: option.value })}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
+            <input
+              type="radio"
+              name="countingMethod"
+              checked={settings.countingMethod === 'penanda'}
+              onChange={() => updateSettings({ countingMethod: 'penanda' })}
+            />
+          </label>
+          <label className="setting-row">
+            <span className="setting-choice">
+              <span>Counter</span>
+              <small>Tap setiap kali membaca. Pakai kalau memang perlu bantuan menghitung</small>
+            </span>
+            <input
+              type="radio"
+              name="countingMethod"
+              checked={settings.countingMethod === 'counter'}
+              onChange={() => updateSettings({ countingMethod: 'counter' })}
+            />
+          </label>
           <div className="settings-tip">
-            Pada mode otomatis, dzikr pagi tampil dari Subuh sampai Ashar, lalu berganti ke dzikr
-            petang sampai Subuh berikutnya, mengikuti waktu shalat di lokasi Anda (Jakarta bila
-            lokasi tidak diizinkan).
+            Utamakan menghitung dengan jari tangan sebagaimana dicontohkan Rasulullah ﷺ. Counter
+            tersedia bila memang dibutuhkan.
           </div>
         </div>
 
         <div className="settings-section">
           <h3>Tampilan</h3>
+          <div className="setting-stack">
+            <span className="setting-choice">
+              <span>Ukuran teks</span>
+              <small>Atur Arab, Latin, dan Arti secara terpisah</small>
+            </span>
+            <div className="settings-submenu">
+              {renderFontSizeControl('Arab', 'ع', 'arabicFontSize')}
+              {renderFontSizeControl('Latin', 'Aa', 'latinFontSize')}
+              {renderFontSizeControl('Arti', 'A', 'translationFontSize')}
+            </div>
+          </div>
+
           <div className="setting-stack">
             <span className="setting-choice">
               <span>Mode tema</span>
@@ -163,73 +177,6 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               ))}
             </div>
           </div>
-
-          <button
-            className="setting-row settings-submenu-trigger"
-            type="button"
-            onClick={() => setIsTextSizeOpen((value) => !value)}
-            aria-expanded={isTextSizeOpen}
-          >
-            <span className="setting-choice">
-              <span>Ukuran teks</span>
-              <small>Atur Arab, Latin, dan Arti secara terpisah</small>
-            </span>
-            <span className="submenu-chevron" aria-hidden="true">{isTextSizeOpen ? '−' : '+'}</span>
-          </button>
-
-          {isTextSizeOpen && (
-            <div className="settings-submenu">
-              {renderFontSizeControl('Arab', 'ع', 'arabicFontSize')}
-              {renderFontSizeControl('Latin', 'Aa', 'latinFontSize')}
-              {renderFontSizeControl('Arti', 'A', 'translationFontSize')}
-            </div>
-          )}
-
-          <label className="setting-row">
-            <span className="setting-choice">
-              <span>Mode fokus</span>
-              <small>Layar penuh, hanya kartu dzikr yang tampil</small>
-            </span>
-            <input
-              type="checkbox"
-              checked={isFocusMode}
-              onChange={(event) => handleFocusModeChange(event.target.checked)}
-            />
-          </label>
-
-        </div>
-
-        <div className="settings-section">
-          <h3>Cara menghitung</h3>
-          <label className="setting-row">
-            <span className="setting-choice">
-              <span>Sekali tap</span>
-              <small>Satu tap menandai satu dzikr selesai, lalu langsung lanjut</small>
-            </span>
-            <input
-              type="radio"
-              name="countingMethod"
-              checked={settings.countingMethod === 'penanda'}
-              onChange={() => updateSettings({ countingMethod: 'penanda' })}
-            />
-          </label>
-          <label className="setting-row">
-            <span className="setting-choice">
-              <span>Counter</span>
-              <small>Tap setiap kali membaca, misalnya 3× atau 33×</small>
-            </span>
-            <input
-              type="radio"
-              name="countingMethod"
-              checked={settings.countingMethod === 'counter'}
-              onChange={() => updateSettings({ countingMethod: 'counter' })}
-            />
-          </label>
-          {settings.countingMethod === 'counter' && (
-            <div className="settings-tip">
-              Utamakan menghitung dengan tangan sebagaimana yang dicontohkan Rasulullah.
-            </div>
-          )}
         </div>
 
         <div className="settings-section">
@@ -256,6 +203,46 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
               type="checkbox"
               checked={settings.showDescription}
               onChange={(event) => updateSettings({ showDescription: event.target.checked })}
+            />
+          </label>
+        </div>
+
+        <div className="settings-section">
+          <h3>Waktu & layar</h3>
+          <div className="setting-stack">
+            <span className="setting-choice">
+              <span>Dzikr pagi atau petang</span>
+              <small>{periodHint}</small>
+            </span>
+            <div className="segmented" role="radiogroup" aria-label="Waktu dzikr">
+              {periodOptions.map((option) => (
+                <button
+                  className={periodPreference === option.value ? 'is-active' : ''}
+                  key={option.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={periodPreference === option.value}
+                  onClick={() => updateSettings({ periodPreference: option.value })}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="settings-tip">
+            Pada mode otomatis, dzikr pagi tampil dari Subuh sampai Ashar, lalu berganti ke dzikr
+            petang sampai Subuh berikutnya, mengikuti waktu shalat di lokasi Anda (Jakarta bila
+            lokasi tidak diizinkan).
+          </div>
+          <label className="setting-row">
+            <span className="setting-choice">
+              <span>Mode fokus</span>
+              <small>Layar penuh, hanya kartu dzikr yang tampil</small>
+            </span>
+            <input
+              type="checkbox"
+              checked={isFocusMode}
+              onChange={(event) => handleFocusModeChange(event.target.checked)}
             />
           </label>
         </div>

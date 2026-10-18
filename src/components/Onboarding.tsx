@@ -3,7 +3,8 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
 
-const ONBOARDING_KEY = 'dzikr-onboarding-seen';
+// Bumped when the walkthrough gains a step everyone should see once.
+const ONBOARDING_KEY = 'dzikr-onboarding-v2';
 
 const hasSeenOnboarding = () => {
   try {
@@ -18,6 +19,8 @@ interface Step {
   body: string;
   /** The control the step points at; none shows the bubble in the middle. */
   target?: string;
+  /** Mark the two tap halves of the card behind the bubble. */
+  showSides?: boolean;
 }
 
 /**
@@ -36,7 +39,14 @@ const Onboarding: React.FC = () => {
   const isOneTap = countingMethod === 'penanda';
   const steps: Step[] = [
     {
+      title: 'Utamakan jari tangan',
+      body: isOneTap
+        ? 'Hitung bacaan dengan jari, lalu cukup tap sekali untuk menandai dzikir selesai. Kalau memang perlu bantuan menghitung, pilih Counter di Pengaturan.'
+        : 'Utamakan menghitung dengan jari. Counter tetap bisa dipakai bila memang perlu, dan bisa diganti ke Sekali tap di Pengaturan.',
+    },
+    {
       title: 'Tap kanan lanjut, tap kiri kembali',
+      showSides: true,
       body: isOneTap
         ? 'Baca dzikirnya sesuai jumlahnya, lalu tap sisi kanan kartu untuk menandai selesai dan lanjut. Tap sisi kiri untuk kembali.'
         : 'Tap sisi kanan kartu setiap kali selesai membaca. Tap sisi kiri untuk kembali ke dzikir sebelumnya.',
@@ -95,7 +105,7 @@ const Onboarding: React.FC = () => {
   return (
     // The layer takes every tap, so nothing behind it counts a dzikr.
     <div className="onboarding" onClick={advance} role="dialog" aria-label="Petunjuk penggunaan">
-      {!step.target && (
+      {step.showSides && (
         <div className="onboarding-sides" aria-hidden="true">
           <span data-label="‹ Kembali" />
           <span data-label="Lanjut ›" />
