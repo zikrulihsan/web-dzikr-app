@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
@@ -12,9 +12,9 @@ import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
-// A tap that finishes a dzikr moves on at once: the slider jumps and the next
-// card eases in from a little to the right. Swipes keep the normal slide.
-const ENTER_MS = 280;
+// Every tap flashes the card; a tap that finishes the dzikr slides on at the
+// same moment, exactly like a swipe.
+const FLASH_MS = 200;
 
 const DzikrSlider: React.FC = () => {
   const {
@@ -30,11 +30,9 @@ const DzikrSlider: React.FC = () => {
   } = useDzikrStore();
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
-  const [enteringDzikrId, setEnteringDzikrId] = useState<number | null>(null);
+  const [flashingDzikrId, setFlashingDzikrId] = useState<number | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
-  const enterTimerRef = useRef<number | null>(null);
-  // Set for the next slide change only: jump instead of sliding.
-  const jumpNextSlideRef = useRef(false);
+  const flashTimerRef = useRef<number | null>(null);
   const previousPeriodRef = useRef<DzikrPeriod | null>(null);
 
   useScoreSync();
@@ -59,7 +57,7 @@ const DzikrSlider: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
+      if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current);
     };
   }, [activeIndex, dzikrList.length, setCurrentIndex]);
 
@@ -72,13 +70,11 @@ const DzikrSlider: React.FC = () => {
     previousPeriodRef.current = activePeriod;
   }, [activePeriod, setCurrentIndex]);
 
-  // Layout effect so a jump lands before paint, together with the entering card.
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (swiperInstance && swiperInstance.activeIndex !== activeIndex) {
-      swiperInstance.slideTo(activeIndex, jumpNextSlideRef.current ? 0 : undefined);
+      swiperInstance.slideTo(activeIndex);
       scrollContentToTop();
     }
-    jumpNextSlideRef.current = false;
   }, [activeIndex, swiperInstance]);
 
   const currentDzikr = dzikrList[activeIndex];
@@ -92,20 +88,15 @@ const DzikrSlider: React.FC = () => {
     }
   };
 
-  const hasNext = activeIndex < dzikrList.length - 1;
-
-  const advance = () => {
-    if (!hasNext) return;
-    if (enterTimerRef.current) window.clearTimeout(enterTimerRef.current);
-    jumpNextSlideRef.current = true;
-    setEnteringDzikrId(dzikrList[activeIndex + 1].id);
-    moveNext();
-    enterTimerRef.current = window.setTimeout(() => setEnteringDzikrId(null), ENTER_MS);
+  const flash = () => {
+    if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current);
+    setFlashingDzikrId(currentDzikr.id);
+    flashTimerRef.current = window.setTimeout(() => setFlashingDzikrId(null), FLASH_MS);
   };
 
   const handleIncrement = () => {
     if (isCompleted) {
-      advance();
+      moveNext();
       return;
     }
 
@@ -122,7 +113,8 @@ const DzikrSlider: React.FC = () => {
       incrementCount(currentDzikr.id);
     }
 
-    if (finishes) advance();
+    flash();
+    if (finishes) moveNext();
   };
 
   return (
@@ -169,7 +161,6 @@ const DzikrSlider: React.FC = () => {
           <Swiper
             grabCursor
             slidesPerView={1}
-            speed={340}
             // Remount on a period change so the slides match the new list.
             key={activePeriod}
             initialSlide={activeIndex}
@@ -183,7 +174,7 @@ const DzikrSlider: React.FC = () => {
               <SwiperSlide key={dzikr.id}>
                 <DzikrCard
                   dzikr={dzikr}
-                  isEntering={enteringDzikrId === dzikr.id}
+                  isFlashing={flashingDzikrId === dzikr.id}
                   onTap={index === activeIndex ? handleIncrement : undefined}
                 />
               </SwiperSlide>
