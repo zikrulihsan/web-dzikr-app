@@ -17,7 +17,7 @@ interface StartScreenProps {
  */
 const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
   const period = useActivePeriod();
-  const { next, now, location } = usePrayerTimes();
+  const { next, previous, now, location } = usePrayerTimes();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -77,6 +77,11 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
               <span className="start-prayer-clock">{formatClock(next.time)}</span>
             </span>
             <span className="start-prayer-countdown">{formatCountdown(now, next.time)}</span>
+            {previous && (
+              <span className="start-prayer-previous">
+                Sebelumnya · {prayerLabel[previous.name]} {formatClock(previous.time)}
+              </span>
+            )}
           </>
         ) : (
           <span className="start-prayer-label">Menghitung waktu shalat…</span>

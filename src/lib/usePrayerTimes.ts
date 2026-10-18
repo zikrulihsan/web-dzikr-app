@@ -5,6 +5,7 @@ import { useDzikrStore } from '@/store/dzikrStore';
 import { detectPeriod } from './dzikrPeriod';
 import {
   getNextPrayer,
+  getPreviousPrayer,
   readStoredLocation,
   storeLocation,
   FALLBACK_LOCATION,
@@ -19,6 +20,7 @@ const LOCATION_EVENT = 'dzikr-location-change';
 interface PrayerState {
   location: PrayerLocation;
   next: PrayerTime | null;
+  previous: PrayerTime | null;
   now: Date | null;
 }
 
@@ -61,7 +63,12 @@ export function usePrayerTimes(): PrayerState {
     };
   }, [setDetectedPeriod]);
 
-  return { location, now, next: now ? getNextPrayer(now, location) : null };
+  return {
+    location,
+    now,
+    next: now ? getNextPrayer(now, location) : null,
+    previous: now ? getPreviousPrayer(now, location) : null,
+  };
 }
 
 /** "2 jam 14 menit lagi", "14 menit lagi", "sebentar lagi". */

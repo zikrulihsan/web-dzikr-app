@@ -108,6 +108,14 @@ export function getNextPrayer(now: Date, coordinates: Coordinates): PrayerTime {
   return getPrayerTimes(tomorrow, coordinates)[0];
 }
 
+/** The last prayer whose time has come, reaching back to yesterday's Isya. */
+export function getPreviousPrayer(now: Date, coordinates: Coordinates): PrayerTime {
+  const passed = getPrayerTimes(now, coordinates).filter((prayer) => prayer.time <= now);
+  if (passed.length) return passed[passed.length - 1];
+  const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+  return getPrayerTimes(yesterday, coordinates)[4];
+}
+
 export function readStoredLocation(): PrayerLocation {
   try {
     const raw = window.localStorage.getItem(LOCATION_KEY);
