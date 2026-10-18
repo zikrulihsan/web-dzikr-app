@@ -16,7 +16,7 @@ const hasSeenOnboarding = () => {
 
 interface Step {
   title: string;
-  body: string;
+  body: React.ReactNode;
   /** The control the step points at; none shows the bubble in the middle. */
   target?: string;
   /** Mark the two tap halves of the card behind the bubble. */
@@ -39,10 +39,17 @@ const Onboarding: React.FC = () => {
   const isOneTap = countingMethod === 'penanda';
   const steps: Step[] = [
     {
-      title: 'Utamakan jari tangan',
-      body: isOneTap
-        ? 'Hitung bacaan dengan jari, lalu cukup tap sekali untuk menandai dzikir selesai. Kalau memang perlu bantuan menghitung, pilih Counter di Pengaturan.'
-        : 'Utamakan menghitung dengan jari. Counter tetap bisa dipakai bila memang perlu, dan bisa diganti ke Sekali tap di Pengaturan.',
+      title: 'Metode hitung dzikr: hitung dengan jari',
+      body: (
+        <>
+          Utamakan hitung dengan tangan untuk menghidupkan Sunnah Rasulullah ﷺ.{' '}
+          {isOneTap ? (
+            <>Sekali tap berarti selesai, jika butuh counter bisa diatur di <em>Pengaturan</em>.</>
+          ) : (
+            <>Counter sedang dipakai, dan bisa diganti ke sekali tap di <em>Pengaturan</em>.</>
+          )}
+        </>
+      ),
     },
     {
       title: 'Tap kanan lanjut, tap kiri kembali',
