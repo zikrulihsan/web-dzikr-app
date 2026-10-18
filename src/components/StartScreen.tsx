@@ -11,8 +11,6 @@ interface StartScreenProps {
   onStart: () => void;
 }
 
-const greeting = { pagi: 'Selamat pagi', petang: 'Selamat petang' } as const;
-
 /**
  * The first thing a visit shows: which dzikir is due now and the next prayer.
  * Any tap (or Enter/Space) starts, and doubles as the user gesture that the
@@ -50,7 +48,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
       </div>
 
       <div className="start-center">
-        <span className="start-greeting">{greeting[period]}</span>
+        <span className="start-greeting">Assalamu'alaykum Warahmatullah</span>
         <h1 className="start-title">{periodLabel[period]}</h1>
 
         <div className="start-tap" aria-hidden="true">
