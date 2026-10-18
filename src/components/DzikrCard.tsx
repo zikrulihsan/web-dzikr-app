@@ -3,14 +3,15 @@
 import React, { useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
 import type { DzikrItem } from '@/data/dzikrData';
+import Icon from './Icon';
 
 interface DzikrCardProps {
   dzikr: DzikrItem;
-  isPulsing?: boolean;
-  onTap?: () => void;
+  /** Which half of the card was tapped: right reads on, left goes back. */
+  onTap?: (side: 'left' | 'right') => void;
 }
 
-const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, onTap }) => {
+const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onTap }) => {
   const [expanded, setExpanded] = useState(false);
   const { getProgress, getCompletionPercentage, settings } = useDzikrStore();
 
@@ -31,6 +32,9 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, onTap }
   const categoryTitle = dzikr.category
     .replace(/^Membaca Surah /, '')
     .replace(/^Membaca /, '');
+  // One tap marks the whole dzikr, so the card shows how many times to read
+  // and a single done mark instead of a running 0/3.
+  const isOneTap = settings.countingMethod === 'penanda';
   const markerCount = Math.min(dzikr.count, 10);
   const filledMarkers = dzikr.count <= 10
     ? progress
@@ -42,31 +46,44 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isPulsing = false, onTap }
   const handleCardTap = (event: React.MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
     if (!onTap || target.closest('button, a, input, label') || window.getSelection()?.toString()) return;
-    onTap();
+    const rect = event.currentTarget.getBoundingClientRect();
+    onTap(event.clientX < rect.left + rect.width / 2 ? 'left' : 'right');
   };
 
   return (
     <article
-      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isPulsing ? 'is-breathing' : ''}`}
+      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''}`}
       onClick={handleCardTap}
     >
       <div className="card-head">
         <span className="card-eyebrow">{categoryPrefix}</span>
         <div className="card-title-row">
           <h1>{categoryTitle}</h1>
-          <span className="counter-badge" aria-label={`${progress} dari ${dzikr.count} bacaan`}>
-            {progress} <span>/</span> {dzikr.count}
-          </span>
+          {isOneTap ? (
+            isCompleted && (
+              <span className="done-mark" aria-label="Sudah dibaca">
+                <Icon icon="fa-solid fa-check" size={11} />
+              </span>
+            )
+          ) : (
+            <span className="counter-badge" aria-label={`${progress} dari ${dzikr.count} bacaan`}>
+              {progress} <span>/</span> {dzikr.count}
+            </span>
+          )}
         </div>
 
-        <div className="count-markers" aria-label={`Progres ${Math.round(percentage)} persen`}>
-          {Array.from({ length: markerCount }, (_, index) => (
-            <span
-              className={`count-marker ${index < filledMarkers ? 'is-filled' : ''}`}
-              key={index}
-            />
-          ))}
-        </div>
+        {isOneTap ? (
+          <span className="read-count">{dzikr.count}×</span>
+        ) : (
+          <div className="count-markers" aria-label={`Progres ${Math.round(percentage)} persen`}>
+            {Array.from({ length: markerCount }, (_, index) => (
+              <span
+                className={`count-marker ${index < filledMarkers ? 'is-filled' : ''}`}
+                key={index}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="dzikr-copy">

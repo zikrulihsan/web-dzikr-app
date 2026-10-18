@@ -43,6 +43,12 @@ body {
   overflow: hidden;
 }
 
+/* Mobile browsers paint a blue/grey box over any tapped element with a click
+   handler, including the whole dzikr card; it flashed on every tap. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .app-main {
   display: flex;
   flex: 1;
@@ -189,6 +195,29 @@ input:focus-visible {
   height: calc(100dvh - 52px);
   overflow: hidden;
   position: relative;
+}
+
+/* Full screen only: one thin bar along the top edge for the whole session. */
+.top-progress {
+  display: none;
+}
+
+.app-shell.is-focus .top-progress {
+  background: rgba(var(--secondary-color), 0.16);
+  display: block;
+  height: 3px;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 55;
+}
+
+.top-progress span {
+  background: rgb(var(--secondary-color));
+  display: block;
+  height: 100%;
+  transition: width 300ms ease;
 }
 
 .progress-rail {
@@ -377,6 +406,28 @@ input:focus-visible {
   width: 9px;
 }
 
+.read-count {
+  color: var(--text-secondary);
+  display: block;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.done-mark {
+  align-items: center;
+  align-self: center;
+  background: rgb(var(--secondary-color));
+  border-radius: 50%;
+  color: #fff;
+  display: inline-flex;
+  flex: none;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+}
+
 .count-marker.is-filled {
   background: rgb(var(--secondary-color));
   border-color: rgb(var(--secondary-color));
@@ -534,39 +585,6 @@ input:focus-visible {
   z-index: 40;
 }
 
-.action-label {
-  align-items: center;
-  background: color-mix(in srgb, var(--surface-color) 92%, transparent);
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
-  box-shadow: 0 6px 20px var(--shadow-color);
-  color: var(--text-secondary);
-  display: flex;
-  font-size: 10px;
-  padding: 8px 11px;
-  white-space: nowrap;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-}
-
-.action-label button {
-  align-items: center;
-  background: var(--surface-muted);
-  border: 0;
-  border-radius: 50%;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: inline-flex;
-  flex: none;
-  font-size: 14px;
-  height: 20px;
-  justify-content: center;
-  line-height: 1;
-  margin-left: 7px;
-  padding: 0 0 1px;
-  width: 20px;
-}
-
 .action-plus {
   font-size: 29px;
   font-weight: 420;
@@ -632,10 +650,6 @@ input:focus-visible {
 
 .dzikr-card.is-tappable {
   cursor: pointer;
-}
-
-.dzikr-card.is-breathing {
-  animation: card-breathe 420ms ease;
 }
 
 .presence-pill {
@@ -893,7 +907,14 @@ input:focus-visible {
 
 /* ---- Mode fokus: hanya kartu dzikr yang tampil ---- */
 
-.focus-exit {
+.focus-menu {
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  top: max(14px, env(safe-area-inset-top));
+  z-index: 60;
+}
+
+.focus-menu-trigger {
   align-items: center;
   background: color-mix(in srgb, var(--surface-color) 82%, transparent);
   border: 1px solid var(--border-color);
@@ -903,24 +924,429 @@ input:focus-visible {
   display: inline-flex;
   height: 34px;
   justify-content: center;
-  opacity: 0.45;
-  position: fixed;
-  right: max(14px, env(safe-area-inset-right));
-  top: max(14px, env(safe-area-inset-top));
-  transition: opacity 220ms ease, transform 160ms ease;
+  opacity: 0.55;
+  transition: opacity 220ms ease, transform 160ms ease, color 160ms ease;
   width: 34px;
-  z-index: 60;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
-.focus-exit:hover,
-.focus-exit:focus-visible {
+.focus-menu-trigger:hover,
+.focus-menu-trigger:focus-visible,
+.focus-menu-trigger.is-open {
+  color: var(--text-primary);
   opacity: 1;
 }
 
-.focus-exit:active {
+.focus-menu-trigger:active {
   transform: scale(0.94);
+}
+
+.focus-menu-backdrop {
+  inset: 0;
+  position: fixed;
+  z-index: 59;
+}
+
+.onboarding {
+  background: rgba(0, 0, 0, 0.38);
+  inset: 0;
+  position: fixed;
+  z-index: 80;
+}
+
+.onboarding-sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  inset: 0;
+  position: absolute;
+}
+
+.onboarding-sides span {
+  align-items: flex-end;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 22vh;
+}
+
+.onboarding-sides span::after {
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 999px;
+  color: #fff;
+  content: attr(data-label);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+}
+
+.onboarding-sides span + span {
+  border-left: 1px dashed rgba(255, 255, 255, 0.45);
+}
+
+.onboarding-spot {
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+  position: fixed;
+  animation: onboarding-ring 1.8s ease-out infinite;
+}
+
+@keyframes onboarding-ring {
+  0% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 0 3px rgba(255, 255, 255, 0.5); }
+  70%, 100% { box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 0 16px rgba(255, 255, 255, 0); }
+}
+
+.onboarding-bubble {
+  animation: menu-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  box-shadow: 0 18px 44px var(--shadow-color);
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  gap: 6px;
+  line-height: 1.5;
+  padding: 14px 16px;
+  position: fixed;
+  width: min(280px, calc(100vw - 28px));
+}
+
+.onboarding-bubble.is-center {
+  left: 0;
+  margin: 0 auto;
+  right: 0;
+  top: 22%;
+}
+
+.onboarding-bubble strong {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.onboarding-actions {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.onboarding-actions span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.onboarding-actions button {
+  background: rgb(var(--secondary-color));
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 16px;
+}
+
+.focus-menu-panel {
+  animation: menu-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  box-shadow: 0 18px 44px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 212px;
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: 44px;
+  transform-origin: top right;
+}
+
+.focus-menu-panel button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  font-size: 14px;
+  gap: 12px;
+  padding: 11px 12px;
+  text-align: left;
+  width: 100%;
+}
+
+.focus-menu-panel button i {
+  color: var(--text-secondary);
+  width: 18px;
+}
+
+.focus-menu-panel button:hover,
+.focus-menu-panel button:focus-visible {
+  background: var(--surface-muted);
+}
+
+.focus-menu-prayer {
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 4px;
+  padding: 8px 12px 12px;
+}
+
+.focus-menu-prayer span {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.focus-menu-prayer strong {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+
+@keyframes menu-in {
+  from { opacity: 0; transform: scale(0.94) translateY(-4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ---- Layar awal: ketuk di mana saja untuk mulai ---- */
+
+.start-screen {
+  align-items: center;
+  animation: start-in 420ms ease both;
+  background: var(--background-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  inset: 0;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: calc(env(safe-area-inset-top) + 24px) 24px calc(env(safe-area-inset-bottom) + 28px);
+  position: fixed;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  z-index: 80;
+}
+
+.start-screen:focus {
+  outline: none;
+}
+
+.start-glow {
+  background: radial-gradient(circle, rgba(var(--gold-color), 0.22) 0%, transparent 62%);
+  height: 140vmax;
+  left: 50%;
+  pointer-events: none;
+  position: absolute;
+  top: -70vmax;
+  transform: translateX(-50%);
+  width: 140vmax;
+}
+
+.start-screen.is-petang .start-glow {
+  background: radial-gradient(circle, rgba(var(--secondary-color), 0.24) 0%, transparent 62%);
+  top: auto;
+  bottom: -80vmax;
+}
+
+.start-top {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 10px;
+  position: relative;
+}
+
+.start-top .app-brand-mark {
+  margin-right: 0;
+}
+
+.start-center {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  text-align: center;
+}
+
+.start-greeting {
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.start-title {
+  font-size: clamp(34px, 9vw, 52px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.start-tap {
+  height: 120px;
+  margin: 34px 0 18px;
+  position: relative;
+  width: 120px;
+}
+
+.start-dot,
+.start-ripple {
+  border-radius: 50%;
+  inset: 0;
+  margin: auto;
+  position: absolute;
+}
+
+.start-dot {
+  animation: start-breathe 2.4s ease-in-out infinite;
+  background: rgb(var(--primary-color));
+  box-shadow: 0 10px 30px var(--shadow-color);
+  height: 56px;
+  width: 56px;
+}
+
+.start-ripple {
+  animation: start-ripple 2.4s ease-out infinite;
+  border: 1.5px solid rgba(var(--primary-color), 0.45);
+  height: 56px;
+  width: 56px;
+}
+
+.start-ripple.is-late {
+  animation-delay: 1.2s;
+}
+
+.start-hint {
+  animation: start-hint 2.4s ease-in-out infinite;
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.start-mode {
+  color: var(--text-tertiary);
+  display: flex;
+  flex-direction: column;
+  font-size: 12.5px;
+  gap: 4px;
+  line-height: 1.5;
+  margin-top: 18px;
+  max-width: 300px;
+}
+
+.start-quote {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 22px 0 0;
+  max-width: 320px;
+}
+
+.start-quote .arabic {
+  color: var(--text-primary);
+  font-size: 24px;
+  line-height: 1.7;
+}
+
+.start-quote blockquote {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.start-quote figcaption {
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+}
+
+.start-prayer {
+  align-items: center;
+  background: color-mix(in srgb, var(--surface-color) 78%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: min(100%, 280px);
+  padding: 14px 22px 16px;
+  position: relative;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.start-prayer-label {
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.start-prayer-main {
+  align-items: baseline;
+  display: flex;
+  gap: 10px;
+}
+
+.start-prayer-main strong {
+  font-size: 20px;
+  font-weight: 650;
+}
+
+.start-prayer-clock {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.start-prayer-countdown {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.start-prayer-previous {
+  border-top: 1px solid var(--border-color);
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+  margin-top: 6px;
+  padding-top: 8px;
+  text-align: center;
+  width: 100%;
+}
+
+@keyframes start-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes start-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.9); }
+}
+
+@keyframes start-ripple {
+  0% { opacity: 0.9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(2.1); }
+}
+
+@keyframes start-hint {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 
 .app-shell.is-focus .app-header,
@@ -962,31 +1388,15 @@ input:focus-visible {
   width: 100%;
 }
 
-/* Room for the floating exit button on narrow screens. */
+/* Room for the floating menu button on narrow screens. */
 .app-shell.is-focus .card-head {
   padding-right: 44px;
-}
-
-/* A full-bleed card cannot scale without exposing its edges, so the tap
-   feedback becomes a surface flash instead. */
-.app-shell.is-focus .dzikr-card.is-breathing {
-  animation: card-breathe-flat 420ms ease;
-}
-
-@keyframes card-breathe-flat {
-  0%, 100% { background: var(--surface-color); }
-  48% { background: var(--surface-muted); }
 }
 
 @keyframes presence-pulse {
   0% { transform: scale(0.75); opacity: 0.6; }
   80% { transform: scale(1.95); opacity: 0; }
   100% { opacity: 0; }
-}
-
-@keyframes card-breathe {
-  0%, 100% { transform: scale(1); }
-  48% { transform: scale(0.992); box-shadow: 0 7px 22px var(--shadow-color); }
 }
 
 @media (min-width: 720px) {

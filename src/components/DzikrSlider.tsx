@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
@@ -12,6 +12,10 @@ import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
+// A tap on the right of the card counts (and, once the dzikr is done, swaps
+// straight to the next card with no animation); a tap on the left swaps back
+// to the previous one. Swipes keep the normal slide.
+
 const DzikrSlider: React.FC = () => {
   const {
     currentIndex,
@@ -22,13 +26,12 @@ const DzikrSlider: React.FC = () => {
     decrementCount,
     resetCount,
     settings,
-    updateSettings,
   } = useDzikrStore();
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
-  const [pulsingDzikrId, setPulsingDzikrId] = useState<number | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
-  const pulseTimerRef = useRef<number | null>(null);
+  // Set for the next slide change only: swap instead of sliding.
+  const jumpNextSlideRef = useRef(false);
   const previousPeriodRef = useRef<DzikrPeriod | null>(null);
 
   useScoreSync();
@@ -51,10 +54,7 @@ const DzikrSlider: React.FC = () => {
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activeIndex, dzikrList.length, setCurrentIndex]);
 
   // Crossing into the other part of the day starts a fresh reading session.
@@ -66,51 +66,80 @@ const DzikrSlider: React.FC = () => {
     previousPeriodRef.current = activePeriod;
   }, [activePeriod, setCurrentIndex]);
 
-  useEffect(() => {
+  // Layout effect so a swap lands before paint.
+  useLayoutEffect(() => {
     if (swiperInstance && swiperInstance.activeIndex !== activeIndex) {
-      swiperInstance.slideTo(activeIndex);
+      swiperInstance.slideTo(activeIndex, jumpNextSlideRef.current ? 0 : undefined);
       scrollContentToTop();
     }
+    jumpNextSlideRef.current = false;
   }, [activeIndex, swiperInstance]);
 
   const currentDzikr = dzikrList[activeIndex];
+  const completedCount = dzikrList.filter((dzikr) => getCompletionPercentage(dzikr.id) === 100).length;
   const currentProgress = getProgress(currentDzikr.id);
   const isCompleted = currentProgress >= currentDzikr.count;
 
-  const moveNext = (delay = 0) => {
+  const moveNext = () => {
     if (activeIndex < dzikrList.length - 1) {
-      window.setTimeout(() => {
-        setCurrentIndex(activeIndex + 1);
-        scrollContentToTop();
-      }, delay);
+      setCurrentIndex(activeIndex + 1);
+      scrollContentToTop();
     }
+  };
+
+  // Swap to the next card without a slide.
+  const swapToNext = () => {
+    jumpNextSlideRef.current = true;
+    moveNext();
+  };
+
+  const swapToPrevious = () => {
+    if (activeIndex === 0) return;
+    jumpNextSlideRef.current = true;
+    setCurrentIndex(activeIndex - 1);
+    scrollContentToTop();
+  };
+
+  const handleCardTap = (side: 'left' | 'right') => {
+    if (side === 'left') swapToPrevious();
+    else handleIncrement();
   };
 
   const handleIncrement = () => {
     if (isCompleted) {
-      moveNext();
+      swapToNext();
       return;
     }
 
     if ('vibrate' in navigator) navigator.vibrate(10);
-    setPulsingDzikrId(currentDzikr.id);
-    if (pulseTimerRef.current) window.clearTimeout(pulseTimerRef.current);
-    pulseTimerRef.current = window.setTimeout(() => setPulsingDzikrId(null), 420);
+
+    const finishes =
+      settings.countingMethod === 'penanda' || currentProgress + 1 >= currentDzikr.count;
 
     if (settings.countingMethod === 'penanda') {
       for (let count = currentProgress; count < currentDzikr.count; count += 1) {
         incrementCount(currentDzikr.id);
       }
-      moveNext(500);
-      return;
+    } else {
+      incrementCount(currentDzikr.id);
     }
 
-    incrementCount(currentDzikr.id);
-    if (currentProgress + 1 >= currentDzikr.count) moveNext(650);
+    if (finishes) swapToNext();
   };
 
   return (
     <div className="slider-shell">
+      <div
+        className="top-progress"
+        role="progressbar"
+        aria-label="Progres dzikr"
+        aria-valuemin={0}
+        aria-valuemax={dzikrList.length}
+        aria-valuenow={completedCount}
+      >
+        <span style={{ width: `${(completedCount / dzikrList.length) * 100}%` }} />
+      </div>
+
       <div className="progress-rail" aria-label="Daftar progres dzikr">
         {dzikrList.map((dzikr, index) => {
           const completed = getCompletionPercentage(dzikr.id) === 100;
@@ -166,8 +195,7 @@ const DzikrSlider: React.FC = () => {
               <SwiperSlide key={dzikr.id}>
                 <DzikrCard
                   dzikr={dzikr}
-                  isPulsing={pulsingDzikrId === dzikr.id}
-                  onTap={index === activeIndex ? handleIncrement : undefined}
+                  onTap={index === activeIndex ? handleCardTap : undefined}
                 />
               </SwiperSlide>
             ))}
@@ -181,24 +209,6 @@ const DzikrSlider: React.FC = () => {
 
       {isClient && (
         <div className="action-float">
-          {(settings.showActionHint ?? true) && (
-            <div className="action-label" role="status">
-              <span>
-                {isCompleted
-                  ? 'Lanjut dzikr berikutnya'
-                  : settings.countingMethod === 'counter'
-                    ? 'Tap + untuk 1 bacaan'
-                    : 'Tap ✓ untuk tandai selesai'}
-              </span>
-              <button
-                type="button"
-                onClick={() => updateSettings({ showActionHint: false })}
-                aria-label="Sembunyikan petunjuk tombol"
-              >
-                ×
-              </button>
-            </div>
-          )}
           <div className={`action-corrections ${currentProgress === 0 ? 'is-hidden' : ''}`}>
             <button
               className="action-small"
