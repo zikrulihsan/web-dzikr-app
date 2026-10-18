@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
@@ -12,8 +12,9 @@ import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
-// Every tap flashes the card; a tap that finishes the dzikr slides on at the
-// same moment, exactly like a swipe.
+// A tap presses the card in (CSS :active) and flashes it. A tap that finishes
+// the dzikr swaps straight to the next card with no slide, and the flash
+// lands on the new card. Swipes keep the normal slide.
 const FLASH_MS = 200;
 
 const DzikrSlider: React.FC = () => {
@@ -33,6 +34,8 @@ const DzikrSlider: React.FC = () => {
   const [flashingDzikrId, setFlashingDzikrId] = useState<number | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
   const flashTimerRef = useRef<number | null>(null);
+  // Set for the next slide change only: swap instead of sliding.
+  const jumpNextSlideRef = useRef(false);
   const previousPeriodRef = useRef<DzikrPeriod | null>(null);
 
   useScoreSync();
@@ -70,11 +73,13 @@ const DzikrSlider: React.FC = () => {
     previousPeriodRef.current = activePeriod;
   }, [activePeriod, setCurrentIndex]);
 
-  useEffect(() => {
+  // Layout effect so a swap lands before paint, together with its flash.
+  useLayoutEffect(() => {
     if (swiperInstance && swiperInstance.activeIndex !== activeIndex) {
-      swiperInstance.slideTo(activeIndex);
+      swiperInstance.slideTo(activeIndex, jumpNextSlideRef.current ? 0 : undefined);
       scrollContentToTop();
     }
+    jumpNextSlideRef.current = false;
   }, [activeIndex, swiperInstance]);
 
   const currentDzikr = dzikrList[activeIndex];
@@ -88,15 +93,27 @@ const DzikrSlider: React.FC = () => {
     }
   };
 
-  const flash = () => {
+  const flash = (dzikrId: number) => {
     if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current);
-    setFlashingDzikrId(currentDzikr.id);
+    setFlashingDzikrId(dzikrId);
     flashTimerRef.current = window.setTimeout(() => setFlashingDzikrId(null), FLASH_MS);
+  };
+
+  // Swap to the next card without a slide; the flash marks the change.
+  const swapToNext = () => {
+    const nextDzikr = dzikrList[activeIndex + 1];
+    if (!nextDzikr) {
+      flash(currentDzikr.id);
+      return;
+    }
+    jumpNextSlideRef.current = true;
+    flash(nextDzikr.id);
+    moveNext();
   };
 
   const handleIncrement = () => {
     if (isCompleted) {
-      moveNext();
+      swapToNext();
       return;
     }
 
@@ -113,8 +130,8 @@ const DzikrSlider: React.FC = () => {
       incrementCount(currentDzikr.id);
     }
 
-    flash();
-    if (finishes) moveNext();
+    if (finishes) swapToNext();
+    else flash(currentDzikr.id);
   };
 
   return (

@@ -638,10 +638,16 @@ input:focus-visible {
 
 .dzikr-card.is-tappable {
   cursor: pointer;
+  transition: transform 120ms ease-out;
 }
 
-/* Tap feedback is a short warm flash of the card surface; nothing else moves
-   beyond the normal slide. */
+/* Pressed: the card gives a little under the finger. */
+.dzikr-card.is-tappable:active {
+  transform: scale(0.97);
+}
+
+/* After a tap the card (or the card it swapped to) flashes warm and fades
+   back to its surface colour. */
 .dzikr-card.is-flashing {
   animation: card-flash 200ms ease-out;
 }
@@ -1256,6 +1262,15 @@ input:focus-visible {
 /* Room for the floating menu button on narrow screens. */
 .app-shell.is-focus .card-head {
   padding-right: 44px;
+}
+
+/* A full-bleed card rounds off the edges while it is pressed. */
+.app-shell.is-focus .dzikr-card.is-tappable {
+  transition: transform 120ms ease-out, border-radius 120ms ease-out;
+}
+
+.app-shell.is-focus .dzikr-card.is-tappable:active {
+  border-radius: 24px;
 }
 
 @keyframes presence-pulse {
