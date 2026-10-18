@@ -646,10 +646,6 @@ input:focus-visible {
   transform: scale(0.97);
 }
 
-.dzikr-card.is-breathing {
-  animation: card-breathe 320ms ease-out;
-}
-
 .presence-pill {
   align-items: center;
   background: var(--surface-color);
@@ -1257,30 +1253,13 @@ input:focus-visible {
   padding-right: 44px;
 }
 
-/* A full-bleed card cannot scale without exposing its edges, so the tap
-   feedback becomes a surface flash instead. */
-.app-shell.is-focus .dzikr-card.is-breathing {
-  animation: card-breathe-flat 320ms ease-out;
-}
-
-@keyframes card-breathe-flat {
-  0% { background: var(--surface-muted); }
-  100% { background: var(--surface-color); }
-}
-
 /* A full-bleed card rounds off the edges while it is pressed. */
 .app-shell.is-focus .dzikr-card.is-tappable {
   transition: transform 120ms ease-out, border-radius 120ms ease-out;
 }
 
 .app-shell.is-focus .dzikr-card.is-tappable.is-pressed {
-  background: var(--surface-muted);
   border-radius: 24px;
-}
-
-@keyframes card-breathe {
-  0% { transform: scale(0.992); box-shadow: 0 7px 22px var(--shadow-color); }
-  100% { transform: scale(1); }
 }
 
 @keyframes presence-pulse {

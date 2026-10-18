@@ -6,11 +6,10 @@ import type { DzikrItem } from '@/data/dzikrData';
 
 interface DzikrCardProps {
   dzikr: DzikrItem;
-  isFlashing?: boolean;
   onTap?: () => void;
 }
 
-const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isFlashing = false, onTap }) => {
+const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onTap }) => {
   const [expanded, setExpanded] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const { getProgress, getCompletionPercentage, settings } = useDzikrStore();
@@ -48,10 +47,10 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isFlashing = false, onTap 
 
   return (
     <article
-      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isFlashing ? 'is-breathing' : ''} ${isPressed ? 'is-pressed' : ''}`}
+      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isPressed ? 'is-pressed' : ''}`}
       onClick={handleCardTap}
-      // The light comes on the moment the finger lands, not when it lifts
-      // (click) or when the browser decides it is not a scroll (:active).
+      // Pressed from the moment the finger lands, not when the browser decides
+      // it is not a scroll (:active).
       onPointerDown={onTap ? () => setIsPressed(true) : undefined}
       onPointerUp={() => setIsPressed(false)}
       onPointerCancel={() => setIsPressed(false)}
