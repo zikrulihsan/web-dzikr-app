@@ -638,12 +638,6 @@ input:focus-visible {
 
 .dzikr-card.is-tappable {
   cursor: pointer;
-  transition: transform 120ms ease-out;
-}
-
-/* Pressed: the card gives a little under the finger. */
-.dzikr-card.is-tappable.is-pressed {
-  transform: scale(0.97);
 }
 
 .presence-pill {
@@ -1251,15 +1245,6 @@ input:focus-visible {
 /* Room for the floating menu button on narrow screens. */
 .app-shell.is-focus .card-head {
   padding-right: 44px;
-}
-
-/* A full-bleed card rounds off the edges while it is pressed. */
-.app-shell.is-focus .dzikr-card.is-tappable {
-  transition: transform 120ms ease-out, border-radius 120ms ease-out;
-}
-
-.app-shell.is-focus .dzikr-card.is-tappable.is-pressed {
-  border-radius: 24px;
 }
 
 @keyframes presence-pulse {

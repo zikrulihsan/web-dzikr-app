@@ -12,8 +12,8 @@ import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
-// A tap presses the card in. A tap that finishes the dzikr swaps straight to
-// the next card, with no slide. Swipes keep the normal slide.
+// A tap that finishes the dzikr swaps straight to the next card, with no
+// animation. Swipes keep the normal slide.
 
 const DzikrSlider: React.FC = () => {
   const {

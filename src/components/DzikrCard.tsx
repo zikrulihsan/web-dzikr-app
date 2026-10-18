@@ -11,7 +11,6 @@ interface DzikrCardProps {
 
 const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onTap }) => {
   const [expanded, setExpanded] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
   const { getProgress, getCompletionPercentage, settings } = useDzikrStore();
 
   const progress = getProgress(dzikr.id);
@@ -47,14 +46,8 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onTap }) => {
 
   return (
     <article
-      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isPressed ? 'is-pressed' : ''}`}
+      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''}`}
       onClick={handleCardTap}
-      // Pressed from the moment the finger lands, not when the browser decides
-      // it is not a scroll (:active).
-      onPointerDown={onTap ? () => setIsPressed(true) : undefined}
-      onPointerUp={() => setIsPressed(false)}
-      onPointerCancel={() => setIsPressed(false)}
-      onPointerLeave={() => setIsPressed(false)}
     >
       <div className="card-head">
         <span className="card-eyebrow">{categoryPrefix}</span>
