@@ -3,7 +3,8 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useDzikrStore } from '@/store/dzikrStore';
 
-const ONBOARDING_KEY = 'dzikr-onboarding-seen';
+// Bumped when the walkthrough gains a step everyone should see once.
+const ONBOARDING_KEY = 'dzikr-onboarding-v2';
 
 const hasSeenOnboarding = () => {
   try {
@@ -15,9 +16,11 @@ const hasSeenOnboarding = () => {
 
 interface Step {
   title: string;
-  body: string;
+  body: React.ReactNode;
   /** The control the step points at; none shows the bubble in the middle. */
   target?: string;
+  /** Mark the two tap halves of the card behind the bubble. */
+  showSides?: boolean;
 }
 
 /**
@@ -36,7 +39,21 @@ const Onboarding: React.FC = () => {
   const isOneTap = countingMethod === 'penanda';
   const steps: Step[] = [
     {
+      title: 'Metode hitung dzikr: hitung dengan jari',
+      body: (
+        <>
+          Utamakan hitung dengan tangan untuk menghidupkan Sunnah Rasulullah ﷺ.{' '}
+          {isOneTap ? (
+            <>Sekali tap berarti selesai, jika butuh counter bisa diatur di <em>Pengaturan</em>.</>
+          ) : (
+            <>Counter sedang dipakai, dan bisa diganti ke sekali tap di <em>Pengaturan</em>.</>
+          )}
+        </>
+      ),
+    },
+    {
       title: 'Tap kanan lanjut, tap kiri kembali',
+      showSides: true,
       body: isOneTap
         ? 'Baca dzikirnya sesuai jumlahnya, lalu tap sisi kanan kartu untuk menandai selesai dan lanjut. Tap sisi kiri untuk kembali.'
         : 'Tap sisi kanan kartu setiap kali selesai membaca. Tap sisi kiri untuk kembali ke dzikir sebelumnya.',
@@ -95,7 +112,7 @@ const Onboarding: React.FC = () => {
   return (
     // The layer takes every tap, so nothing behind it counts a dzikr.
     <div className="onboarding" onClick={advance} role="dialog" aria-label="Petunjuk penggunaan">
-      {!step.target && (
+      {step.showSides && (
         <div className="onboarding-sides" aria-hidden="true">
           <span data-label="‹ Kembali" />
           <span data-label="Lanjut ›" />
