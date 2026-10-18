@@ -12,6 +12,7 @@ interface DzikrCardProps {
 
 const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isFlashing = false, onTap }) => {
   const [expanded, setExpanded] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
   const { getProgress, getCompletionPercentage, settings } = useDzikrStore();
 
   const progress = getProgress(dzikr.id);
@@ -47,10 +48,14 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isFlashing = false, onTap 
 
   return (
     <article
-      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isFlashing ? 'is-breathing' : ''}`}
+      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isFlashing ? 'is-breathing' : ''} ${isPressed ? 'is-pressed' : ''}`}
       onClick={handleCardTap}
-      // iOS Safari only applies :active (the press-in) when a touch listener exists.
-      onTouchStart={onTap ? () => undefined : undefined}
+      // The light comes on the moment the finger lands, not when it lifts
+      // (click) or when the browser decides it is not a scroll (:active).
+      onPointerDown={onTap ? () => setIsPressed(true) : undefined}
+      onPointerUp={() => setIsPressed(false)}
+      onPointerCancel={() => setIsPressed(false)}
+      onPointerLeave={() => setIsPressed(false)}
     >
       <div className="card-head">
         <span className="card-eyebrow">{categoryPrefix}</span>
