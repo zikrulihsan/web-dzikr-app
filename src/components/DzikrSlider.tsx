@@ -76,6 +76,7 @@ const DzikrSlider: React.FC = () => {
   }, [activeIndex, swiperInstance]);
 
   const currentDzikr = dzikrList[activeIndex];
+  const completedCount = dzikrList.filter((dzikr) => getCompletionPercentage(dzikr.id) === 100).length;
   const currentProgress = getProgress(currentDzikr.id);
   const isCompleted = currentProgress >= currentDzikr.count;
 
@@ -128,6 +129,17 @@ const DzikrSlider: React.FC = () => {
 
   return (
     <div className="slider-shell">
+      <div
+        className="top-progress"
+        role="progressbar"
+        aria-label="Progres dzikr"
+        aria-valuemin={0}
+        aria-valuemax={dzikrList.length}
+        aria-valuenow={completedCount}
+      >
+        <span style={{ width: `${(completedCount / dzikrList.length) * 100}%` }} />
+      </div>
+
       <div className="progress-rail" aria-label="Daftar progres dzikr">
         {dzikrList.map((dzikr, index) => {
           const completed = getCompletionPercentage(dzikr.id) === 100;

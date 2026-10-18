@@ -60,12 +60,11 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, onTap }) => {
         <div className="card-title-row">
           <h1>{categoryTitle}</h1>
           {isOneTap ? (
-            <span
-              className={`done-mark ${isCompleted ? 'is-done' : ''}`}
-              aria-label={isCompleted ? 'Sudah dibaca' : 'Belum dibaca'}
-            >
-              {isCompleted && <Icon icon="fa-solid fa-check" size={11} />}
-            </span>
+            isCompleted && (
+              <span className="done-mark" aria-label="Sudah dibaca">
+                <Icon icon="fa-solid fa-check" size={11} />
+              </span>
+            )
           ) : (
             <span className="counter-badge" aria-label={`${progress} dari ${dzikr.count} bacaan`}>
               {progress} <span>/</span> {dzikr.count}

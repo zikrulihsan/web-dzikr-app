@@ -197,6 +197,29 @@ input:focus-visible {
   position: relative;
 }
 
+/* Full screen only: one thin bar along the top edge for the whole session. */
+.top-progress {
+  display: none;
+}
+
+.app-shell.is-focus .top-progress {
+  background: rgba(var(--secondary-color), 0.16);
+  display: block;
+  height: 3px;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 55;
+}
+
+.top-progress span {
+  background: rgb(var(--secondary-color));
+  display: block;
+  height: 100%;
+  transition: width 300ms ease;
+}
+
 .progress-rail {
   display: flex;
   gap: 6px;
@@ -395,20 +418,14 @@ input:focus-visible {
 .done-mark {
   align-items: center;
   align-self: center;
-  border: 1.5px solid rgba(var(--secondary-color), 0.46);
+  background: rgb(var(--secondary-color));
   border-radius: 50%;
   color: #fff;
   display: inline-flex;
   flex: none;
   height: 20px;
   justify-content: center;
-  transition: background 220ms ease, border-color 220ms ease;
   width: 20px;
-}
-
-.done-mark.is-done {
-  background: rgb(var(--secondary-color));
-  border-color: rgb(var(--secondary-color));
 }
 
 .count-marker.is-filled {
