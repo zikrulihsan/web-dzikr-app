@@ -15,7 +15,7 @@ import Icon from './Icon';
 // A tap presses the card in (CSS :active) and flashes it. A tap that finishes
 // the dzikr then swaps straight to the next card, with no slide, once the
 // flash is over. Swipes keep the normal slide.
-const FLASH_MS = 160;
+const FLASH_MS = 420;
 
 const DzikrSlider: React.FC = () => {
   const {

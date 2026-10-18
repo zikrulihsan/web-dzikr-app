@@ -47,7 +47,7 @@ const DzikrCard: React.FC<DzikrCardProps> = ({ dzikr, isFlashing = false, onTap 
 
   return (
     <article
-      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isFlashing ? 'is-flashing' : ''}`}
+      className={`dzikr-card font-arabic-${arabicFontSize} font-latin-${latinFontSize} font-translation-${translationFontSize} ${onTap ? 'is-tappable' : ''} ${isFlashing ? 'is-breathing' : ''}`}
       onClick={handleCardTap}
       // iOS Safari only applies :active (the press-in) when a touch listener exists.
       onTouchStart={onTap ? () => undefined : undefined}

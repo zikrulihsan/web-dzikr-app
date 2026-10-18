@@ -646,14 +646,8 @@ input:focus-visible {
   transform: scale(0.97);
 }
 
-/* A tapped card flashes warm and fades back to its surface colour. */
-.dzikr-card.is-flashing {
-  animation: card-flash 160ms ease-out;
-}
-
-@keyframes card-flash {
-  0% { background-color: color-mix(in srgb, var(--surface-color) 82%, rgb(var(--gold-color))); }
-  100% { background-color: var(--surface-color); }
+.dzikr-card.is-breathing {
+  animation: card-breathe 420ms ease;
 }
 
 .presence-pill {
@@ -1263,6 +1257,17 @@ input:focus-visible {
   padding-right: 44px;
 }
 
+/* A full-bleed card cannot scale without exposing its edges, so the tap
+   feedback becomes a surface flash instead. */
+.app-shell.is-focus .dzikr-card.is-breathing {
+  animation: card-breathe-flat 420ms ease;
+}
+
+@keyframes card-breathe-flat {
+  0%, 100% { background: var(--surface-color); }
+  48% { background: var(--surface-muted); }
+}
+
 /* A full-bleed card rounds off the edges while it is pressed. */
 .app-shell.is-focus .dzikr-card.is-tappable {
   transition: transform 120ms ease-out, border-radius 120ms ease-out;
@@ -1270,6 +1275,11 @@ input:focus-visible {
 
 .app-shell.is-focus .dzikr-card.is-tappable:active {
   border-radius: 24px;
+}
+
+@keyframes card-breathe {
+  0%, 100% { transform: scale(1); }
+  48% { transform: scale(0.992); box-shadow: 0 7px 22px var(--shadow-color); }
 }
 
 @keyframes presence-pulse {
