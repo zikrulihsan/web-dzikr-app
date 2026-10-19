@@ -70,7 +70,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
         {next && now ? (
           <>
             <span className="start-prayer-label">
-              Shalat berikutnya{location.isDevice ? '' : ' · Jakarta'}
+              Shalat berikutnya{location.isDevice || !location.place ? '' : ` · ${location.place}`}
             </span>
             <span className="start-prayer-main">
               <strong>{prayerLabel[next.name]}</strong>

@@ -25,7 +25,8 @@ interface Step {
 
 /**
  * A first-visit walkthrough of the three ways to move through the dzikir:
- * tapping either side of the card, the round button, and the menu.
+ * tapping either side of the card, the round button (with the counting
+ * method), and the menu.
  */
 const Onboarding: React.FC = () => {
   const countingMethod = useDzikrStore((state) => state.settings.countingMethod);
@@ -39,19 +40,6 @@ const Onboarding: React.FC = () => {
   const isOneTap = countingMethod === 'penanda';
   const steps: Step[] = [
     {
-      title: 'Metode hitung dzikr: hitung dengan jari',
-      body: (
-        <>
-          Utamakan hitung dengan tangan untuk menghidupkan Sunnah Rasulullah ﷺ.{' '}
-          {isOneTap ? (
-            <>Sekali tap berarti selesai, jika butuh counter bisa diatur di <em>Pengaturan</em>.</>
-          ) : (
-            <>Counter sedang dipakai, dan bisa diganti ke sekali tap di <em>Pengaturan</em>.</>
-          )}
-        </>
-      ),
-    },
-    {
       title: 'Tap kanan lanjut, tap kiri kembali',
       showSides: true,
       body: isOneTap
@@ -59,8 +47,20 @@ const Onboarding: React.FC = () => {
         : 'Tap sisi kanan kartu setiap kali selesai membaca. Tap sisi kiri untuk kembali ke dzikir sebelumnya.',
     },
     {
-      title: isOneTap ? 'Tombol selesai' : 'Tombol hitung',
-      body: 'Tombol ini sama dengan tap sisi kanan. Kalau salah tandai, tombol − dan ↺ muncul di sebelahnya.',
+      title: isOneTap ? 'Tombol centang: hitung dengan jari' : 'Tombol hitung',
+      body: isOneTap ? (
+        <>
+          Utamakan hitung dengan jari untuk menghidupkan Sunnah Rasulullah ﷺ. Setelah selesai
+          membaca, sekali tap centang ini (atau sisi kanan kartu) berarti selesai. Kalau salah
+          tandai, tombol − dan ↺ muncul di sebelahnya. Butuh counter? Atur di <em>Pengaturan</em>.
+        </>
+      ) : (
+        <>
+          Setiap tap tombol ini (atau sisi kanan kartu) menambah satu hitungan. Kalau salah,
+          tombol − dan ↺ muncul di sebelahnya. Bisa diganti ke hitung dengan jari, sekali tap
+          selesai, di <em>Pengaturan</em>.
+        </>
+      ),
       target: '.action-main',
     },
     {

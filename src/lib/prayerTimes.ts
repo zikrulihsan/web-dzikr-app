@@ -20,6 +20,8 @@ export interface Coordinates {
 export interface PrayerLocation extends Coordinates {
   /** True when the coordinates came from the device rather than the fallback. */
   isDevice: boolean;
+  /** For a fallback location: the city it stands for, shown next to the times. */
+  place?: string;
 }
 
 export const prayerLabel: Record<PrayerName, string> = {
@@ -30,12 +32,77 @@ export const prayerLabel: Record<PrayerName, string> = {
   isya: 'Isya',
 };
 
-/** Used until (or unless) the reader shares their location. */
+/** Used on the server and wherever the device's time zone can't be read. */
 export const FALLBACK_LOCATION: PrayerLocation = {
   latitude: -6.2088,
   longitude: 106.8456,
   isDevice: false,
+  place: 'Jakarta',
 };
+
+// A representative city per time zone, so a reader who hasn't shared their
+// location still gets times for roughly where they are.
+const TIMEZONE_CITIES: Record<string, [place: string, latitude: number, longitude: number]> = {
+  'Asia/Jakarta': ['Jakarta', -6.21, 106.85],
+  'Asia/Pontianak': ['Pontianak', -0.03, 109.33],
+  'Asia/Makassar': ['Makassar', -5.15, 119.43],
+  'Asia/Ujung_Pandang': ['Makassar', -5.15, 119.43],
+  'Asia/Jayapura': ['Jayapura', -2.53, 140.72],
+  'Asia/Kuala_Lumpur': ['Kuala Lumpur', 3.14, 101.69],
+  'Asia/Kuching': ['Kuching', 1.55, 110.36],
+  'Asia/Singapore': ['Singapura', 1.35, 103.82],
+  'Asia/Brunei': ['Bandar Seri Begawan', 4.9, 114.94],
+  'Asia/Manila': ['Manila', 14.6, 120.98],
+  'Asia/Bangkok': ['Bangkok', 13.76, 100.5],
+  'Asia/Dili': ['Dili', -8.56, 125.57],
+  'Asia/Riyadh': ['Riyadh', 24.71, 46.68],
+  'Asia/Dubai': ['Dubai', 25.2, 55.27],
+  'Asia/Qatar': ['Doha', 25.29, 51.53],
+  'Asia/Kuwait': ['Kuwait', 29.38, 47.98],
+  'Asia/Karachi': ['Karachi', 24.86, 67.0],
+  'Asia/Kolkata': ['New Delhi', 28.61, 77.21],
+  'Asia/Dhaka': ['Dhaka', 23.81, 90.41],
+  'Asia/Tokyo': ['Tokyo', 35.68, 139.69],
+  'Asia/Seoul': ['Seoul', 37.57, 126.98],
+  'Asia/Shanghai': ['Beijing', 39.9, 116.4],
+  'Asia/Hong_Kong': ['Hong Kong', 22.32, 114.17],
+  'Asia/Taipei': ['Taipei', 25.03, 121.57],
+  'Europe/Istanbul': ['Istanbul', 41.01, 28.98],
+  'Africa/Cairo': ['Kairo', 30.04, 31.24],
+  'Europe/London': ['London', 51.51, -0.13],
+  'Europe/Amsterdam': ['Amsterdam', 52.37, 4.9],
+  'Europe/Berlin': ['Berlin', 52.52, 13.4],
+  'Europe/Paris': ['Paris', 48.86, 2.35],
+  'Australia/Perth': ['Perth', -31.95, 115.86],
+  'Australia/Sydney': ['Sydney', -33.87, 151.21],
+  'Australia/Melbourne': ['Melbourne', -37.81, 144.96],
+  'America/New_York': ['New York', 40.71, -74.01],
+  'America/Chicago': ['Chicago', 41.88, -87.63],
+  'America/Los_Angeles': ['Los Angeles', 34.05, -118.24],
+};
+
+/**
+ * Where to compute times for when the device location isn't known: the
+ * time zone's city, or else a point on the zone's meridian (keeping
+ * Jakarta's latitude) so at least the clock lines up with the sun.
+ */
+export function timezoneLocation(now: Date = new Date()): PrayerLocation {
+  let zone = '';
+  try {
+    zone = Intl.DateTimeFormat().resolvedOptions().timeZone ?? '';
+  } catch {
+    return FALLBACK_LOCATION;
+  }
+  const city = TIMEZONE_CITIES[zone];
+  if (city) return { place: city[0], latitude: city[1], longitude: city[2], isDevice: false };
+  if (zone === 'UTC' || !zone) return FALLBACK_LOCATION;
+  return {
+    latitude: FALLBACK_LOCATION.latitude,
+    longitude: -now.getTimezoneOffset() / 4,
+    isDevice: false,
+    place: 'perkiraan zona waktu',
+  };
+}
 
 const FAJR_ANGLE = 20;
 const ISHA_ANGLE = 18;
@@ -119,7 +186,7 @@ export function getPreviousPrayer(now: Date, coordinates: Coordinates): PrayerTi
 export function readStoredLocation(): PrayerLocation {
   try {
     const raw = window.localStorage.getItem(LOCATION_KEY);
-    if (!raw) return FALLBACK_LOCATION;
+    if (!raw) return timezoneLocation();
     const parsed = JSON.parse(raw) as Partial<Coordinates>;
     if (typeof parsed.latitude === 'number' && typeof parsed.longitude === 'number') {
       return { latitude: parsed.latitude, longitude: parsed.longitude, isDevice: true };
@@ -127,7 +194,7 @@ export function readStoredLocation(): PrayerLocation {
   } catch {
     /* storage blocked or corrupt: fall through */
   }
-  return FALLBACK_LOCATION;
+  return timezoneLocation();
 }
 
 export function storeLocation({ latitude, longitude }: Coordinates) {

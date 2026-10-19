@@ -231,8 +231,8 @@ const Settings: React.FC<SettingsProps> = ({ isOpen, onClose }) => {
           </div>
           <div className="settings-tip">
             Pada mode otomatis, dzikr pagi tampil dari Subuh sampai Ashar, lalu berganti ke dzikr
-            petang sampai Subuh berikutnya, mengikuti waktu shalat di lokasi Anda (Jakarta bila
-            lokasi tidak diizinkan).
+            petang sampai Subuh berikutnya, mengikuti waktu shalat di lokasi Anda (kota di zona
+            waktu perangkat bila lokasi tidak diizinkan).
           </div>
           <label className="setting-row">
             <span className="setting-choice">

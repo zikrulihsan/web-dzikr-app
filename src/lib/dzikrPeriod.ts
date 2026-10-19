@@ -4,7 +4,7 @@ import { getPrayerTimes, readStoredLocation, type Coordinates } from './prayerTi
 /**
  * Dzikir pagi runs from Subuh until Ashar; dzikir petang takes over at Ashar
  * and holds through the night until the next Subuh. Both boundaries come from
- * prayer times for the reader's location (Jakarta until they share one), so
+ * prayer times for the reader's location (their time zone's city until they share one), so
  * the switch follows the sun rather than a fixed hour.
  */
 export function detectPeriod(
