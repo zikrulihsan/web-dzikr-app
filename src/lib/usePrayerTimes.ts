@@ -27,7 +27,7 @@ interface PrayerState {
 /**
  * The next prayer for the reader's location, refreshed every half minute.
  * Asks for the device location once per visit; a refusal (or no answer) keeps
- * the last known location, or Jakarta. A newly found location also re-checks
+ * the last known location, or a city in the device's time zone. A newly found location also re-checks
  * pagi/petang, since the Subuh and Ashar boundaries move with it.
  */
 export function usePrayerTimes(): PrayerState {
