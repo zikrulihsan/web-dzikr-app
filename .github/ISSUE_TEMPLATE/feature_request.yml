@@ -1,0 +1,14 @@
+name: Usulan fitur / Feature request
+description: Ide untuk membuat aplikasi lebih bermanfaat.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Masalah apa yang ingin diselesaikan? / What problem does it solve?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Usulan / Proposal

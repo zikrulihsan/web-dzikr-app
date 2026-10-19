@@ -1,22 +1,31 @@
 {
   "name": "web-dzikr-app",
   "version": "0.1.0",
+  "description": "Ganti kebiasaan tap tap medsos dengan tap tap dzikr. Dzikir pagi & petang, mobile-first.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zikrulihsan/web-dzikr-app.git"
+  },
+  "homepage": "https://dzikir-harian.netlify.app",
+  "engines": {
+    "node": ">=18.17"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@supabase/supabase-js": "^2.108.2",
-    "framer-motion": "^10.18.0",
     "geist": "^1.7.2",
     "next": "^14.0.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-swipeable": "^7.0.2",
     "swiper": "^11.2.6",
     "zustand": "^4.5.6"
   },

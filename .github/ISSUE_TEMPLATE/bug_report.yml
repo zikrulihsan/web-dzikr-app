@@ -1,0 +1,29 @@
+name: Laporan bug / Bug report
+description: Sesuatu tidak bekerja sebagaimana mestinya.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Apa yang terjadi? / What happened?
+      description: Apa yang Anda lakukan, apa yang diharapkan, dan apa yang terjadi.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Langkah untuk mengulang / Steps to reproduce
+      placeholder: |
+        1. Buka aplikasi
+        2. Tap ...
+        3. ...
+  - type: input
+    id: device
+    attributes:
+      label: Perangkat & browser / Device & browser
+      placeholder: contoh, iPhone 13 · Safari 17, atau Android · Chrome
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshot
+      description: Tempel gambar di sini bila ada.
