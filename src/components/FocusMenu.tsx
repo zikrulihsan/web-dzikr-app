@@ -5,6 +5,7 @@ import { useDzikrStore } from '@/store/dzikrStore';
 import { useActivePeriod } from '@/lib/useDzikrPeriod';
 import { periodLabel } from '@/lib/dzikrPeriod';
 import { useResolvedTheme } from '@/lib/useResolvedTheme';
+import { useFocusMode } from '@/lib/useFocusMode';
 import { prayerLabel } from '@/lib/prayerTimes';
 import { formatClock, usePrayerTimes } from '@/lib/usePrayerTimes';
 import Settings from './Settings';
@@ -12,7 +13,8 @@ import Icon from './Icon';
 
 /**
  * The one control left on screen while reading full screen: a small button
- * that opens restart, the full menu and a light/dark switch.
+ * that opens restart, the full menu, a light/dark switch and a way out of
+ * full screen.
  */
 const FocusMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,6 +24,7 @@ const FocusMenu: React.FC = () => {
   const activePeriod = useActivePeriod();
   const theme = useResolvedTheme();
   const { next } = usePrayerTimes();
+  const { exitFocusMode } = useFocusMode();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -43,6 +46,11 @@ const FocusMenu: React.FC = () => {
   const handleMenu = () => {
     setIsOpen(false);
     setIsSettingsOpen(true);
+  };
+
+  const handleExit = () => {
+    setIsOpen(false);
+    exitFocusMode();
   };
 
   const handleTheme = () => {
@@ -87,6 +95,10 @@ const FocusMenu: React.FC = () => {
             <button type="button" role="menuitem" onClick={handleTheme}>
               <Icon icon={theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon'} size={14} />
               <span>{theme === 'dark' ? 'Mode terang' : 'Mode gelap'}</span>
+            </button>
+            <button type="button" role="menuitem" onClick={handleExit}>
+              <Icon icon="fa-solid fa-compress" size={14} />
+              <span>Keluar layar penuh</span>
             </button>
           </div>
         )}
