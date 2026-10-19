@@ -129,6 +129,8 @@ const DzikrSlider: React.FC = () => {
 
   return (
     <div className="slider-shell">
+      <div className={`reading-glow is-${activePeriod}`} aria-hidden="true" />
+
       <div
         className="top-progress"
         role="progressbar"

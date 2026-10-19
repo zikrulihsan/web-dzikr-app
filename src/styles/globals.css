@@ -203,7 +203,7 @@ input:focus-visible {
 }
 
 .app-shell.is-focus .top-progress {
-  background: rgba(var(--secondary-color), 0.16);
+  background: rgba(var(--primary-color), 0.1);
   display: block;
   height: 3px;
   left: 0;
@@ -214,7 +214,7 @@ input:focus-visible {
 }
 
 .top-progress span {
-  background: rgb(var(--secondary-color));
+  background: rgb(var(--primary-color));
   display: block;
   height: 100%;
   transition: width 300ms ease;
@@ -244,7 +244,7 @@ input:focus-visible {
 }
 
 .progress-segment.is-active {
-  background: rgb(var(--secondary-color));
+  background: rgb(var(--primary-color));
   transform: scale(1.45);
 }
 
@@ -252,8 +252,27 @@ input:focus-visible {
   background: var(--success-color);
 }
 
+/* The start screen's glow carries on behind the cards. */
+.reading-glow {
+  background: radial-gradient(circle, rgba(var(--gold-color), 0.22) 0%, transparent 62%);
+  height: 140vmax;
+  left: 50%;
+  pointer-events: none;
+  position: absolute;
+  top: -70vmax;
+  transform: translateX(-50%);
+  width: 140vmax;
+}
+
+.reading-glow.is-petang {
+  background: radial-gradient(circle, rgba(var(--secondary-color), 0.24) 0%, transparent 62%);
+  bottom: -80vmax;
+  top: auto;
+}
+
 .slider-content {
   flex: 1;
+  position: relative;
   min-height: 0;
   overflow: auto;
   padding-bottom: 8px;
@@ -331,12 +350,11 @@ input:focus-visible {
 }
 
 .card-eyebrow {
-  color: rgb(var(--secondary-color));
+  color: var(--text-tertiary);
   display: block;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 0.13em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   margin-bottom: 6px;
   text-transform: uppercase;
 }
@@ -349,9 +367,9 @@ input:focus-visible {
 }
 
 .card-title-row h1 {
-  font-size: clamp(21px, 5.5vw, 28px);
-  font-weight: 680;
-  letter-spacing: -0.045em;
+  font-size: clamp(24px, 6.4vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
   line-height: 1.1;
 }
 
@@ -381,8 +399,9 @@ input:focus-visible {
 .counter-badge {
   color: var(--text-primary);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 15px;
-  font-weight: 650;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
   white-space: nowrap;
 }
 
@@ -399,7 +418,7 @@ input:focus-visible {
 
 .count-marker {
   background: transparent;
-  border: 1.5px solid rgba(var(--secondary-color), 0.46);
+  border: 1.5px solid rgba(var(--primary-color), 0.4);
   border-radius: 50%;
   height: 9px;
   transition: background 220ms ease, transform 220ms ease;
@@ -410,17 +429,18 @@ input:focus-visible {
   color: var(--text-secondary);
   display: block;
   font-family: var(--font-geist-mono), monospace;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
   margin-top: 8px;
 }
 
 .done-mark {
   align-items: center;
   align-self: center;
-  background: rgb(var(--secondary-color));
+  background: rgb(var(--primary-color));
   border-radius: 50%;
-  color: #fff;
+  color: var(--background-color);
   display: inline-flex;
   flex: none;
   height: 20px;
@@ -429,8 +449,8 @@ input:focus-visible {
 }
 
 .count-marker.is-filled {
-  background: rgb(var(--secondary-color));
-  border-color: rgb(var(--secondary-color));
+  background: rgb(var(--primary-color));
+  border-color: rgb(var(--primary-color));
   transform: scale(1.08);
 }
 
@@ -488,7 +508,6 @@ input:focus-visible {
 
 .dzikr-latin {
   color: var(--text-secondary);
-  font-family: Georgia, serif;
   font-size: 14px;
   font-style: italic;
   line-height: 1.7;
@@ -504,7 +523,7 @@ input:focus-visible {
 }
 
 .dzikr-translation {
-  border-left: 2px solid rgba(var(--secondary-color), 0.28);
+  border-left: 2px solid var(--border-color);
   color: var(--text-secondary);
   font-size: 13.5px;
   line-height: 1.75;
@@ -524,8 +543,7 @@ input:focus-visible {
 
 .dzikr-note {
   color: var(--text-tertiary);
-  font-family: Georgia, serif;
-  font-size: 12px;
+  font-size: 12.5px;
   font-style: italic;
   line-height: 1.65;
   margin-top: 18px;
@@ -535,9 +553,9 @@ input:focus-visible {
 }
 
 .description-toggle {
-  background: var(--surface-muted);
-  border: 0;
-  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-color) 78%, transparent);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
   color: var(--text-primary);
   cursor: pointer;
   display: block;
@@ -555,7 +573,7 @@ input:focus-visible {
 }
 
 .description-toggle-head span:last-child {
-  color: rgb(var(--secondary-color));
+  color: var(--text-tertiary);
 }
 
 .description-body {
@@ -570,7 +588,6 @@ input:focus-visible {
 
 .description-source {
   display: block;
-  font-family: Georgia, serif;
   font-style: italic;
   margin-top: 8px;
 }
@@ -840,7 +857,6 @@ input:focus-visible {
 }
 
 .font-preview.is-latinFontSize {
-  font-family: Georgia, serif;
   font-size: 11px;
   font-style: italic;
 }
@@ -1382,6 +1398,7 @@ input:focus-visible {
 }
 
 .app-shell.is-focus .dzikr-card {
+  background: transparent;
   border: 0;
   border-radius: 0;
   box-shadow: none;
