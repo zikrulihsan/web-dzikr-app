@@ -4,8 +4,9 @@ import Script from 'next/script';
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-// Google Analytics measurement ID
-const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-5VYYZ05KPZ';
+// Only loaded when a measurement ID is configured, so forks and local runs
+// never report to someone else's property.
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
 declare global {
   interface Window {
@@ -31,6 +32,8 @@ export default function GoogleAnalytics() {
       page_path: url,
     });
   }, [pathname, searchParams]);
+
+  if (!GA_MEASUREMENT_ID) return null;
 
   return (
     <>

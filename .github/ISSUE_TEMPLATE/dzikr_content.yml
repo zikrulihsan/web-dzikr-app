@@ -1,0 +1,30 @@
+name: Koreksi konten dzikir / Dzikir content correction
+description: Kesalahan pada teks Arab, latin, terjemahan, atau sumber.
+labels: [content]
+body:
+  - type: input
+    id: dzikr
+    attributes:
+      label: Dzikir yang mana? / Which dzikr?
+      placeholder: contoh, Ayat Kursi (pagi)
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Teks saat ini / Current text
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Usulan perbaikan / Proposed correction
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Sumber / Source
+      description: Rujukan Al-Qur'an (surah & ayat) atau kitab hadits beserta nomornya.
+    validations:
+      required: true

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
@@ -12,9 +12,9 @@ import { usePeriodWatcher } from '@/lib/useDzikrPeriod';
 import DzikrCard from './DzikrCard';
 import Icon from './Icon';
 
-// A tap on the right of the card counts (and, once the dzikr is done, swaps
-// straight to the next card with no animation); a tap on the left swaps back
-// to the previous one. Swipes keep the normal slide.
+// A tap on the right of the card counts (and, once the dzikr is done, slides
+// on to the next card, the same as a swipe); a tap on the left slides back to
+// the previous one.
 
 const DzikrSlider: React.FC = () => {
   const {
@@ -30,8 +30,6 @@ const DzikrSlider: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
-  // Set for the next slide change only: swap instead of sliding.
-  const jumpNextSlideRef = useRef(false);
   const previousPeriodRef = useRef<DzikrPeriod | null>(null);
 
   useScoreSync();
@@ -66,13 +64,11 @@ const DzikrSlider: React.FC = () => {
     previousPeriodRef.current = activePeriod;
   }, [activePeriod, setCurrentIndex]);
 
-  // Layout effect so a swap lands before paint.
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (swiperInstance && swiperInstance.activeIndex !== activeIndex) {
-      swiperInstance.slideTo(activeIndex, jumpNextSlideRef.current ? 0 : undefined);
+      swiperInstance.slideTo(activeIndex);
       scrollContentToTop();
     }
-    jumpNextSlideRef.current = false;
   }, [activeIndex, swiperInstance]);
 
   const currentDzikr = dzikrList[activeIndex];
@@ -87,27 +83,20 @@ const DzikrSlider: React.FC = () => {
     }
   };
 
-  // Swap to the next card without a slide.
-  const swapToNext = () => {
-    jumpNextSlideRef.current = true;
-    moveNext();
-  };
-
-  const swapToPrevious = () => {
+  const movePrevious = () => {
     if (activeIndex === 0) return;
-    jumpNextSlideRef.current = true;
     setCurrentIndex(activeIndex - 1);
     scrollContentToTop();
   };
 
   const handleCardTap = (side: 'left' | 'right') => {
-    if (side === 'left') swapToPrevious();
+    if (side === 'left') movePrevious();
     else handleIncrement();
   };
 
   const handleIncrement = () => {
     if (isCompleted) {
-      swapToNext();
+      moveNext();
       return;
     }
 
@@ -124,7 +113,7 @@ const DzikrSlider: React.FC = () => {
       incrementCount(currentDzikr.id);
     }
 
-    if (finishes) swapToNext();
+    if (finishes) moveNext();
   };
 
   return (

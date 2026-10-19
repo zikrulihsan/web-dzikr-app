@@ -46,7 +46,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart }) => {
       </div>
 
       <div className="start-center">
-        <span className="start-greeting">Assalamu'alaykum Warahmatullahi Wabarakatuh</span>
+        <span className="start-greeting">Assalamu&apos;alaykum Warahmatullahi Wabarakatuh</span>
         <h1 className="start-title">{periodLabel[period]}</h1>
 
         <div className="start-tap" aria-hidden="true">
