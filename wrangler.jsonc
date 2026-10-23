@@ -1,0 +1,9 @@
+{
+  // Deploy hasil `next build` (output: 'export') sebagai aset statis.
+  "name": "web-dzikr-app",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}
